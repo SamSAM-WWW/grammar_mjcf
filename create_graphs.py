@@ -364,35 +364,300 @@ def my_graph():
 
 
 
+    ###########################################################################################################
+    # 创建图11
+    # 边的属性必须写，如果是空必须写成{}，否则读取bug
+    G = nx.DiGraph(name="make_roll_body_joint")
+
+    # 添加左子图及其节点和边
+    L_nodes_11 = []
+    L_edges_11 = [("parent", "child", {"require_label":"body_joint"})]
+
+    # 添加右子图及其节点和边
+    R_nodes_11 = []
+    R_edges_11 = [("parent", "child", {"type":"hinge", "joint_axis":"1 0 0"})]
+
+    # 向根图添加左右两个子图
+    G.add_nodes_from(L_nodes_11)
+    G.add_edges_from(L_edges_11)
+    G.add_nodes_from(R_nodes_11)
+    G.add_edges_from(R_edges_11)
+
+    # 创建左子图
+    L_subgraph = G.subgraph(L_nodes_11 + [n for u, v, _ in L_edges_11 for n in [u, v]]).copy()
+    # 添加左子图专属属性...
+
+    # 创建右子图
+    R_subgraph = G.subgraph(R_nodes_11 + [n for u, v, _ in R_edges_11 for n in [u, v]]).copy()
+    # 添加右子图专属属性...
+
+    # store in graphs
+    graphs.append(G.copy())
+
+
+    ###########################################################################################################
+    # 创建图12
+    # 边的属性必须写，如果是空必须写成{}，否则读取bug
+    G = nx.DiGraph(name="make_swing_body_joint")
+
+    # 添加左子图及其节点和边
+    L_nodes_12 = []
+    L_edges_12 = [("parent", "child", {"require_label":"body_joint"})]
+
+    # 添加右子图及其节点和边
+    R_nodes_12 = []
+    R_edges_12 = [("parent", "child", {"type":"hinge", "joint_axis":"0 1 0"})]
+
+    # 向根图添加左右两个子图
+    G.add_nodes_from(L_nodes_12)
+    G.add_edges_from(L_edges_12)
+    G.add_nodes_from(R_nodes_12)
+    G.add_edges_from(R_edges_12)
+
+    # 创建左子图
+    L_subgraph = G.subgraph(L_nodes_12 + [n for u, v, _ in L_edges_12 for n in [u, v]]).copy()
+    # 添加左子图专属属性...
+
+    # 创建右子图
+    R_subgraph = G.subgraph(R_nodes_12 + [n for u, v, _ in R_edges_12 for n in [u, v]]).copy()
+    # 添加右子图专属属性...
+
+    # store in graphs
+    graphs.append(G.copy())
+
+
+    ###########################################################################################################
+    # 创建图13
+    # 边的属性必须写，如果是空必须写成{}，否则读取bug
+    G = nx.DiGraph(name="make_lift_body_joint")
+
+    # 添加左子图及其节点和边
+    L_nodes_13 = []
+    L_edges_13 = [("parent", "child", {"require_label":"body_joint"})]
+
+    # 添加右子图及其节点和边
+    R_nodes_13 = []
+    R_edges_13 = [("parent", "child", {"type":"hinge", "joint_axis":"0 0 1"})]
+
+    # 向根图添加左右两个子图
+    G.add_nodes_from(L_nodes_13)
+    G.add_edges_from(L_edges_13)
+    G.add_nodes_from(R_nodes_13)
+    G.add_edges_from(R_edges_13)
+
+    # 创建左子图
+    L_subgraph = G.subgraph(L_nodes_13 + [n for u, v, _ in L_edges_13 for n in [u, v]]).copy()
+    # 添加左子图专属属性...
+
+    # 创建右子图
+    R_subgraph = G.subgraph(R_nodes_13 + [n for u, v, _ in R_edges_13 for n in [u, v]]).copy()
+    # 添加右子图专属属性...
+
+    # store in graphs
+    graphs.append(G.copy())
+
+
+    ###########################################################################################################
+    # 创建图14
+    # 边的属性必须写，如果是空必须写成{}，否则读取bug
+    G = nx.DiGraph(name="make_left_roll_limb_joint")
+
+    # 添加左子图及其节点和边
+    L_nodes_14 = []
+    L_edges_14 = [("parent", "child", {"require_label":"limb_joint"})]
+
+    # 添加右子图及其节点和边
+    R_nodes_14 = []
+    R_edges_14 = [("parent", "child", {"type":"hinge", "axis_angle":"0 1 0 -90", "joint_axis":"1 0 0"})]
+
+    # 向根图添加左右两个子图
+    G.add_nodes_from(L_nodes_14)
+    G.add_edges_from(L_edges_14)
+    G.add_nodes_from(R_nodes_14)
+    G.add_edges_from(R_edges_14)
+
+    # 创建左子图
+    L_subgraph = G.subgraph(L_nodes_14 + [n for u, v, _ in L_edges_14 for n in [u, v]]).copy()
+    # 添加左子图专属属性...
+
+    # 创建右子图
+    R_subgraph = G.subgraph(R_nodes_14 + [n for u, v, _ in R_edges_14 for n in [u, v]]).copy()
+    # 添加右子图专属属性...
+
+    # store in graphs
+    graphs.append(G.copy())
 
 
 
+    ###########################################################################################################
+    # 创建图15
+    # 边的属性必须写，如果是空必须写成{}，否则读取bug
+    G = nx.DiGraph(name="make_right_roll_limb_joint")
+
+    # 添加左子图及其节点和边
+    L_nodes_15 = []
+    L_edges_15 = [("parent", "child", {"require_label":"limb_joint"})]
+
+    # 添加右子图及其节点和边
+    R_nodes_15 = []
+    R_edges_15 = [("parent", "child", {"type":"hinge", "axis_angle":"0 1 0 90", "joint_axis":"1 0 0"})]
+
+    # 向根图添加左右两个子图
+    G.add_nodes_from(L_nodes_15)
+    G.add_edges_from(L_edges_15)
+    G.add_nodes_from(R_nodes_15)
+    G.add_edges_from(R_edges_15)
+
+    # 创建左子图
+    L_subgraph = G.subgraph(L_nodes_15 + [n for u, v, _ in L_edges_15 for n in [u, v]]).copy()
+    # 添加左子图专属属性...
+
+    # 创建右子图
+    R_subgraph = G.subgraph(R_nodes_15 + [n for u, v, _ in R_edges_15 for n in [u, v]]).copy()
+    # 添加右子图专属属性...
+
+    # store in graphs
+    graphs.append(G.copy())
+
+
+    ###########################################################################################################
+    # 创建图16
+    # 边的属性必须写，如果是空必须写成{}，否则读取bug
+    G = nx.DiGraph(name="make_swing_limb_joint")
+
+    # 添加左子图及其节点和边
+    L_nodes_16 = []
+    L_edges_16 = [("parent", "child", {"require_label":"limb_joint"})]
+
+    # 添加右子图及其节点和边
+    R_nodes_16 = []
+    R_edges_16 = [("parent", "child", {"type":"hinge", "joint_axis":"0 1 0"})]
+
+    # 向根图添加左右两个子图
+    G.add_nodes_from(L_nodes_16)
+    G.add_edges_from(L_edges_16)
+    G.add_nodes_from(R_nodes_16)
+    G.add_edges_from(R_edges_16)
+
+    # 创建左子图
+    L_subgraph = G.subgraph(L_nodes_16 + [n for u, v, _ in L_edges_16 for n in [u, v]]).copy()
+    # 添加左子图专属属性...
+
+    # 创建右子图
+    R_subgraph = G.subgraph(R_nodes_16 + [n for u, v, _ in R_edges_16 for n in [u, v]]).copy()
+    # 添加右子图专属属性...
+
+    # store in graphs
+    graphs.append(G.copy())    
+
+
+    ###########################################################################################################
+    # 创建图17
+    # 边的属性必须写，如果是空必须写成{}，否则读取bug
+    G = nx.DiGraph(name="make_acute_lift_limb_joint")
+
+    # 添加左子图及其节点和边
+    L_nodes_17 = []
+    L_edges_17 = [("parent", "child", {"require_label":"limb_joint"})]
+
+    # 添加右子图及其节点和边
+    R_nodes_17 = []
+    R_edges_17 = [("parent", "child", {"type":"hinge","axis_angle":"0 0 1 120", "joint_axis":"0 0 1"})]
+
+    # 向根图添加左右两个子图
+    G.add_nodes_from(L_nodes_17)
+    G.add_edges_from(L_edges_17)
+    G.add_nodes_from(R_nodes_17)
+    G.add_edges_from(R_edges_17)
+
+    # 创建左子图
+    L_subgraph = G.subgraph(L_nodes_17 + [n for u, v, _ in L_edges_17 for n in [u, v]]).copy()
+    # 添加左子图专属属性...
+
+    # 创建右子图
+    R_subgraph = G.subgraph(R_nodes_17 + [n for u, v, _ in R_edges_17 for n in [u, v]]).copy()
+    # 添加右子图专属属性...
+
+    # store in graphs
+    graphs.append(G.copy())    
 
 
 
+    ###########################################################################################################
+    # 创建图18
+    # 边的属性必须写，如果是空必须写成{}，否则读取bug
+    G = nx.DiGraph(name="make_obtuse_lift_limb_joint")
+
+    # 添加左子图及其节点和边
+    L_nodes_18 = []
+    L_edges_18 = [("parent", "child", {"require_label":"limb_joint"})]
+
+    # 添加右子图及其节点和边
+    R_nodes_18 = []
+    R_edges_18 = [("parent", "child", {"type":"hinge","axis_angle":"0 0 1 60", "joint_axis":"0 0 1"})]
+
+    # 向根图添加左右两个子图
+    G.add_nodes_from(L_nodes_18)
+    G.add_edges_from(L_edges_18)
+    G.add_nodes_from(R_nodes_18)
+    G.add_edges_from(R_edges_18)
+
+    # 创建左子图
+    L_subgraph = G.subgraph(L_nodes_18 + [n for u, v, _ in L_edges_18 for n in [u, v]]).copy()
+    # 添加左子图专属属性...
+
+    # 创建右子图
+    R_subgraph = G.subgraph(R_nodes_18 + [n for u, v, _ in R_edges_18 for n in [u, v]]).copy()
+    # 添加右子图专属属性...
+
+    # store in graphs
+    graphs.append(G.copy())   
 
 
+    ###########################################################################################################
+    # 创建图19
+    # 边的属性必须写，如果是空必须写成{}，否则读取bug
+    G = nx.DiGraph(name="make_backwards_lift_limb_joint")
 
+    # 添加左子图及其节点和边
+    L_nodes_19 = []
+    L_edges_19 = [("parent", "child", {"require_label":"limb_joint"})]
 
+    # 添加右子图及其节点和边
+    R_nodes_19 = []
+    R_edges_19 = [("parent", "child", {"type":"hinge","axis_angle":"0 0 1 -60", "joint_axis":"0 0 1"})]
 
+    # 向根图添加左右两个子图
+    G.add_nodes_from(L_nodes_19)
+    G.add_edges_from(L_edges_19)
+    G.add_nodes_from(R_nodes_19)
+    G.add_edges_from(R_edges_19)
 
+    # 创建左子图
+    L_subgraph = G.subgraph(L_nodes_19 + [n for u, v, _ in L_edges_19 for n in [u, v]]).copy()
+    # 添加左子图专属属性...
 
+    # 创建右子图
+    R_subgraph = G.subgraph(R_nodes_19 + [n for u, v, _ in R_edges_19 for n in [u, v]]).copy()
+    # 添加右子图专属属性...
 
+    # store in graphs
+    graphs.append(G.copy())  
 
 
 
     for idx, graph in enumerate(graphs):
         print(f"\nGraph {idx} - {graph.name}")
         
-        # 打印节点信息
-        print("Nodes:")
-        for node in graph.nodes(data=True):
-            print(f"  Node: {node}")
+        # # 打印节点信息
+        # print("Nodes:")
+        # for node in graph.nodes(data=True):
+        #     print(f"  Node: {node}")
 
-        # 打印边信息
-        print("Edges:")
-        for edge in graph.edges(data=True):
-            print(f"  Edge: {edge}")
+        # # 打印边信息
+        # print("Edges:")
+        # for edge in graph.edges(data=True):
+        #     print(f"  Edge: {edge}")
 
         # 打印左子图信息
         left_subgraph_nodes = graph.subgraph(locals()[f"L_nodes_{idx}"] + [n for u, v, _ in locals()[f"L_edges_{idx}"] for n in [u, v]])
