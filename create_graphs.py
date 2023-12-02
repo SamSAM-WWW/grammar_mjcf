@@ -3,6 +3,7 @@ import networkx as nx
 
 def my_graph():
     graphs = []
+    subgraph_info = {}  # 存储左右子图信息的字典
     '''
     发现确实从dot文件读取难度巨大 通过直接在python代码中构建就简单很多
 
@@ -110,7 +111,7 @@ def my_graph():
     L_edges_3 = []
 
     # 添加右子图及其节点和边
-    R_nodes_3 = ["body"]
+    R_nodes_3 = [("body")]
     R_edges_3 = []
 
     # 向根图添加左右两个子图
@@ -632,7 +633,7 @@ def my_graph():
     G.add_edges_from(L_edges_19)
     G.add_nodes_from(R_nodes_19)
     G.add_edges_from(R_edges_19)
-
+    G.add_node("testnode",info = {"sub":"L","infom":"666"})
     # 创建左子图
     L_subgraph = G.subgraph(L_nodes_19 + [n for u, v, _ in L_edges_19 for n in [u, v]]).copy()
     # 添加左子图专属属性...
@@ -647,40 +648,77 @@ def my_graph():
 
 
     for idx, graph in enumerate(graphs):
-        print(f"\nGraph {idx} - {graph.name}")
+        # print(f"\nGraph {idx} - {graph.name}")
         
-        # # 打印节点信息
-        # print("Nodes:")
-        # for node in graph.nodes(data=True):
+        # # # 打印节点信息
+        # # print("Nodes:")
+        # # for node in graph.nodes(data=True):
+        # #     print(f"  Node: {node}")
+
+        # # # 打印边信息
+        # # print("Edges:")
+        # # for edge in graph.edges(data=True):
+        # #     print(f"  Edge: {edge}")
+
+        # # 打印左子图信息
+        # left_subgraph_nodes = graph.subgraph(locals()[f"L_nodes_{idx}"] + [n for u, v, _ in locals()[f"L_edges_{idx}"] for n in [u, v]])
+        # print("Left Subgraph Nodes:")
+        # for node in left_subgraph_nodes.nodes(data=True):
         #     print(f"  Node: {node}")
 
-        # # 打印边信息
-        # print("Edges:")
-        # for edge in graph.edges(data=True):
+        # print("Left Subgraph Edges:")
+        # for edge in left_subgraph_nodes.edges(data=True):
         #     print(f"  Edge: {edge}")
 
-        # 打印左子图信息
-        left_subgraph_nodes = graph.subgraph(locals()[f"L_nodes_{idx}"] + [n for u, v, _ in locals()[f"L_edges_{idx}"] for n in [u, v]])
-        print("Left Subgraph Nodes:")
-        for node in left_subgraph_nodes.nodes(data=True):
-            print(f"  Node: {node}")
+        # # 打印右子图信息
+        # right_subgraph_nodes = graph.subgraph(locals()[f"R_nodes_{idx}"] + [n for u, v, _ in locals()[f"R_edges_{idx}"] for n in [u, v]])
+        # print("Right Subgraph Nodes:")
+        # for node in right_subgraph_nodes.nodes(data=True):
+        #     print(f"  Node: {node}")
 
-        print("Left Subgraph Edges:")
-        for edge in left_subgraph_nodes.edges(data=True):
-            print(f"  Edge: {edge}")
-
-        # 打印右子图信息
-        right_subgraph_nodes = graph.subgraph(locals()[f"R_nodes_{idx}"] + [n for u, v, _ in locals()[f"R_edges_{idx}"] for n in [u, v]])
-        print("Right Subgraph Nodes:")
-        for node in right_subgraph_nodes.nodes(data=True):
-            print(f"  Node: {node}")
-
-        print("Right Subgraph Edges:")
-        for edge in right_subgraph_nodes.edges(data=True):
-            print(f"  Edge: {edge}")
-
-    return graphs
+        # print("Right Subgraph Edges:")
+        # for edge in right_subgraph_nodes.edges(data=True):
+        #     print(f"  Edge: {edge}")
 
 
+        # 存储左右子图信息到字典
+        subgraph_info[idx] = {
+            'left_nodes': locals()[f"L_nodes_{idx}"],
+            'left_edges': locals()[f"L_edges_{idx}"],
+            'right_nodes': locals()[f"R_nodes_{idx}"],
+            'right_edges': locals()[f"R_edges_{idx}"],
+        }
 
-my_graph()
+    return graphs, subgraph_info
+
+
+
+
+
+
+
+def read_graph_info(num):
+    # 示例调用
+    all_graphs, subgraph_info_dict = my_graph()
+    print("--------------------test-------------------------")
+    print("-------------warning:counting from 0-------------")
+    print(f"Graph {num}")
+    # 访问图的左右子图信息示例
+    '''
+    from 0 to the last graph
+    '''
+    print(all_graphs[num].name)
+    left_nodes = subgraph_info_dict[num]['left_nodes']
+    print("left_nodes",left_nodes)
+
+    left_edges = subgraph_info_dict[num]['left_edges']
+    print("left_edges",left_edges)
+
+    right_nodes = subgraph_info_dict[num]['right_nodes']
+    print("right_nodes",right_nodes)
+
+    right_edges = subgraph_info_dict[num]['right_edges']
+    print("right_edges",right_edges)
+
+
+read_graph_info(19)

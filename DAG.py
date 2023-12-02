@@ -5,9 +5,10 @@ from copy import copy, deepcopy
 class DAG(object):
     """ Directed acyclic graph implementation. """
 
-    def __init__(self):
+    def __init__(self, name=None):
         """ Construct a new DAG with no nodes or edges. """
         self.reset_graph()
+        self.name = name
 
     def add_node(self, node_name, graph=None, info=None):
         """ Add a node if it does not exist yet, or error out. """
