@@ -325,7 +325,7 @@ def my_graph():
 
 
 
-#输出所有的graph信息
+    #输出所有的graph信息
     for idx, graph in enumerate(graphs):
         print(f"\nGraph {idx} - {graph.name}")
         for node in graph.nodes(data=True):
@@ -333,7 +333,15 @@ def my_graph():
         for edge in graph.edges(data=True):
             print(f"Edge: {edge}")
 
+    selected_graph = graphs[1]
 
+
+    # # 打印选定图的信息
+    # print(f"\nSelected Graph - {selected_graph.name}")
+    # for node in selected_graph.nodes(data=True):
+    #     print(f"Node: {node}")
+    # for edge in selected_graph.edges(data=True):
+    #     print(f"Edge: {edge}")
 
 
 
