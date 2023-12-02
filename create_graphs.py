@@ -203,25 +203,25 @@ def my_graph():
     G = nx.DiGraph(name="end_tail")
 
     # 添加左子图及其节点和边
-    L_nodes = ["tail"]
-    L_edges = [("parent","tail",{})]
+    L_nodes_6 = ["tail"]
+    L_edges_6 = [("parent","tail",{})]
 
     # 添加右子图及其节点和边
-    R_nodes = ["parent"]
-    R_edges = []
+    R_nodes_6 = ["parent"]
+    R_edges_6 = []
 
     # 向根图添加左右两个子图
-    G.add_nodes_from(L_nodes)
-    G.add_edges_from(L_edges)
-    G.add_nodes_from(R_nodes)
-    G.add_edges_from(R_edges)
+    G.add_nodes_from(L_nodes_6)
+    G.add_edges_from(L_edges_6)
+    G.add_nodes_from(R_nodes_6)
+    G.add_edges_from(R_edges_6)
 
     # 创建左子图
-    L_subgraph = G.subgraph(L_nodes + [n for u, v, _ in L_edges for n in [u, v]]).copy()
+    L_subgraph = G.subgraph(L_nodes_6 + [n for u, v, _ in L_edges_6 for n in [u, v]]).copy()
     # 添加左子图专属属性...
 
     # 创建右子图
-    R_subgraph = G.subgraph(R_nodes + [n for u, v, _ in R_edges for n in [u, v]]).copy()
+    R_subgraph = G.subgraph(R_nodes_6 + [n for u, v, _ in R_edges_6 for n in [u, v]]).copy()
     # 添加右子图专属属性...
 
 
@@ -237,25 +237,25 @@ def my_graph():
     G = nx.DiGraph(name="end_head").copy()
 
     # 添加左子图及其节点和边
-    L_nodes = ["head"]
-    L_edges = [("head","child",{})]
+    L_nodes_7 = ["head"]
+    L_edges_7 = [("head","child",{})]
 
     # 添加右子图及其节点和边
-    R_nodes = ["child"]
-    R_edges = []
+    R_nodes_7 = ["child"]
+    R_edges_7 = []
 
     # 向根图添加左右两个子图
-    G.add_nodes_from(L_nodes)
-    G.add_edges_from(L_edges)
-    G.add_nodes_from(R_nodes)
-    G.add_edges_from(R_edges)
+    G.add_nodes_from(L_nodes_7)
+    G.add_edges_from(L_edges_7)
+    G.add_nodes_from(R_nodes_7)
+    G.add_edges_from(R_edges_7)
 
     # 创建左子图
-    L_subgraph = G.subgraph(L_nodes + [n for u, v, _ in L_edges for n in [u, v]]).copy()
+    L_subgraph = G.subgraph(L_nodes_7 + [n for u, v, _ in L_edges_7 for n in [u, v]]).copy()
     # 添加左子图专属属性...
 
     # 创建右子图
-    R_subgraph = G.subgraph(R_nodes + [n for u, v, _ in R_edges for n in [u, v]]).copy()
+    R_subgraph = G.subgraph(R_nodes_7 + [n for u, v, _ in R_edges_7 for n in [u, v]]).copy()
     # 添加右子图专属属性...
 
 
@@ -272,25 +272,25 @@ def my_graph():
     G = nx.DiGraph(name="make_normal_limb_link")
 
     # 添加左子图及其节点和边
-    L_nodes = ["limb_link"]
-    L_edges = []
+    L_nodes_8 = ["limb_link"]
+    L_edges_8 = []
 
     # 添加右子图及其节点和边
-    R_nodes = ["limb_link"]
-    R_edges = []
+    R_nodes_8 = ["limb_link"]
+    R_edges_8 = []
 
     # 向根图添加左右两个子图
-    G.add_nodes_from(L_nodes)
-    G.add_edges_from(L_edges)
-    G.add_nodes_from(R_nodes)
-    G.add_edges_from(R_edges)
+    G.add_nodes_from(L_nodes_8)
+    G.add_edges_from(L_edges_8)
+    G.add_nodes_from(R_nodes_8)
+    G.add_edges_from(R_edges_8)
 
     # 创建左子图
-    L_subgraph = G.subgraph(L_nodes + [n for u, v, _ in L_edges for n in [u, v]]).copy()
+    L_subgraph = G.subgraph(L_nodes_8 + [n for u, v, _ in L_edges_8 for n in [u, v]]).copy()
     # 添加左子图专属属性...
 
     # 创建右子图
-    R_subgraph = G.subgraph(R_nodes + [n for u, v, _ in R_edges for n in [u, v]]).copy()
+    R_subgraph = G.subgraph(R_nodes_8 + [n for u, v, _ in R_edges_8 for n in [u, v]]).copy()
     # 添加右子图专属属性...
     R_subgraph.nodes["limb_link"].update(shape="capsule", length=0.15, radius=0.025)
 
@@ -306,30 +306,67 @@ def my_graph():
     G = nx.DiGraph(name="make_long_limb_link")
 
     # 添加左子图及其节点和边
-    L_nodes = ["limb_link"]
-    L_edges = []
+    L_nodes_9 = ["limb_link"]
+    L_edges_9 = []
 
     # 添加右子图及其节点和边
-    R_nodes = ["limb_link"]
-    R_edges = []
+    R_nodes_9 = ["limb_link"]
+    R_edges_9 = []
 
     # 向根图添加左右两个子图
-    G.add_nodes_from(L_nodes)
-    G.add_edges_from(L_edges)
-    G.add_nodes_from(R_nodes)
-    G.add_edges_from(R_edges)
+    G.add_nodes_from(L_nodes_9)
+    G.add_edges_from(L_edges_9)
+    G.add_nodes_from(R_nodes_9)
+    G.add_edges_from(R_edges_9)
 
     # 创建左子图
-    L_subgraph = G.subgraph(L_nodes + [n for u, v, _ in L_edges for n in [u, v]]).copy()
+    L_subgraph = G.subgraph(L_nodes_9 + [n for u, v, _ in L_edges_9 for n in [u, v]]).copy()
     # 添加左子图专属属性...
 
     # 创建右子图
-    R_subgraph = G.subgraph(R_nodes + [n for u, v, _ in R_edges for n in [u, v]]).copy()
+    R_subgraph = G.subgraph(R_nodes_9 + [n for u, v, _ in R_edges_9 for n in [u, v]]).copy()
     # 添加右子图专属属性...
     R_subgraph.nodes["limb_link"].update(shape="capsule", length=0.15, radius=0.025)
 
     # store in graphs
     graphs.append(G.copy())
+
+
+    ###########################################################################################################
+    # 创建图10
+    # 边的属性必须写，如果是空必须写成{}，否则读取bug
+    G = nx.DiGraph(name="make_fixed_body_joint")
+
+    # 添加左子图及其节点和边
+    L_nodes_10 = []
+    L_edges_10 = [("parent", "child", {"require_label":"body_joint"})]
+
+    # 添加右子图及其节点和边
+    R_nodes_10 = []
+    R_edges_10 = [("parent", "child", {"type":"fixed"})]
+
+    # 向根图添加左右两个子图
+    G.add_nodes_from(L_nodes_10)
+    G.add_edges_from(L_edges_10)
+    G.add_nodes_from(R_nodes_10)
+    G.add_edges_from(R_edges_10)
+
+    # 创建左子图
+    L_subgraph = G.subgraph(L_nodes_10 + [n for u, v, _ in L_edges_10 for n in [u, v]]).copy()
+    # 添加左子图专属属性...
+
+    # 创建右子图
+    R_subgraph = G.subgraph(R_nodes_10 + [n for u, v, _ in R_edges_10 for n in [u, v]]).copy()
+    # 添加右子图专属属性...
+
+    # store in graphs
+    graphs.append(G.copy())
+
+
+
+
+
+
 
 
 
