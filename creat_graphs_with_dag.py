@@ -166,6 +166,182 @@ def creat_graph():
     graphs.append(lr_dag)
 
 
+        #-------------------------------------------------------
+    # 创建 TwoSubgraphDAG 实例9
+    lr_dag = TwoSubgraphDAG(name="make_long_limb_link")
+
+    # 向 L 子图添加节点和边
+    lr_dag.add_node_to_subgraph("limb_link", "L", info={"require_label": "limb_link"})
+
+
+    # 向 R 子图添加节点
+    lr_dag.add_node_to_subgraph("limb_link", "R", info={"shape": "capsule","length": 0.15,"radius": 0.025})
+    graphs.append(lr_dag)
+
+
+
+        #-------------------------------------------------------
+    # 创建 TwoSubgraphDAG 实例10
+    lr_dag = TwoSubgraphDAG(name="make_fixed_body_joint")
+
+    # 向 L 子图添加节点和边
+    lr_dag.add_node_to_subgraph("parent", "L", info={"require_label": "parent"})
+    lr_dag.add_node_to_subgraph("child", "L", info={"require_label": "child"})
+    lr_dag.add_edge_to_subgraph("parent", "child", "L", info={"require_label": "body_joint"})
+
+    # 向 R 子图添加节点
+    lr_dag.add_node_to_subgraph("parent", "R", info={"require_label": "parent"})
+    lr_dag.add_node_to_subgraph("child", "R", info={"require_label": "child"})
+    lr_dag.add_edge_to_subgraph("parent", "child", "R", info={"type": "fixed"})
+    graphs.append(lr_dag)    
+
+
+
+        #-------------------------------------------------------
+    # 创建 TwoSubgraphDAG 实例11
+    lr_dag = TwoSubgraphDAG(name="make_roll_body_joint")
+
+    # 向 L 子图添加节点和边
+    lr_dag.add_node_to_subgraph("parent", "L", info={"require_label": "parent"})
+    lr_dag.add_node_to_subgraph("child", "L", info={"require_label": "child"})
+    lr_dag.add_edge_to_subgraph("parent", "child", "L", info={"require_label": "body_joint"})
+
+    # 向 R 子图添加节点
+    lr_dag.add_node_to_subgraph("parent", "R", info={"require_label": "parent"})
+    lr_dag.add_node_to_subgraph("child", "R", info={"require_label": "child"})
+    lr_dag.add_edge_to_subgraph("parent", "child", "R", info={"type": "hinge","joint_axis":"1 0 0"})
+    graphs.append(lr_dag)    
+
+
+
+        #-------------------------------------------------------
+    # 创建 TwoSubgraphDAG 实例12
+    lr_dag = TwoSubgraphDAG(name="make_swing_body_joint")
+
+    # 向 L 子图添加节点和边
+    lr_dag.add_node_to_subgraph("parent", "L", info={"require_label": "parent"})
+    lr_dag.add_node_to_subgraph("child", "L", info={"require_label": "child"})
+    lr_dag.add_edge_to_subgraph("parent", "child", "L", info={"require_label": "body_joint"})
+
+    # 向 R 子图添加节点
+    lr_dag.add_node_to_subgraph("parent", "R", info={"require_label": "parent"})
+    lr_dag.add_node_to_subgraph("child", "R", info={"require_label": "child"})
+    lr_dag.add_edge_to_subgraph("parent", "child", "R", info={"type": "hinge","joint_axis":"0 1 0"})
+    graphs.append(lr_dag)    
+
+
+
+        #-------------------------------------------------------
+    # 创建 TwoSubgraphDAG 实例13
+    lr_dag = TwoSubgraphDAG(name="make_lift_body_joint")
+
+    # 向 L 子图添加节点和边
+    lr_dag.add_node_to_subgraph("parent", "L", info={"require_label": "parent"})
+    lr_dag.add_node_to_subgraph("child", "L", info={"require_label": "child"})
+    lr_dag.add_edge_to_subgraph("parent", "child", "L", info={"require_label": "body_joint"})
+
+    # 向 R 子图添加节点
+    lr_dag.add_node_to_subgraph("parent", "R", info={"require_label": "parent"})
+    lr_dag.add_node_to_subgraph("child", "R", info={"require_label": "child"})
+    lr_dag.add_edge_to_subgraph("parent", "child", "R", info={"type": "hinge","joint_axis":"0 0 1"})
+    graphs.append(lr_dag)    
+
+
+        #-------------------------------------------------------
+    # 创建 TwoSubgraphDAG 实例14
+    lr_dag = TwoSubgraphDAG(name="make_left_roll_limb_joint")
+
+    # 向 L 子图添加节点和边
+    lr_dag.add_node_to_subgraph("parent", "L", info={"require_label": "parent"})
+    lr_dag.add_node_to_subgraph("child", "L", info={"require_label": "child"})
+    lr_dag.add_edge_to_subgraph("parent", "child", "L", info={"require_label": "limb_joint"})
+
+    # 向 R 子图添加节点
+    lr_dag.add_node_to_subgraph("parent", "R", info={"require_label": "parent"})
+    lr_dag.add_node_to_subgraph("child", "R", info={"require_label": "child"})
+    lr_dag.add_edge_to_subgraph("parent", "child", "R", info={"type": "hinge","axis_angle":"0 1 0 -90","joint_axis":"1 0 0"})
+    graphs.append(lr_dag)    
+
+
+
+
+        #-------------------------------------------------------
+    # 创建 TwoSubgraphDAG 实例15
+    lr_dag = TwoSubgraphDAG(name="make_right_roll_limb_joint")
+
+    # 向 L 子图添加节点和边
+    lr_dag.add_node_to_subgraph("parent", "L", info={"require_label": "parent"})
+    lr_dag.add_node_to_subgraph("child", "L", info={"require_label": "child"})
+    lr_dag.add_edge_to_subgraph("parent", "child", "L", info={"require_label": "limb_joint"})
+
+    # 向 R 子图添加节点
+    lr_dag.add_node_to_subgraph("parent", "R", info={"require_label": "parent"})
+    lr_dag.add_node_to_subgraph("child", "R", info={"require_label": "child"})
+    lr_dag.add_edge_to_subgraph("parent", "child", "R", info={"type": "hinge","axis_angle":"0 1 0 90","joint_axis":"1 0 0"})
+    graphs.append(lr_dag)
+
+
+        #-------------------------------------------------------
+    # 创建 TwoSubgraphDAG 实例16
+    lr_dag = TwoSubgraphDAG(name="make_swing_limb_joint")
+
+    # 向 L 子图添加节点和边
+    lr_dag.add_node_to_subgraph("parent", "L", info={"require_label": "parent"})
+    lr_dag.add_node_to_subgraph("child", "L", info={"require_label": "child"})
+    lr_dag.add_edge_to_subgraph("parent", "child", "L", info={"require_label": "limb_joint"})
+
+    # 向 R 子图添加节点
+    lr_dag.add_node_to_subgraph("parent", "R", info={"require_label": "parent"})
+    lr_dag.add_node_to_subgraph("child", "R", info={"require_label": "child"})
+    lr_dag.add_edge_to_subgraph("parent", "child", "R", info={"type": "hinge","joint_axis":"0 1 0"})
+    graphs.append(lr_dag)
+
+        #-------------------------------------------------------
+    # 创建 TwoSubgraphDAG 实例17
+    lr_dag = TwoSubgraphDAG(name="make_acute_lift_limb_joint")
+
+    # 向 L 子图添加节点和边
+    lr_dag.add_node_to_subgraph("parent", "L", info={"require_label": "parent"})
+    lr_dag.add_node_to_subgraph("child", "L", info={"require_label": "child"})
+    lr_dag.add_edge_to_subgraph("parent", "child", "L", info={"require_label": "limb_joint"})
+
+    # 向 R 子图添加节点
+    lr_dag.add_node_to_subgraph("parent", "R", info={"require_label": "parent"})
+    lr_dag.add_node_to_subgraph("child", "R", info={"require_label": "child"})
+    lr_dag.add_edge_to_subgraph("parent", "child", "R", info={"type": "hinge","axis_angle":"0 0 1 120","joint_axis":"0 0 1"})
+    graphs.append(lr_dag)
+
+
+
+        #-------------------------------------------------------
+    # 创建 TwoSubgraphDAG 实例18
+    lr_dag = TwoSubgraphDAG(name="make_obtuse_lift_limb_joint")
+
+    # 向 L 子图添加节点和边
+    lr_dag.add_node_to_subgraph("parent", "L", info={"require_label": "parent"})
+    lr_dag.add_node_to_subgraph("child", "L", info={"require_label": "child"})
+    lr_dag.add_edge_to_subgraph("parent", "child", "L", info={"require_label": "limb_joint"})
+
+    # 向 R 子图添加节点
+    lr_dag.add_node_to_subgraph("parent", "R", info={"require_label": "parent"})
+    lr_dag.add_node_to_subgraph("child", "R", info={"require_label": "child"})
+    lr_dag.add_edge_to_subgraph("parent", "child", "R", info={"type": "hinge","axis_angle":"0 0 1 60","joint_axis":"0 0 1"})
+    graphs.append(lr_dag)
+
+        #-------------------------------------------------------
+    # 创建 TwoSubgraphDAG 实例19
+    lr_dag = TwoSubgraphDAG(name="make_backwards_lift_limb_joint")
+
+    # 向 L 子图添加节点和边
+    lr_dag.add_node_to_subgraph("parent", "L", info={"require_label": "parent"})
+    lr_dag.add_node_to_subgraph("child", "L", info={"require_label": "child"})
+    lr_dag.add_edge_to_subgraph("parent", "child", "L", info={"require_label": "limb_joint"})
+
+    # 向 R 子图添加节点
+    lr_dag.add_node_to_subgraph("parent", "R", info={"require_label": "parent"})
+    lr_dag.add_node_to_subgraph("child", "R", info={"require_label": "child"})
+    lr_dag.add_edge_to_subgraph("parent", "child", "R", info={"type": "hinge","axis_angle":"0 0 1 -60","joint_axis":"0 0 1"})
+    graphs.append(lr_dag)
 
 
 
@@ -215,7 +391,7 @@ def creat_graph():
 
 
 
-i = 8
+i = 19
 graphs = creat_graph()
 print(graphs[i].lr_subgraph['L'].node_info)
 print(graphs[i].lr_subgraph['L'].edge_info)
