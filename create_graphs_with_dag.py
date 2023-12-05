@@ -20,7 +20,7 @@ class TwoSubgraphDAG(DAG):
 
 
 
-def create_graph():
+def create_graphs_1():
     # 创建 TwoSubgraphDAG 实例0
     lr_dag = TwoSubgraphDAG(name="make_robot")
 
@@ -351,9 +351,17 @@ def create_graph():
     return graphs
 
 
+def create_graphs(graph_num):
+    '''
+    choose which graph U want to use
+    -----
+    input a number, range: from 1 to the end
+    '''
+    if graph_num == 1:
+        return create_graphs_1()
 
-
-
+    if graph_num == 2:
+        pass
 
 
 
@@ -392,7 +400,7 @@ def create_graph():
 
 
 i = 19
-graphs = create_graph()
+graphs = create_graphs(1)
 print(graphs[i].lr_subgraph['L'].node_info)
 print(graphs[i].lr_subgraph['L'].edge_info)
 print(graphs[i].lr_subgraph['R'].node_info)
