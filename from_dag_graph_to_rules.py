@@ -33,8 +33,8 @@ def create_rule_from_graph(graph):
     print("rule_name is",rule.name)
 
     # Graph must have subgraphs named "L" and "R"
-    if 'L' not in graph.lr_subgraph or 'R' not in graph.lr_subgraph:
-            raise RuntimeError("Graph must contain subgraphs named \"L\" and \"R\"")
+    if not any(graph.lr_subgraph['L'].node_info) or not any(graph.lr_subgraph['R'].node_info):
+            raise RuntimeError("Subgraph must contain nodes")
 
 
 

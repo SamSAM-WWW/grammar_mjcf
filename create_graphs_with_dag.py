@@ -399,7 +399,7 @@ def create_graphs(graph_num):
 
 
 
-i = 19
+i = 0
 graphs = create_graphs(1)
 print(graphs[i].lr_subgraph['L'].node_info)
 print(graphs[i].lr_subgraph['L'].edge_info)
