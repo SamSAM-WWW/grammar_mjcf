@@ -44,12 +44,17 @@ class RobotGrammarEnv:
 
     def transite(self, state, action):
         applicable_matches = list(get_applicable_matches(self.rules[action], state))
+        print("applicable_matches = ",applicable_matches)
+        print("self.rules[action]",self.rules[action].name)
+        print("applicable_matches[0]",applicable_matches[0])
         next_state = apply_rule(self.rules[action], state, applicable_matches[0])
         return next_state
 
     def get_available_actions(self, state):
         actions = []
         for idx, rule in enumerate(self.rules):
+            print("idx = ",idx)
+            print("rule = ", rule.name)
             if list(get_applicable_matches(rule, state)):
                 actions.append(idx)
         return np.array(actions)

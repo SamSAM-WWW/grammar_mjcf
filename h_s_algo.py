@@ -63,6 +63,7 @@ def predict_batch(V, states):
 
 def select_action(env, state):
     available_actions = env.get_available_actions(state)
+    print("available actions = ",available_actions)
     best_action = available_actions[random.randrange(len(available_actions))]
     step_type = 'random'
     
@@ -115,6 +116,7 @@ def search_algo():
             for _ in range(40):
                 print("current num",_)
                 action, step_type = select_action(env, state)
+                print("action is ", action )
                 if action is None:
                     no_action_flag = True
                     break
@@ -124,7 +126,6 @@ def search_algo():
                 state = next_state
                 if not has_nonterminals(state):
                     break
-            
             valid = env.is_valid(state)
             
             t_sample += time.time() - t0

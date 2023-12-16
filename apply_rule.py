@@ -36,7 +36,10 @@ def find_matches(rule,graph):
   matches = []
   # 遍历图中的节点
   for node in graph.nodes(data=True):
+      print("finding matches")
       node_name, node_data = node
+      print("finding matches, node name = ", node_name)
+      print("finding matches, node data = ", node_data)
 
       # 检查节点是否匹配规则的左侧
       if node_name in rule.lhs_node:
@@ -64,8 +67,9 @@ def check_rule_applicability(rule, target_graph, match):
 
       if not target_edge_in_lhs:
           if target_edge_head in target_nodes_to_remove or target_edge_tail in target_nodes_to_remove:
+              print("check rule applicability = False")
               return False  # Head or tail node would be removed, making this edge a dangling edge
-
+  print("check rule applicability = True")
   return True
 
 
@@ -73,18 +77,25 @@ def get_applicable_matches(rule, graph):
   """Generates all applicable matches for rule in graph."""
   for match in find_matches(rule, graph):
     if check_rule_applicability(rule, graph, match):
+      print("get applicable matches!")
       yield match
 
 
 
 def has_nonterminals(graph):
-    for node, data in graph.nodes(data=True):
-        if isinstance(data, dict) and 'attrs' in data:
-            if 'shape' in data['attrs'] and data['attrs']['shape'] == 'NONE':
-                return True
-            if 'joint_type' in data['attrs'] and data['attrs']['joint_type'] == 'NONE':
-                return True
-    return False
+  for node, data in graph.nodes(data=True):
+    if isinstance(data, dict) and 'attrs' in data:
+      if 'shape' in data['attrs'] and data['attrs']['shape'] == 'NONE':
+          print(data['attrs']['shape'])
+          return True
+      if 'joint_type' in data['attrs'] and data['attrs']['joint_type'] == 'NONE':
+          print(data['attrs']['joint_type'])
+          return True
+      else:
+        print(data['attrs']['shape'])
+        print(data['attrs']['joint_type'])
+    print('no nonterminals')
+  return False
 
 def make_graph(rules, rule_sequence):
   graph = make_initial_graph()
