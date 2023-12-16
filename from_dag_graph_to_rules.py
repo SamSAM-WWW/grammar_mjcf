@@ -14,6 +14,8 @@ class Rule():
         self.rhs_edge = None
         self.common_node = None
         self.common_edge = None
+        self.common_to_lhs_edge_mapping = None
+        self.common_to_rhs_edge_mapping = None
 
 def create_rule_from_graph(graph):
     '''
@@ -86,8 +88,8 @@ def create_rule_from_graph(graph):
 
 
 
-graphs = create_graphs(graph_choose)
-for i in range(int(len(graphs))):
-    graph_i = graphs[i]
-    print(f"=================graph{i}====================")
-    create_rule_from_graph(graph_i)
+# graphs = create_graphs(graph_choose)
+# for i in range(int(len(graphs))):
+#     graph_i = graphs[i]
+#     print(f"=================graph{i}====================")
+#     create_rule_from_graph(graph_i)

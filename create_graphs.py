@@ -14,29 +14,36 @@ def my_graph():
     # 创建图0 边的属性必须写，如果是空必须写成{}，否则读取bug
     G0 = nx.DiGraph(name="make_robot")
 
-    # 添加左子图及其节点和边
-    L_nodes_0 = ["robot"]
-    L_edges_0 = []
+    G0.add_node("robot", label="robot", type="hinge",joint_axis="1 0 0")
+    G0.add_node("head", label="head", type="hinge",joint_axis="0 1 0")
+    for node in G0.nodes:
+        node_data = G0.nodes[node]
+        print("node info test")
+        print(node_data['label'], node_data['type'], node_data['joint_axis'])
+    
+    # # 添加左子图及其节点和边
+    # L_nodes_0 = ["robot"]
+    # L_edges_0 = []
 
-    # 添加右子图及其节点和边
-    R_nodes_0 = ["head", "body", "tail"]
-    R_edges_0 = [("head", "body", {"label": "body_joint"}), ("body", "tail", {"label": "body_joint"})]
+    # # 添加右子图及其节点和边
+    # R_nodes_0 = ["head", "body", "tail"]
+    # R_edges_0 = [("head", "body", {"label": "body_joint"}), ("body", "tail", {"label": "body_joint"})]
 
-    # 向根图添加左右两个子图
-    G0.add_nodes_from(L_nodes_0)
-    G0.add_nodes_from(R_nodes_0)
-    G0.add_edges_from(R_edges_0)
+    # # 向根图添加左右两个子图
+    # G0.add_nodes_from(L_nodes_0)
+    # G0.add_nodes_from(R_nodes_0)
+    # G0.add_edges_from(R_edges_0)
 
-    # 创建左子图
-    L_subgraph = G0.subgraph(L_nodes_0 + [n for u, v, _ in L_edges_0 for n in [u, v]]).copy()
-    # 添加左子图专属属性...
+    # # 创建左子图
+    # L_subgraph = G0.subgraph(L_nodes_0 + [n for u, v, _ in L_edges_0 for n in [u, v]]).copy()
+    # # 添加左子图专属属性...
 
-    # 创建右子图
-    R_subgraph = G0.subgraph(R_nodes_0 + [n for u, v, _ in R_edges_0 for n in [u, v]]).copy()
-    # 添加右子图专属属性...
+    # # 创建右子图
+    # R_subgraph = G0.subgraph(R_nodes_0 + [n for u, v, _ in R_edges_0 for n in [u, v]]).copy()
+    # # 添加右子图专属属性...
 
-    # store in graphs
-    graphs.append(G0)
+    # # store in graphs
+    # graphs.append(G0)
 
 
 
