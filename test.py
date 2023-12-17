@@ -17,10 +17,9 @@ def has_nonterminals(graph):
 def make_initial_graph():
     G = nx.DiGraph(name = 'arobot')
     G.add_node('robot',label ='robot',sub = 'L')
+    G.add_node('robot',require_label ='robot',sub = 'R')
     print(G.nodes.data())
     return G
     
 # Example usage
 state = make_initial_graph()
-if has_nonterminals(state):
-    print('Graph has non-terminals')

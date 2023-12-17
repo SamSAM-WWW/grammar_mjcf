@@ -24,10 +24,9 @@ def apply_rule(rule,target_graph,lhs_to_target):
         # 遍历目标图的节点
     for node in target_graph.nodes(data=True):
         node_name, node_data = node
-        print("apply rule! node name",node_name)
-        print("apply rule! node data",node_data)
         # 如果节点不在LHS中，将其复制到结果图中
         if node_name not in lhs_nodes:
+            print("apply rule 1 Copy target nodes not in LHS to result",node_name)
             result_graph.add_node(node_name, **node_data)
 
     # Copy target nodes in LHS to result if they are in common with the RHS
@@ -37,7 +36,43 @@ def apply_rule(rule,target_graph,lhs_to_target):
         # Check if the corresponding RHS node is in the target graph
             if rhs_node_name in target_graph.nodes():
                 # Copy the common node to the result graph
+                print("apply rule 2 Copy target nodes in LHS to result if they are in common with the RHS",lhs_node_name)
                 result_graph.add_node(lhs_node_name, **target_graph.nodes[rhs_node_name])
+    
+    # Add RHS nodes which are not in common with the LHS
+    rhs_node_info = rule.rhs_node
+    for node_name, node_attrs in rhs_node_info.items():
+        if node_name not in lhs_to_target['node_mapping'].values():
+            print("apply rule 3 Add RHS nodes which are not in common with the LHS",node_name)
+            result_graph.add_node(node_name, **node_attrs)  
+
+
+
+    # Copy target edges not in LHS to result
+    lhs_edges = set(rule.lhs_edge)
+    for edge in target_graph.edges():
+        edge_tail, edge_head = edge
+        if (edge_tail, edge_head) not in lhs_edges:
+            print("apply rule 4 Copy target edges not in LHS to result",edge_tail,edge_head)
+            result_graph.add_edge(edge_tail, edge_head, **target_graph.edges[edge])
+
+    # Copy target edges in LHS to result if they are in common with the RHS
+    common_edges = set(rule.common_edge)
+    for lhs_edge in lhs_edges:
+        lhs_tail, lhs_head = lhs_edge
+        rhs_edge = lhs_to_target['edge_mapping'][lhs_tail][lhs_head][0]
+        if rhs_edge in common_edges:
+            print("apply rule 5 Copy target edges not in LHS to result",rhs_edge)
+            result_graph.add_edge(lhs_tail, lhs_head, **target_graph.edges[rhs_edge])
+
+    # Add RHS edges which are not in common with the LHS
+    rhs_edges = rule.rhs_edge.items()
+    for start_node, edge_data in rhs_edges:
+        for end_node, attributes in edge_data.items():
+            # Now 'start_node', 'end_node', and 'attributes' hold the necessary information
+            # 'attributes' is a dictionary containing edge attributes
+            rhs_edge = (start_node, end_node, attributes)
+            result_graph.add_edge(start_node, end_node, **attributes)
     return result_graph
 
 
