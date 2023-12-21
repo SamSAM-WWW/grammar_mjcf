@@ -1,0 +1,49 @@
+从初始设计图d开始，循环应用设计规则，直到图中没有非终端节点为止。
+
+
+
+
+这段代码定义了一个名为 applyRule 的函数，它的目的是将规则应用于目标图，并返回应用规则后的结果图。该函数有三个参数：
+
+rule：规则，包含左子图 (lhs_)、右子图 (rhs_) 和共有部分 (common_)。
+target：目标图，规则将被应用于该图。
+lhs_to_target：左子图到目标图的映射。
+函数的返回值是一个新的图 (result)，表示应用规则后的结果。该函数的主要步骤包括：
+  // Copy target nodes not in LHS to result
+  // Copy target nodes in LHS to result if they are in common with the RHS
+  // Add RHS nodes which are not in common with the LHS
+  // Copy target edges not in LHS to result
+  // Copy target edges in LHS to result if they are in common with the RHS
+  // Add RHS edges which are not in common with the LHS
+
+
+
+
+
+
+
+这段代码定义了一个函数 buildRobot，它的目的是根据输入的图 graph 构建一个机器人模型，并返回这个机器人模型。函数采用广度优先遍历的方式，从图的根节点开始构建机器人。
+
+以下是函数的主要步骤：
+
+确定图的根节点。如果图中有一个节点被标记为 base，则将其作为根节点；否则，通过反向跟踪边找到一个根节点。如果图中有环路，则可能会在一定次数的迭代后停止。
+使用广度优先遍历，从根节点开始，逐层构建机器人的关节和链接。遍历过程中，将节点映射到机器人的关节和链接。
+对于每个节点，创建一个 NodeEntry 结构，其中包含有关关节和链接构建的信息，如关节类型、位置、旋转等。
+将 NodeEntry 结构加入队列 entries_to_expand 中，表示需要进一步处理的节点。
+在每次迭代中，处理队列中的第一个 NodeEntry，创建相应的链接，并将与之相连的节点加入队列，继续遍历。
+将生成的机器人模型返回。
+这个函数的输出是一个 Robot 对象，表示构建完成的机器人模型。
+
+[0, 2, 4, 4, 8, 4, 15, 4, 13, 7, 4, 4, 5, 14, 14, 18, 8, 8, 8, 15, 17, 7, 8]
+
+
+
+在L子图中，包含了产生式规则的起始结构，通常包括一个或多个非终结符（non-terminal）节点，这些节点将在应用规则时被替换成其他结构。
+L子图定义了规则的左侧条件，即在何种情况下可以应用该规则。
+
+在R子图中，包含了产生式规则的目标结构，通常包括一些终结符（terminal）节点，它们是最终生成的图形元素，以及可能的连接关系。
+R子图定义了规则的右侧结果，即在应用规则后图形将变成的结构。
+
+
+所有没有数字的都是结构性规则
+所有有数字参数的都是组件规则

@@ -8,6 +8,9 @@ import random
 import torch
 import numpy as np
 from apply_rule import *
+import sys
+import os
+
 
 def predict(V, state):
     global preprocessor
@@ -103,50 +106,137 @@ def search_algo():
     num_samples_interval = 0
     t_sample = 0 
     t_update = 0
-    for _ in range(num_samples):
-        valid = False
-        while not valid:
-            t0 = time.time()
+    last_checkpoint = -1
 
-            state = env.reset()
-            rule_seq = []
-            state_seq = [state]
-            no_action_flag = False
-            print("current num",_)
-            for _ in range(40):
-                print("current num",_)
-                action, step_type = select_action(env, state)
-                print("action is ", action )
-                if action is None:
-                    no_action_flag = True
-                    break
-                rule_seq.append(action)
-                next_state = env.transite(state, action)
-                state_seq.append(next_state)
-                state = next_state
-                if not has_nonterminals(state):
-                    break
-            valid = env.is_valid(state)
-            
-            t_sample += time.time() - t0
 
-            t0 = time.time()
 
-            if not valid:
-                # update the invalid sample's count
-                if no_action_flag:
-                    no_action_samples += 1
-                elif has_nonterminals(state):
-                    step_exceeded_samples += 1
+    save_dir = './trained_models/'
+    
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+
+    design_csv_path = os.path.join(save_dir, 'designs.csv')
+    if not os.path.exists(design_csv_path):
+        fp_csv = open(design_csv_path, 'w')
+        fieldnames = ['rule_seq', 'reward', 'opt_seed']
+        writer = csv.DictWriter(fp_csv, fieldnames=fieldnames)
+        writer.writeheader()
+        fp_csv.close()
+
+    designs = []
+    design_rewards = []
+    design_opt_seeds = []
+
+
+
+
+
+    for epoch in range(2):
+        t_start = time.time()
+
+        # V.eval()
+
+        # update eps and eps_sample
+        # if args.eps_schedule == 'linear-decay':
+        #     eps = args.eps_start + epoch / args.num_iterations * (args.eps_end - args.eps_start)
+        # elif args.eps_schedule == 'exp-decay':
+        #     eps = args.eps_end + (args.eps_start - args.eps_end) * np.exp(-1.0 * epoch / args.num_iterations / args.eps_decay)
+
+        # if args.eps_sample_schedule == 'linear-decay':
+        #     eps_sample = args.eps_sample_start + epoch / args.num_iterations * (args.eps_sample_end - args.eps_sample_start)
+        # elif args.eps_sample_schedule == 'exp-decay':
+        #     eps_sample = args.eps_sample_end + (args.eps_sample_start - args.eps_sample_end) * np.exp(-1.0 * epoch / args.num_iterations / args.eps_sample_decay)
+
+        t_sample, t_update, t_mpc, t_opt = 0, 0, 0, 0
+
+        selected_design, selected_reward = None, -np.inf
+        selected_state_seq, selected_rule_seq = None, None
+
+        # p = random.random()
+        # if p < eps_sample:
+        #     num_samples = 1
+        # else:
+        #     num_samples = args.num_samples
+
+
+        for _ in range(num_samples):
+            valid = False
+            while not valid:
+                t0 = time.time()
+
+                state = env.reset()
+                rule_seq = []
+                state_seq = [state]
+                no_action_flag = False
+                # print("current num",_)
+                for _ in range(3):
+                    # print("current num",_)
+                    action, step_type = select_action(env, state)
+                    print("action is ", action )
+                    if action is None:
+                        no_action_flag = True
+                        break
+                    rule_seq.append(action)
+                    next_state = env.transite(state, action)
+                    print("next_state = ",next_state.nodes)
+                    state_seq.append(next_state)
+                    state = next_state
+                    if not has_nonterminals(state):
+                        print("state = next_state not has nonterminals")
+                        break
+                    print("state = next_state has nonterminals")
+                valid = env.is_valid(state)
+                
+                t_sample += time.time() - t0
+
+                t0 = time.time()
+
+                if not valid:
+                    # update the invalid sample's count
+                    if no_action_flag:
+                        no_action_samples += 1
+                    elif has_nonterminals(state):
+                        step_exceeded_samples += 1
+                    else:
+                        self_collision_samples += 1
+                    num_invalid_samples += 1
                 else:
-                    self_collision_samples += 1
-                num_invalid_samples += 1
-            else:
-                num_valid_samples += 1
-            
-            num_samples_interval += 1
+                    num_valid_samples += 1
+                
+                num_samples_interval += 1
 
-            t_update += time.time() - t0
+                t_update += time.time() - t0
+
+            selected_design = state
+            selected_rule_seq, selected_state_seq = rule_seq, state_seq
+            designs.append(selected_rule_seq)
+
+
+
+            # save explored design and its reward
+            fp_csv = open(design_csv_path, 'a')
+            fieldnames = ['rule_seq', 'reward', 'opt_seed']
+            writer = csv.DictWriter(fp_csv, fieldnames=fieldnames)
+            print("last_checkpoint+1=",last_checkpoint+1)
+            print("len(designs)=",len(designs))
+            for i in range(last_checkpoint + 1, len(designs)):
+                print("writing data")
+                writer.writerow({'rule_seq': str(designs[i]), 'reward': None, 'opt_seed':None})
+            last_checkpoint = len(designs) - 1
+            fp_csv.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 search_algo()
