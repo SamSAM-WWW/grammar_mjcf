@@ -18,8 +18,11 @@ digraph make_body_with_legs {
     limb_mount [shape=capsule, length=0.1, radius=0.025];
     limb_link [label="limb_link"];
     limb [label="limb"];
-    body -> limb_mount [type=fixed, offset=0.5, axis_angle="0 1 0 90"];
-    body -> limb_mount [type=fixed, offset=0.5, axis_angle="0 1 0 90",
+    body -> limb_mount [type=fixed, offset=0.3, axis_angle="0 1 0 90"];
+    body -> limb_mount [type=fixed, offset=0.3, axis_angle="0 1 0 90",
+                             mirror=true];
+    body -> limb_mount [type=fixed, offset=0.7, axis_angle="0 1 0 90"];
+    body -> limb_mount [type=fixed, offset=0.7, axis_angle="0 1 0 90",
                              mirror=true];
     limb_mount -> limb_link [label="limb_joint"];
     limb_link -> limb;
