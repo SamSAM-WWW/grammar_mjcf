@@ -76,14 +76,6 @@ def create_rules():
     rules.append(rule)
 
     # rule3
-    rule = create_rule(name='end_limb',
-                        lhs_nodes={'limb':{'require_label':'limb'}},
-                        lhs_edges=[{'from_node':'parent','to_node':'limb'}],
-                        rhs_nodes={'parent':{}},
-                        rhs_edges=[])
-    rules.append(rule)
-
-    # rule4
     rule = create_rule(name='make_normal_limb_link',
                         lhs_nodes={'limb_link':{'require_label':'limb_link'}},
                         lhs_edges=[],
@@ -91,7 +83,7 @@ def create_rules():
                         rhs_edges=[])
     rules.append(rule)
 
-    # rule5
+    # rule4
     rule = create_rule(name='make_left_roll_limb_joint',
                         lhs_nodes={},
                         lhs_edges=[{'from_node':'parent','to_node':'child','require_label':'limb_joint'}],
