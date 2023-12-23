@@ -1,17 +1,5 @@
-import networkx as nx
-import argparse
-import ast
-import csv
-import datetime
-import numpy as np
-import os
-import random
-import signal
-import sys
-
-G = nx.DiGraph(name = 'arobot')
-G.add_node('robot',label ='robot')
-G.add_node('robot',label ='123123')
-G.add_node('robot',label ='robot2')
-print(G.nodes.data())
+import re
+target_node_name = 'body2996'
+prefix = re.match(r'([a-zA-Z]+)', target_node_name).group(1)
+print(prefix)
 

@@ -8,6 +8,8 @@ import os
 import random
 import signal
 import sys
+import re
+
 from RobotGraph import RobotGraph
 from RobotGraph import RobotLink
 from RobotGraph import RobotJoint
@@ -70,11 +72,13 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
             if hasattr(node_info, 'link_type'):
                 # 处理 link 的操作
                 # Copy target nodes in common rule
-                if target_node_name in rule.common_nodes:
-                    print("Updated info in rule.common_nodes")
-                    new_target_node_name = target_node_name + str(random.randint(1000,9999))
-                    new_node = RobotLink(name = new_target_node_name, length=rule.common_nodes[target_node_name]['length'] if 'length' in rule.common_nodes[target_node_name] else 0,
-                                        size=rule.common_nodes[target_node_name]['radius'] if 'radius' in rule.common_nodes[target_node_name] else 0)
+                prefix = re.match(r'([a-zA-Z]+)', target_node_name).group(1)
+                if prefix in rule.common_nodes:
+                    # print("------",rule.common_nodes[prefix]['length'])
+                    print("Updated info in rule.common_nodes",target_node_name)
+                    new_target_node_name = target_node_name
+                    new_node = RobotLink(name = target_node_name, length=rule.common_nodes[prefix]['length'] if 'length' in rule.common_nodes[prefix] else 0,
+                                        size=rule.common_nodes[prefix]['radius'] if 'radius' in rule.common_nodes[prefix] else 0)
                     result.add_node(node_type='link', node_info=new_node)
 
                 # Add RHS nodes which are not in common with the LHS
@@ -139,6 +143,13 @@ def example_of_apply_rule():
         target_node_name = filtered_nodes[-1]
 
     R = apply_rule(rule=rules[1],input_graph=R,target_node_name=target_node_name)
+    
+    filtered_nodes = [node for node in R.nodes if 'body' in node]
+    print(filtered_nodes)
+    if filtered_nodes:
+        target_node_name = filtered_nodes[-1]
+    print(R.nodes[target_node_name]['info'].size)
+    print(R.nodes[target_node_name]['info'].length)
 
 
 
