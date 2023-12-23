@@ -93,7 +93,8 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
 
                     # 如果有 label，将其添加到新节点的属性中
                     new_node_name = 'joint' + str(random.randint(1000,9999))
-                    new_joint = RobotJoint(name=new_node_name, axis=[1, 0, 0])
+                    new_joint = RobotJoint(name=new_node_name, joint_type=edge_info['type'] if 'type' in edge_info else 'hinge',
+                                            axis=edge_info['axis'] if 'axis' in edge_info else [1, 0, 0])
 
                     # 将新的 RobotJoint 实例添加到 result_graph 中
                     result.add_node(node_type='joint',rule_label=edge_info['label'] if 'label' in edge_info else None, node_info=new_joint)
