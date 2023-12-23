@@ -1,0 +1,119 @@
+class Rule():
+    def __init__(self):
+        self.name = str
+        self.lhs_nodes = {}
+        self.lhs_edges = []
+        self.rhs_nodes = {}
+        self.rhs_edges = []
+        self.common_nodes = {}
+        self.common_edges = []
+
+def create_rule(name:str, lhs_nodes:dict, lhs_edges:dict, rhs_nodes:dict, rhs_edges:dict):
+    '''
+    功能:创建一个语法规则
+    ---------------
+    输入:规则的名字`name` 左侧节点`lhs_node` 左侧边`lhs_edge` 右侧节点`rhs_node` 右侧边`rhs_edge`
+
+    输出:一个规则 `rule` （类型为`Rule`）
+    '''
+    rule = Rule()
+    rule.name = name
+    rule.lhs_nodes = lhs_nodes
+    rule.lhs_edges = lhs_edges
+    rule.rhs_nodes = rhs_nodes
+    rule.rhs_edges = rhs_edges
+
+    # 处理 common_nodes
+    common_keys = set(lhs_nodes.keys()) & set(rhs_nodes.keys())
+    # 将相同键的信息合并
+    for key in common_keys:
+        rule.common_nodes[key] = {**lhs_nodes[key], **rhs_nodes[key]}
+
+
+    # 处理 common_edges
+    common_edges = []
+    if lhs_edges is not None and rhs_edges is not None:
+        for lhs_edge in lhs_edges:
+            for rhs_edge in rhs_edges:
+                if lhs_edge.get('from_node') == rhs_edge.get('from_node') and lhs_edge.get('to_node') == rhs_edge.get('to_node'):
+                    common_edges.append({**lhs_edge, **rhs_edge})
+
+    rule.common_edges = common_edges
+    return rule
+
+def create_rules():
+    '''
+    功能:通过调用`create_rule`创建多个指定的语法规则
+    ---------------
+    输入:无
+
+    输出:规则列表 `rules` （类型为`list`）
+    '''  
+    rules = [] 
+    # rule0
+    rule = create_rule(name='make_robot',
+                        lhs_nodes={'root':{'require_label':'root'}},
+                        lhs_edges=[],
+                        rhs_nodes={'body':{'label':'body'}},
+                        rhs_edges=[{'from_node':'root','to_node':'body'}])
+    rules.append(rule)
+
+    # rule1
+    rule = create_rule(name='make_body_with_limb_mount',
+                        lhs_nodes={'body':{'require_label':'body'}},
+                        lhs_edges=[],
+                        rhs_nodes={'body':{'shape':'capsule','length':0.50,'radius':0.09,'density':3.0},'limb_mount':{'shape':'capsule','length':0.1,'radius':0.025}},
+                        rhs_edges=[{'from_node':'body','to_node':'limb_mount','type':'fixed','offset':'0.3','axis_angle':'0 1 0 90'},])
+    rules.append(rule)
+
+    # rule2
+    rule = create_rule(name='append_limb_link',
+                        lhs_nodes={'limb_mount':{'require_label':'limb_mount'}},
+                        lhs_edges=[],
+                        rhs_nodes={'limb_link':{'label':'limb_link'}},
+                        rhs_edges=[{'from_node':'limb_mount','to_node':'limb_link','label':'limb_joint'}]
+                        )
+    rules.append(rule)
+
+    # rule3
+    rule = create_rule(name='end_limb',
+                        lhs_nodes={'limb':{'require_label':'limb'}},
+                        lhs_edges=[{'from_node':'parent','to_node':'limb'}],
+                        rhs_nodes={'parent':{}},
+                        rhs_edges=[])
+    rules.append(rule)
+
+    # rule4
+    rule = create_rule(name='make_normal_limb_link',
+                        lhs_nodes={'limb_link':{'require_label':'limb_link'}},
+                        lhs_edges=[],
+                        rhs_nodes={'limb_link':{'shape':'capsule','length':0.1,'radius':0.025}},
+                        rhs_edges=[])
+    rules.append(rule)
+
+    # rule5
+    rule = create_rule(name='make_left_roll_limb_joint',
+                        lhs_nodes={},
+                        lhs_edges=[{'from_node':'parent','to_node':'child','require_label':'limb_joint'}],
+                        rhs_nodes={},
+                        rhs_edges=[{'from_node':'parent','to_node':'child','type':'hinge','axis_angel':'0 1 0 -90','joint_axis':'1 0 0'}]
+                        )
+    rules.append(rule)
+
+
+
+
+    return rules
+
+
+rules = create_rules()
+for rule in rules:
+    print("================================")
+    print("rule.name",rule.name)
+    print("rule.lhs_nodes",rule.lhs_nodes)
+    print("rule.lhs_edges",rule.lhs_edges)
+    print("rule.rhs_nodes",rule.rhs_nodes)
+    print("rule.rhs_edges",rule.rhs_edges)
+    print("rule.common_nodes",rule.common_nodes)
+    print("rule.common_edges",rule.common_edges)
+    print("================================")

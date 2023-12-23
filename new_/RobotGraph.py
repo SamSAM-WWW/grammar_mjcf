@@ -138,3 +138,6 @@ if __name__ == '__main__':
     for i in R.predecessors('part3'):
         print(i)
         print(R.nodes[i]['info'].axis)
+
+    print(R.nodes)
+    print(R.nodes['root']['info'].link_type)

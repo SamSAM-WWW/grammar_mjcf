@@ -73,23 +73,3 @@ digraph make_left_roll_limb_joint {
     parent -> child [type=hinge, axis_angle="0 1 0 -90", joint_axis="1 0 0"];
   }
 }
-
-digraph make_right_roll_limb_joint {
-  subgraph L {
-    parent -> child [require_label="limb_joint"];
-  }
-
-  subgraph R {
-    parent -> child [type=hinge, axis_angle="0 1 0 90", joint_axis="1 0 0"];
-  }
-}
-
-digraph make_swing_limb_joint {
-  subgraph L {
-    parent -> child [require_label="limb_joint"];
-  }
-
-  subgraph R {
-    parent -> child [type=hinge, joint_axis="0 1 0", color="0 0.5 0"];
-  }
-}

@@ -8,7 +8,7 @@ import os
 import random
 import signal
 import sys
-
+from RobotGraph import RobotGraph
 
 def make_initial_graph():
     G = nx.DiGraph(name = 'arobot')
@@ -17,7 +17,14 @@ def make_initial_graph():
     return G
 
 
-def apply_rule(rule,target_graph,lhs_to_target):
+def apply_rule(rule,target_graph:RobotGraph ,lhs_to_target,target_node_name):
+    '''
+    功能:对机器人图进行操作，使用规则后得到新的机器人图
+    ---------------
+    输入:选定的一个规则；待修改的机器人图（类型为RobotGraph）；待修改的节点
+
+    输出:修改后的机器人图（类型为RobotGraph）
+    '''
     # Copy target nodes not in LHS to result
     print("trying to apply rule 1 Copy target nodes not in LHS to result")
     result_graph = target_graph.copy()
