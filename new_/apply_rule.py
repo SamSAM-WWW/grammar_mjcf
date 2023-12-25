@@ -86,7 +86,10 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
                 print("additional_rhs_nodes",additional_rhs_nodes)
                 new_add_node_names = []
                 for node_name, node_info in additional_rhs_nodes.items():
-                    new_add_node_name = node_name + str(random.randint(1000,9999))
+                    existing_joint_nodes = [node_name_i for node_name_i in result.nodes if node_name in node_name_i]
+                    n = len(existing_joint_nodes)
+                    new_add_node_name = node_name + str(n + 1)
+                    # new_add_node_name = node_name + str(random.randint(1000,9999))
                     new_node = RobotLink(name=new_add_node_name, length=node_info.get('length', 0))
                     result.add_node(node_type='link', rule_label= rule.rhs_nodes[node_name]['label'] if 'label' in rule.rhs_nodes[node_name] else None, node_info=new_node)
 
@@ -96,7 +99,10 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
                     to_node = new_add_node_name
 
                     # 如果有 label，将其添加到新节点的属性中
-                    new_node_name = 'joint' + str(random.randint(1000,9999))
+                    existing_joint_nodes = [node_name for node_name in result.nodes if 'joint' in node_name]
+                    n = len(existing_joint_nodes)
+                    new_node_name = 'joint' + str(n + 1)
+                    # new_node_name = 'joint' + str(random.randint(1000,9999))
                     new_joint = RobotJoint(name=new_node_name, joint_type=edge_info['type'] if 'type' in edge_info else 'hinge',
                                             axis=edge_info['axis'] if 'axis' in edge_info else [1, 0, 0])
 
@@ -148,8 +154,8 @@ def example_of_apply_rule():
     print(filtered_nodes)
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
-    print(R.nodes[target_node_name]['info'].size)
-    print(R.nodes[target_node_name]['info'].length)
+    print('R.nodes[target_node_name][info].size',R.nodes[target_node_name]['info'].size)
+    print('R.nodes[target_node_name][info].length',R.nodes[target_node_name]['info'].length)
 
 
 
@@ -217,6 +223,11 @@ def example_of_apply_rule():
     #---------------------------------------------------------------------------
 
     print(R.edges)
+
+    # for node in R.nodes:
+    #     print(node)
+    #     node_info = R.nodes[str(node)]['info']
+    #     print(R.nodes[str(node)]['info'].joint_type if hasattr(node_info, 'joint_type') else '')
 
 
 example_of_apply_rule()
