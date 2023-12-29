@@ -1,6 +1,6 @@
 from RobotGraph import RobotGraph,RobotJoint,RobotLink
 from mjcf import elements as e
-
+from new_.apply_rule import *
 class ModelGenerator():
     '''
     基于图结构的模型生成器
@@ -158,7 +158,7 @@ class ModelGenerator():
                     size   = robot_part.size,
                     type   = robot_part.link_type
                         )
-        if robot_part.link_type == 'sphere': # 如果是胶囊形状
+        if robot_part.link_type == 'sphere': # 如果是球形
             geom =  e.Geom(
                     pos = robot_part.geom_pos,
                     name   = "geom"+robot_part.name,
@@ -167,6 +167,15 @@ class ModelGenerator():
                         )
         if robot_part.link_type == 'box': # 如果是box形状
             geom =  e.Geom(
+                    pos = robot_part.geom_pos,
+                    name   = "geom"+robot_part.name,
+                    size   = robot_part.size,
+                    type   = robot_part.link_type
+                        )
+        
+        if robot_part.link_type == 'cylinder': # 如果是圆柱形状
+            geom =  e.Geom(
+                    fromto = start_point,
                     pos = robot_part.geom_pos,
                     name   = "geom"+robot_part.name,
                     size   = robot_part.size,
@@ -265,73 +274,91 @@ class ModelGenerator():
             fh.write(model_xml)
 
 
+# if __name__ == '__main__':
+
+#     R = RobotGraph(name='antrobot')
+
+#     root = RobotLink('root',link_type = 'sphere',size=0.25,body_pos=[0,0,2],geom_pos=[0,0,0])
+#     R.add_node( node_type='link',node_info = root)
+
+#     # 添加一条腿
+#     # 添加joint01, 髋关节
+#     joint01 = RobotJoint('joint01',axis=[0,0,1],)
+#     R.add_node( node_type='joint', node_info=joint01)
+#     R.add_edge(started_node='root',ended_node='joint01')
+#     joint02 = RobotJoint('joint02',axis=[0,1,0],)
+#     R.add_node( node_type='joint', node_info=joint02)
+#     R.add_edge(started_node='root',ended_node='joint02')
+#     # 添加大腿
+#     leg1 = RobotLink('leg1',length=0.5,size=0.1,body_pos=[0.25,0,0],euler=[0,0,0])    
+#     R.add_node( node_type='link', node_info=leg1)
+#     R.add_edge(started_node='joint01',ended_node='leg1')
+#     R.add_edge(started_node='joint02',ended_node='leg1')
+#     # 添加joint11和12，leg1的子节点，为关节
+#     joint1 = RobotJoint('joint1',axis=[0,1,0],)
+#     R.add_node( node_type='joint', node_info=joint1)
+#     R.add_edge(started_node='leg1',ended_node='joint1')
+#     # 添加小腿
+#     shin1 = RobotLink('shin1',length=0.4,size=0.1,body_pos=[0.5,0,0],euler=[0,90,0])    
+#     R.add_node( node_type='link', node_info=shin1)
+#     R.add_edge(started_node='joint1',ended_node='shin1')
+
+#     # 添加第二条腿
+#     leg2 = RobotLink('leg2',length=0.5,size=0.1,body_pos=[0,0.25,0],euler=[0,0,90])    
+#     R.add_node( node_type='link', node_info=leg2)
+#     R.add_edge(started_node='root',ended_node='leg2')
+#     # 添加joint11和12，leg1的子节点，为关节
+#     joint2 = RobotJoint('joint2',axis=[0,1,0],)
+#     R.add_node( node_type='joint', node_info=joint2)
+#     R.add_edge(started_node='leg2',ended_node='joint2')
+#     # 添加小腿
+#     shin2 = RobotLink('shin2',length=0.4,size=0.1,body_pos=[0.5,0,0],euler=[0,90,0])    
+#     R.add_node( node_type='link', node_info=shin2)
+#     R.add_edge(started_node='joint2',ended_node='shin2')
+
+#     # 添加第三条腿
+#     leg3 = RobotLink('leg3',length=0.5,size=0.1,body_pos=[-0.25,0,0],euler=[0,0,180])    
+#     R.add_node( node_type='link', node_info=leg3)
+#     R.add_edge(started_node='root',ended_node='leg3')
+#     # 添加joint11和12，leg1的子节点，为关节
+#     joint3 = RobotJoint('joint3',axis=[0,1,0],)
+#     R.add_node( node_type='joint', node_info=joint3)
+#     R.add_edge(started_node='leg3',ended_node='joint3')
+#     # 添加小腿
+#     shin3 = RobotLink('shin3',length=0.4,size=0.1,body_pos=[0.5,0,0],euler=[0,90,0])    
+#     R.add_node( node_type='link', node_info=shin3)
+#     R.add_edge(started_node='joint3',ended_node='shin3')
+
+#     # 添加第四条腿
+#     leg4 = RobotLink('leg4',length=0.5,size=0.1,body_pos=[0,-0.25,0],euler=[0,0,270])    
+#     R.add_node( node_type='link', node_info=leg4)
+#     R.add_edge(started_node='root',ended_node='leg4')
+#     # 添加joint11和12，leg1的子节点，为关节
+#     joint4 = RobotJoint('joint4',axis=[0,1,0],)
+#     R.add_node( node_type='joint', node_info=joint4)
+#     R.add_edge(started_node='leg4',ended_node='joint4')
+#     # 添加小腿
+#     shin4 = RobotLink('shin4',length=0.4,size=0.1,body_pos=[0.5,0,0],euler=[0,90,0])    
+#     R.add_node( node_type='link', node_info=shin4)
+#     R.add_edge(started_node='joint4',ended_node='shin4')
+
+
+#     M = ModelGenerator(R)
+#     M.set_compiler(angle='degree')
+#     M.set_basic_assets()
+#     M.set_size()
+#     M.set_option(gravity=0)
+#     M.set_default()
+#     M.set_ground()
+#     M.get_robot(R)
+
+#     M.generate()
+#     print(M.compiler.angle)
+
+
 if __name__ == '__main__':
 
-    R = RobotGraph(name='antrobot')
-
-    root = RobotLink('root',link_type = 'sphere',size=0.25,body_pos=[0,0,2],geom_pos=[0,0,0])
-    R.add_node( node_type='link',node_info = root)
-
-    # 添加一条腿
-    # 添加joint01, 髋关节
-    joint01 = RobotJoint('joint01',axis=[0,0,1],)
-    R.add_node( node_type='joint', node_info=joint01)
-    R.add_edge(started_node='root',ended_node='joint01')
-    joint02 = RobotJoint('joint02',axis=[0,1,0],)
-    R.add_node( node_type='joint', node_info=joint02)
-    R.add_edge(started_node='root',ended_node='joint02')
-    # 添加大腿
-    leg1 = RobotLink('leg1',length=0.5,size=0.1,body_pos=[0.25,0,0],euler=[0,0,0])    
-    R.add_node( node_type='link', node_info=leg1)
-    R.add_edge(started_node='joint01',ended_node='leg1')
-    R.add_edge(started_node='joint02',ended_node='leg1')
-    # 添加joint11和12，leg1的子节点，为关节
-    joint1 = RobotJoint('joint1',axis=[0,1,0],)
-    R.add_node( node_type='joint', node_info=joint1)
-    R.add_edge(started_node='leg1',ended_node='joint1')
-    # 添加小腿
-    shin1 = RobotLink('shin1',length=0.4,size=0.1,body_pos=[0.5,0,0],euler=[0,90,0])    
-    R.add_node( node_type='link', node_info=shin1)
-    R.add_edge(started_node='joint1',ended_node='shin1')
-
-    # 添加第二条腿
-    leg2 = RobotLink('leg2',length=0.5,size=0.1,body_pos=[0,0.25,0],euler=[0,0,90])    
-    R.add_node( node_type='link', node_info=leg2)
-    R.add_edge(started_node='root',ended_node='leg2')
-    # 添加joint11和12，leg1的子节点，为关节
-    joint2 = RobotJoint('joint2',axis=[0,1,0],)
-    R.add_node( node_type='joint', node_info=joint2)
-    R.add_edge(started_node='leg2',ended_node='joint2')
-    # 添加小腿
-    shin2 = RobotLink('shin2',length=0.4,size=0.1,body_pos=[0.5,0,0],euler=[0,90,0])    
-    R.add_node( node_type='link', node_info=shin2)
-    R.add_edge(started_node='joint2',ended_node='shin2')
-
-    # 添加第三条腿
-    leg3 = RobotLink('leg3',length=0.5,size=0.1,body_pos=[-0.25,0,0],euler=[0,0,180])    
-    R.add_node( node_type='link', node_info=leg3)
-    R.add_edge(started_node='root',ended_node='leg3')
-    # 添加joint11和12，leg1的子节点，为关节
-    joint3 = RobotJoint('joint3',axis=[0,1,0],)
-    R.add_node( node_type='joint', node_info=joint3)
-    R.add_edge(started_node='leg3',ended_node='joint3')
-    # 添加小腿
-    shin3 = RobotLink('shin3',length=0.4,size=0.1,body_pos=[0.5,0,0],euler=[0,90,0])    
-    R.add_node( node_type='link', node_info=shin3)
-    R.add_edge(started_node='joint3',ended_node='shin3')
-
-    # 添加第四条腿
-    leg4 = RobotLink('leg4',length=0.5,size=0.1,body_pos=[0,-0.25,0],euler=[0,0,270])    
-    R.add_node( node_type='link', node_info=leg4)
-    R.add_edge(started_node='root',ended_node='leg4')
-    # 添加joint11和12，leg1的子节点，为关节
-    joint4 = RobotJoint('joint4',axis=[0,1,0],)
-    R.add_node( node_type='joint', node_info=joint4)
-    R.add_edge(started_node='leg4',ended_node='joint4')
-    # 添加小腿
-    shin4 = RobotLink('shin4',length=0.4,size=0.1,body_pos=[0.5,0,0],euler=[0,90,0])    
-    R.add_node( node_type='link', node_info=shin4)
-    R.add_edge(started_node='joint4',ended_node='shin4')
+    R = example_of_apply_rule()
 
 
     M = ModelGenerator(R)
@@ -345,5 +372,3 @@ if __name__ == '__main__':
 
     M.generate()
     print(M.compiler.angle)
-
-

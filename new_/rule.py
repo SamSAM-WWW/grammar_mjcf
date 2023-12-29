@@ -59,27 +59,27 @@ def create_rules():
     rules.append(rule)
 
     # rule1
-    rule = create_rule(name='make_body_with_limb_mount',
+    rule = create_rule(name='make_body_with_limbmount',
                         lhs_nodes={'body':{'require_label':'body'}},
                         lhs_edges=[],
-                        rhs_nodes={'body':{'shape':'capsule','length':0.50,'radius':0.09,'density':3.0},'limb_mount':{'shape':'capsule','length':0.1,'radius':0.025}},
-                        rhs_edges=[{'from_node':'body','to_node':'limb_mount','type':'fixed','offset':'0.3','axis_angle':'0 1 0 90'},])
+                        rhs_nodes={'body':{'shape':'cylinder','length':0.1,'radius':0.5,'density':3.0},'limbmount':{'shape':'capsule','length':0.025,'radius':0.025}},
+                        rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge','offset':'0.3','axis_angle':'0 1 0 90'},])
     rules.append(rule)
 
     # rule2
-    rule = create_rule(name='append_limb_link',
-                        lhs_nodes={'limb_mount':{'require_label':'limb_mount'}},
+    rule = create_rule(name='append_limblink',
+                        lhs_nodes={'limbmount':{'require_label':'limbmount'}},
                         lhs_edges=[],
-                        rhs_nodes={'limb_link':{'label':'limb_link'}},
-                        rhs_edges=[{'from_node':'limb_mount','to_node':'limb_link','label':'limb_joint'}]
+                        rhs_nodes={'limblink':{'label':'limblink'}},
+                        rhs_edges=[{'from_node':'limbmount','to_node':'limblink','label':'limb_joint'}]
                         )
     rules.append(rule)
 
     # rule3
-    rule = create_rule(name='make_normal_limb_link',
-                        lhs_nodes={'limb_link':{'require_label':'limb_link'}},
+    rule = create_rule(name='make_normal_limblink',
+                        lhs_nodes={'limblink':{'require_label':'limblink'}},
                         lhs_edges=[],
-                        rhs_nodes={'limb_link':{'shape':'capsule','length':0.1,'radius':0.025}},
+                        rhs_nodes={'limblink':{'shape':'capsule','length':0.1,'radius':0.025}},
                         rhs_edges=[])
     rules.append(rule)
 
@@ -98,7 +98,89 @@ def create_rules():
     return rules
 
 
-rules = create_rules()
+
+def create_6leg_rules():
+    '''
+    功能:通过调用`create_rule`创建多个指定的语法规则
+    ---------------
+    输入:无
+
+    输出:规则列表 `rules` （类型为`list`）
+    '''  
+    rules = [] 
+    # rule0
+    rule = create_rule(name='make_robot',
+                        lhs_nodes={'root':{'require_label':'root','shape':'sphere','radius':0.0005,'density':3.0, 'body_pos':[0,0,2], 'geom_pos':[0,0,2]}},
+                        lhs_edges=[],
+                        rhs_nodes={'body':{'shape':'cylinder','length':0.1,'radius':0.5,'density':3.0,'euler':[0,90,0]},'root':{'label':'root'}},
+                        rhs_edges=[{'from_node':'root','to_node':'body',}])
+    rules.append(rule)
+
+    # rule1-1 1
+    rule = create_rule(name='make_body_with_limbmount_1',
+                        lhs_nodes={'body':{'require_label':'body'}},
+                        lhs_edges=[],
+                        rhs_nodes={'limbmount':{'shape':'capsule','length':0.025,'radius':0.025, 'body_pos':[0,0.5,0]}},
+                        rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge'},])
+    rules.append(rule)
+    
+    # rule1-2 2
+    rule = create_rule(name='make_body_with_limbmount_2',
+                        lhs_nodes={'body':{'require_label':'body'}},
+                        lhs_edges=[],
+                        rhs_nodes={'limbmount':{'shape':'capsule','length':0.025,'radius':0.025, 'body_pos':[0,0.25,0.433]}},
+                        rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge'},])
+    rules.append(rule)
+    
+    # rule1-3 3
+    rule = create_rule(name='make_body_with_limbmount_3',
+                        lhs_nodes={'body':{'require_label':'body'}},
+                        lhs_edges=[],
+                        rhs_nodes={'limbmount':{'shape':'capsule','length':0.025,'radius':0.025, 'body_pos':[0,-0.25,0.433]}},
+                        rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge'},])
+    rules.append(rule)
+
+    # rule1-4 4
+    rule = create_rule(name='make_body_with_limbmount_4',
+                        lhs_nodes={'body':{'require_label':'body'}},
+                        lhs_edges=[],
+                        rhs_nodes={'limbmount':{'shape':'capsule','length':0.025,'radius':0.025, 'body_pos':[0,-0.5,0]}},
+                        rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge'},])
+    rules.append(rule)
+    
+    # rule1-5 5
+    rule = create_rule(name='make_body_with_limbmount_5',
+                        lhs_nodes={'body':{'require_label':'body'}},
+                        lhs_edges=[],
+                        rhs_nodes={'limbmount':{'shape':'capsule','length':0.025,'radius':0.025, 'body_pos':[0,-0.25,-0.433]}},
+                        rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge'},])
+    rules.append(rule)
+    
+    # rule1-6 6
+    rule = create_rule(name='make_body_with_limbmount_6',
+                        lhs_nodes={'body':{'require_label':'body'}},
+                        lhs_edges=[],
+                        rhs_nodes={'limbmount':{'shape':'capsule','length':0.025,'radius':0.025, 'body_pos':[0,0.25,-0.433]}},
+                        rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge'},])
+    rules.append(rule)
+
+
+
+    # rule7
+    rule = create_rule(name='append_limblink',
+                        lhs_nodes={'limbmount':{'require_label':'limbmount'}},
+                        lhs_edges=[],
+                        rhs_nodes={'limblink':{'label':'limblink'}},
+                        rhs_edges=[{'from_node':'limbmount','to_node':'limblink','label':'limb_joint'}]
+                        )
+    rules.append(rule)
+
+    return rules
+
+
+
+
+rules = create_6leg_rules()
 for rule in rules:
     print("================================")
     print("rule.name",rule.name)

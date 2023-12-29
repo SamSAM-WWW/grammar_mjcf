@@ -13,7 +13,7 @@ import re
 from RobotGraph import RobotGraph
 from RobotGraph import RobotLink
 from RobotGraph import RobotJoint
-from rule import create_rules
+from new_.rule import *
 
 def make_initial_graph():
     '''
@@ -24,7 +24,7 @@ def make_initial_graph():
     输出:初始机器人图 `R` （类型为`RobotGraph`）
     '''
     R = RobotGraph(name='xmlrobot')
-    root = RobotLink('root',length=5,size=10)
+    root = RobotLink('root',link_type = 'sphere',size=0.025,body_pos=[0,0,2],geom_pos=[0,0,0])
     R.add_node( node_type='link',node_info = root)
     print(R.nodes)
     return R
@@ -63,10 +63,12 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
             # 无法操作
             print('target_node_name not in rule.lhs_nodes')
         if matching_keys:
-            print('target_node_name in rule.lhs_nodes')
+            print(f'target_node_name = {target_node_name} in rule.lhs_nodes')
             # 对input_graph进行操作
             # 先判断target_node表示link 还是 joint
             # 判断节点类型
+            node_info = input_graph.nodes[target_node_name]
+            print(node_info)
             node_info = input_graph.nodes[target_node_name]['info']
             print("node_info.start_point",node_info.start_point)
             if hasattr(node_info, 'link_type'):
@@ -77,8 +79,12 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
                     # print("------",rule.common_nodes[prefix]['length'])
                     print("Updated info in rule.common_nodes",target_node_name)
                     new_target_node_name = target_node_name
-                    new_node = RobotLink(name = target_node_name, length=rule.common_nodes[prefix]['length'] if 'length' in rule.common_nodes[prefix] else 0,
-                                        size=rule.common_nodes[prefix]['radius'] if 'radius' in rule.common_nodes[prefix] else 0)
+                    new_node = RobotLink(name = target_node_name,
+                                        link_type= rule.common_nodes[prefix]['shape'] if 'shape' in rule.common_nodes[prefix] else 'capsule',
+                                        length=rule.common_nodes[prefix]['length'] if 'length' in rule.common_nodes[prefix] else 0,
+                                        size=rule.common_nodes[prefix]['radius'] if 'radius' in rule.common_nodes[prefix] else 0,
+                                        geom_pos=rule.common_nodes[prefix]['geom_pos'] if 'geom_pos' in rule.common_nodes[prefix] else [0,0,0],
+                                        body_pos=rule.common_nodes[prefix]['body_pos'] if 'body_pos' in rule.common_nodes[prefix] else [0,0,0] )
                     result.add_node(node_type='link', node_info=new_node)
 
                 # Add RHS nodes which are not in common with the LHS
@@ -90,7 +96,13 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
                     n = len(existing_joint_nodes)
                     new_add_node_name = node_name + str(n + 1)
                     # new_add_node_name = node_name + str(random.randint(1000,9999))
-                    new_node = RobotLink(name=new_add_node_name, length=node_info.get('length', 0))
+                    new_node = RobotLink(name = new_add_node_name,
+                                        link_type= rule.rhs_nodes[node_name]['shape'] if 'shape' in rule.rhs_nodes[node_name] else 'capsule',
+                                        length=rule.rhs_nodes[node_name]['length'] if 'length' in rule.rhs_nodes[node_name] else 0,
+                                        size=rule.rhs_nodes[node_name]['radius'] if 'radius' in rule.rhs_nodes[node_name] else 0,
+                                        geom_pos=rule.rhs_nodes[node_name]['geom_pos'] if 'geom_pos' in rule.rhs_nodes[node_name] else [0,0,0],
+                                        body_pos=rule.rhs_nodes[node_name]['body_pos'] if 'body_pos' in rule.rhs_nodes[node_name] else [0,0,0],
+                                        euler=rule.rhs_nodes[node_name]['euler'] if 'euler' in rule.rhs_nodes[node_name] else [0,0,0])
                     result.add_node(node_type='link', rule_label= rule.rhs_nodes[node_name]['label'] if 'label' in rule.rhs_nodes[node_name] else None, node_info=new_node)
 
                 # Copy target edges in LHS to result if they are in common with the RHS
@@ -134,7 +146,7 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
 def example_of_apply_rule():
 
     R = make_initial_graph()
-    rules = create_rules()
+    rules = create_6leg_rules()
     #---------------------------------------------------------------------------
     # add the first body 
     R = apply_rule(rule=rules[0],input_graph=R,target_node_name='root')
@@ -143,8 +155,9 @@ def example_of_apply_rule():
 
 
     #---------------------------------------------------------------------------
-    # add a limb_mount on body
+    # add a limb_mount1 on body
     filtered_nodes = [node for node in R.nodes if 'body' in node]
+    print("---",filtered_nodes)
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
 
@@ -168,12 +181,12 @@ def example_of_apply_rule():
     #---------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------
-    # add a limb_mount on body
+    # add a limb_mount2 on body
     filtered_nodes = [node for node in R.nodes if 'body' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
 
-    R = apply_rule(rule=rules[1],input_graph=R,target_node_name=target_node_name)
+    R = apply_rule(rule=rules[2],input_graph=R,target_node_name=target_node_name)
 
 
 
@@ -182,16 +195,16 @@ def example_of_apply_rule():
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
 
-    R = apply_rule(rule=rules[2],input_graph=R,target_node_name=target_node_name)
+    R = apply_rule(rule=rules[7],input_graph=R,target_node_name=target_node_name)
     #---------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------
-    # add a limb_mount on body
+    # add a limb_mount3 on body
     filtered_nodes = [node for node in R.nodes if 'body' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
 
-    R = apply_rule(rule=rules[1],input_graph=R,target_node_name=target_node_name)
+    R = apply_rule(rule=rules[3],input_graph=R,target_node_name=target_node_name)
 
 
 
@@ -201,16 +214,16 @@ def example_of_apply_rule():
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
 
-    R = apply_rule(rule=rules[2],input_graph=R,target_node_name=target_node_name)
+    R = apply_rule(rule=rules[7],input_graph=R,target_node_name=target_node_name)
     #---------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------
-    # add a limb_mount on body
+    # add a limb_mount4 on body
     filtered_nodes = [node for node in R.nodes if 'body' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
 
-    R = apply_rule(rule=rules[1],input_graph=R,target_node_name=target_node_name)
+    R = apply_rule(rule=rules[4],input_graph=R,target_node_name=target_node_name)
 
 
 
@@ -219,15 +232,71 @@ def example_of_apply_rule():
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
 
-    R = apply_rule(rule=rules[2],input_graph=R,target_node_name=target_node_name)
+    R = apply_rule(rule=rules[7],input_graph=R,target_node_name=target_node_name)
     #---------------------------------------------------------------------------
 
+    #---------------------------------------------------------------------------
+    # add a limb_mount5 on body
+    filtered_nodes = [node for node in R.nodes if 'body' in node]
+    if filtered_nodes:
+        target_node_name = filtered_nodes[-1]
+
+    R = apply_rule(rule=rules[5],input_graph=R,target_node_name=target_node_name)
+
+
+
+    # add a limb on limb_mount
+    filtered_nodes = [node for node in R.nodes if 'limb_mount' in node]
+    if filtered_nodes:
+        target_node_name = filtered_nodes[-1]
+
+    R = apply_rule(rule=rules[7],input_graph=R,target_node_name=target_node_name)
+    #---------------------------------------------------------------------------
+
+
+    #---------------------------------------------------------------------------
+    # add a limb_mount6 on body
+    filtered_nodes = [node for node in R.nodes if 'body' in node]
+    if filtered_nodes:
+        target_node_name = filtered_nodes[-1]
+
+    R = apply_rule(rule=rules[6],input_graph=R,target_node_name=target_node_name)
+
+
+
+    # add a limb on limb_mount
+    filtered_nodes = [node for node in R.nodes if 'limb_mount' in node]
+    if filtered_nodes:
+        target_node_name = filtered_nodes[-1]
+
+    R = apply_rule(rule=rules[7],input_graph=R,target_node_name=target_node_name)
+    #---------------------------------------------------------------------------
+
+
+
+    for node in R.nodes:
+        print('---------------------------')
+        print(node)
+        node_info = R.nodes[str(node)]['info']
+        
+        if hasattr(node_info, 'link_type'):
+            print("link_type",R.nodes[str(node)]['info'].link_type)
+            print("start_point",R.nodes[str(node)]['info'].start_point)
+            print("end_point",R.nodes[str(node)]['info'].end_point)
+            print("geom_pos",R.nodes[str(node)]['info'].geom_pos)
+            print("body_pos",R.nodes[str(node)]['info'].body_pos)
+            print("euler",R.nodes[str(node)]['info'].euler)
+            print("size",R.nodes[str(node)]['info'].size)
+        if hasattr(node_info, 'joint_type'):
+            print("joint_type",R.nodes[str(node)]['info'].joint_type)
+            print("axis",R.nodes[str(node)]['info'].axis)
+            print("pos",R.nodes[str(node)]['info'].pos)
+            print("joint_range",R.nodes[str(node)]['info'].joint_range)
+
+    print('+++++++++++++++++++++++++++++++++++++')
     print(R.edges)
+    return R
 
-    # for node in R.nodes:
-    #     print(node)
-    #     node_info = R.nodes[str(node)]['info']
-    #     print(R.nodes[str(node)]['info'].joint_type if hasattr(node_info, 'joint_type') else '')
+    
 
 
-example_of_apply_rule()

@@ -8,7 +8,7 @@ import os
 import random
 from copy import deepcopy
 import numpy as np
-from apply_rule import *
+from new_.apply_rule import *
 '''
 class RobotGrammarEnv
 
@@ -42,29 +42,9 @@ class RobotGrammarEnv:
         return self.state
 
 
-    def transite(self, state, action):
-        applicable_matches = list(get_applicable_matches(self.rules[action], state))
-        print("transite applicable_matches = ",applicable_matches)
-        print("self.rules[action]",self.rules[action].name)
-        print("applicable_matches[0]",applicable_matches[0])
-        next_state = apply_rule(self.rules[action], state, applicable_matches[0])
+    def transite(self, action, input_graph, target_node_name  ):
+
+        next_state = apply_rule(self.rules[action], input_graph, target_node_name)
         return next_state
 
-    def get_available_actions(self, state):
-        actions = []
-        for idx, rule in enumerate(self.rules):
-            print("idx = ",idx)
-            print("rule = ", rule.name)
-            
-            applicable_matches = list(get_applicable_matches(rule, state))
-            print("get_available_actions applicable_matches =", applicable_matches)
-            if list(get_applicable_matches(rule, state)):         
-                actions.append(idx)
-        return np.array(actions)
     
-    def is_valid(self, state):
-        if has_nonterminals(state):
-            return False
-        else: 
-            return True
-            #  TODO check self collision
