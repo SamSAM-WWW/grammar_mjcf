@@ -26,6 +26,10 @@
 				<body name="limbmount1" pos="0 0.5 0" euler="0 0 0">
 					<geom fromto="0 0 0 0.025 0 0" name="geomlimbmount1" size="0.025" type="capsule"/>
 					<joint axis="1 0 0" name="joint_joint2" pos="0 0 0" range="-45 45" type="hinge"/>
+					<body name="limblink1" pos="0 0 0" euler="0 0 0">
+						<geom fromto="0 0 0 0.5 0 0" name="geomlimblink1" size="0.025" type="capsule"/>
+						<joint axis="0 1 0" name="joint_joint3" pos="0 0 0" range="-45 45" type="hinge"/>
+					</body>
 				</body>
 			</body>
 		</body>
@@ -33,5 +37,6 @@
 	<actuator>
 		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint1"/>
 		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint2"/>
+		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint3"/>
 	</actuator>
 </mujoco>

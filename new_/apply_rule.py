@@ -155,7 +155,7 @@ def example_of_apply_rule():
 
 
     #---------------------------------------------------------------------------
-    # add a limb_mount1 on body
+    # add a limbmount1 on body
     filtered_nodes = [node for node in R.nodes if 'body' in node]
     print("---",filtered_nodes)
     if filtered_nodes:
@@ -172,16 +172,16 @@ def example_of_apply_rule():
 
 
 
-    # add a limb on limb_mount
-    filtered_nodes = [node for node in R.nodes if 'limb_mount' in node]
+    # add a limb on limbmount
+    filtered_nodes = [node for node in R.nodes if 'limbmount' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
 
-    R = apply_rule(rule=rules[2],input_graph=R,target_node_name=target_node_name)
+    R = apply_rule(rule=rules[7],input_graph=R,target_node_name=target_node_name)
     #---------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------
-    # add a limb_mount2 on body
+    # add a limbmount2 on body
     filtered_nodes = [node for node in R.nodes if 'body' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
@@ -190,8 +190,8 @@ def example_of_apply_rule():
 
 
 
-    # add a limb on limb_mount
-    filtered_nodes = [node for node in R.nodes if 'limb_mount' in node]
+    # add a limb on limbmount
+    filtered_nodes = [node for node in R.nodes if 'limbmount' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
 
@@ -199,7 +199,7 @@ def example_of_apply_rule():
     #---------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------
-    # add a limb_mount3 on body
+    # add a limbmount3 on body
     filtered_nodes = [node for node in R.nodes if 'body' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
@@ -209,8 +209,8 @@ def example_of_apply_rule():
 
 
 
-    # add a limb on limb_mount
-    filtered_nodes = [node for node in R.nodes if 'limb_mount' in node]
+    # add a limb on limbmount
+    filtered_nodes = [node for node in R.nodes if 'limbmount' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
 
@@ -218,7 +218,7 @@ def example_of_apply_rule():
     #---------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------
-    # add a limb_mount4 on body
+    # add a limbmount4 on body
     filtered_nodes = [node for node in R.nodes if 'body' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
@@ -227,8 +227,8 @@ def example_of_apply_rule():
 
 
 
-    # add a limb on limb_mount
-    filtered_nodes = [node for node in R.nodes if 'limb_mount' in node]
+    # add a limb on limbmount
+    filtered_nodes = [node for node in R.nodes if 'limbmount' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
 
@@ -236,7 +236,7 @@ def example_of_apply_rule():
     #---------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------
-    # add a limb_mount5 on body
+    # add a limbmount5 on body
     filtered_nodes = [node for node in R.nodes if 'body' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
@@ -245,8 +245,8 @@ def example_of_apply_rule():
 
 
 
-    # add a limb on limb_mount
-    filtered_nodes = [node for node in R.nodes if 'limb_mount' in node]
+    # add a limb on limbmount
+    filtered_nodes = [node for node in R.nodes if 'limbmount' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
 
@@ -255,7 +255,7 @@ def example_of_apply_rule():
 
 
     #---------------------------------------------------------------------------
-    # add a limb_mount6 on body
+    # add a limbmount6 on body
     filtered_nodes = [node for node in R.nodes if 'body' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
@@ -264,8 +264,8 @@ def example_of_apply_rule():
 
 
 
-    # add a limb on limb_mount
-    filtered_nodes = [node for node in R.nodes if 'limb_mount' in node]
+    # add a limb on limbmount
+    filtered_nodes = [node for node in R.nodes if 'limbmount' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
 

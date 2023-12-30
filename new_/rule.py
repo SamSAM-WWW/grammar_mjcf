@@ -113,7 +113,7 @@ def create_6leg_rules():
                         lhs_nodes={'root':{'require_label':'root','shape':'sphere','radius':0.0005,'density':3.0, 'body_pos':[0,0,2], 'geom_pos':[0,0,2]}},
                         lhs_edges=[],
                         rhs_nodes={'body':{'shape':'cylinder','length':0.1,'radius':0.5,'density':3.0,'euler':[0,90,0]},'root':{'label':'root'}},
-                        rhs_edges=[{'from_node':'root','to_node':'body',}])
+                        rhs_edges=[{'from_node':'root','to_node':'body'}])
     rules.append(rule)
 
     # rule1-1 1
@@ -170,8 +170,8 @@ def create_6leg_rules():
     rule = create_rule(name='append_limblink',
                         lhs_nodes={'limbmount':{'require_label':'limbmount'}},
                         lhs_edges=[],
-                        rhs_nodes={'limblink':{'label':'limblink'}},
-                        rhs_edges=[{'from_node':'limbmount','to_node':'limblink','label':'limb_joint'}]
+                        rhs_nodes={'limblink':{'label':'limblink','shape':'capsule','length':0.5,'radius':0.025, 'body_pos':[0,0,0]}},
+                        rhs_edges=[{'from_node':'limbmount','to_node':'limblink','label':'limb_joint','axis':[0,1,0]}]
                         )
     rules.append(rule)
 
