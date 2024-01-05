@@ -190,7 +190,7 @@ def create_6leg_rules():
                         lhs_nodes={'limblink':{'require_label':'limblink'}},
                         lhs_edges=[],
                         rhs_nodes={'leg':{'label':'leg','shape':'capsule','length':0.8,'radius':0.08, 'body_pos':[0.6,0,0]}},
-                        rhs_edges=[{'from_node':'limblink','to_node':'leg','label':'spring','axis':[1,0,0],'type':'slide', 'stiffness':'80','damping':'2.5'}]
+                        rhs_edges=[{'from_node':'limblink','to_node':'leg','label':'spring','axis':[1,0,0],'type':'slide', 'stiffness':'80','damping':'2.5','range':[-0.1,0.1]}]
                         )
     rules.append(rule)
 

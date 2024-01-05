@@ -197,7 +197,8 @@ class ModelGenerator():
                         name="joint_"+robot_joint.name,
                         pos=robot_joint.pos,
                         range=robot_joint.joint_range,
-                        type=robot_joint.joint_type
+                        type=robot_joint.joint_type,
+                        damping=robot_joint.damping
                             )
         if robot_joint.armature != None:
             joint.armature = robot_joint.armature

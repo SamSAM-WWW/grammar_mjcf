@@ -31,7 +31,7 @@
 						<joint axis="0 1 0" name="joint_joint13" pos="0 0 0" range="-45 45" type="hinge"/>
 						<body name="leg1" pos="0.6 0 0" euler="0 0 0">
 							<geom fromto="0 0 0 0.8 0 0" name="geomleg1" size="0.08" type="capsule"/>
-							<joint axis="1 0 0" name="joint_joint14" pos="0 0 0" range="-45 45" stiffness="80" type="slide"/>
+							<joint axis="1 0 0" damping="2.5" name="joint_joint14" pos="0 0 0" range="-0.1 0.1" stiffness="80" type="slide"/>
 						</body>
 					</body>
 				</body>
