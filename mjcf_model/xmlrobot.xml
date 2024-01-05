@@ -27,15 +27,19 @@
 					<geom fromto="0 0 0 0.025 0 0" name="geomlimbmount6" size="0.025" type="capsule"/>
 					<joint axis="1 0 0" name="joint_joint12" pos="0 0 0" range="-45 45" type="hinge"/>
 					<body name="limblink6" pos="0 0 0" euler="0 0 0">
-						<geom fromto="0 0 0 0.5 0 0" name="geomlimblink6" size="0.025" type="capsule"/>
+						<geom fromto="0 0 0 0.6 0 0" name="geomlimblink6" size="0.06" type="capsule"/>
 						<joint axis="0 1 0" name="joint_joint13" pos="0 0 0" range="-45 45" type="hinge"/>
+						<body name="leg1" pos="0.6 0 0" euler="0 0 0">
+							<geom fromto="0 0 0 0.8 0 0" name="geomleg1" size="0.08" type="capsule"/>
+							<joint axis="1 0 0" name="joint_joint14" pos="0 0 0" range="-45 45" stiffness="80" type="slide"/>
+						</body>
 					</body>
 				</body>
 				<body name="limbmount5" pos="0 -0.25 -0.433" euler="0 0 0">
 					<geom fromto="0 0 0 0.025 0 0" name="geomlimbmount5" size="0.025" type="capsule"/>
 					<joint axis="1 0 0" name="joint_joint10" pos="0 0 0" range="-45 45" type="hinge"/>
 					<body name="limblink5" pos="0 0 0" euler="0 0 0">
-						<geom fromto="0 0 0 0.5 0 0" name="geomlimblink5" size="0.025" type="capsule"/>
+						<geom fromto="0 0 0 0.6 0 0" name="geomlimblink5" size="0.06" type="capsule"/>
 						<joint axis="0 1 0" name="joint_joint11" pos="0 0 0" range="-45 45" type="hinge"/>
 					</body>
 				</body>
@@ -43,7 +47,7 @@
 					<geom fromto="0 0 0 0.025 0 0" name="geomlimbmount4" size="0.025" type="capsule"/>
 					<joint axis="1 0 0" name="joint_joint8" pos="0 0 0" range="-45 45" type="hinge"/>
 					<body name="limblink4" pos="0 0 0" euler="0 0 0">
-						<geom fromto="0 0 0 0.5 0 0" name="geomlimblink4" size="0.025" type="capsule"/>
+						<geom fromto="0 0 0 0.6 0 0" name="geomlimblink4" size="0.06" type="capsule"/>
 						<joint axis="0 1 0" name="joint_joint9" pos="0 0 0" range="-45 45" type="hinge"/>
 					</body>
 				</body>
@@ -51,7 +55,7 @@
 					<geom fromto="0 0 0 0.025 0 0" name="geomlimbmount3" size="0.025" type="capsule"/>
 					<joint axis="1 0 0" name="joint_joint6" pos="0 0 0" range="-45 45" type="hinge"/>
 					<body name="limblink3" pos="0 0 0" euler="0 0 0">
-						<geom fromto="0 0 0 0.5 0 0" name="geomlimblink3" size="0.025" type="capsule"/>
+						<geom fromto="0 0 0 0.6 0 0" name="geomlimblink3" size="0.06" type="capsule"/>
 						<joint axis="0 1 0" name="joint_joint7" pos="0 0 0" range="-45 45" type="hinge"/>
 					</body>
 				</body>
@@ -59,7 +63,7 @@
 					<geom fromto="0 0 0 0.025 0 0" name="geomlimbmount2" size="0.025" type="capsule"/>
 					<joint axis="1 0 0" name="joint_joint4" pos="0 0 0" range="-45 45" type="hinge"/>
 					<body name="limblink2" pos="0 0 0" euler="0 0 0">
-						<geom fromto="0 0 0 0.5 0 0" name="geomlimblink2" size="0.025" type="capsule"/>
+						<geom fromto="0 0 0 0.6 0 0" name="geomlimblink2" size="0.06" type="capsule"/>
 						<joint axis="0 1 0" name="joint_joint5" pos="0 0 0" range="-45 45" type="hinge"/>
 					</body>
 				</body>
@@ -67,7 +71,7 @@
 					<geom fromto="0 0 0 0.025 0 0" name="geomlimbmount1" size="0.025" type="capsule"/>
 					<joint axis="1 0 0" name="joint_joint2" pos="0 0 0" range="-45 45" type="hinge"/>
 					<body name="limblink1" pos="0 0 0" euler="0 0 0">
-						<geom fromto="0 0 0 0.5 0 0" name="geomlimblink1" size="0.025" type="capsule"/>
+						<geom fromto="0 0 0 0.6 0 0" name="geomlimblink1" size="0.06" type="capsule"/>
 						<joint axis="0 1 0" name="joint_joint3" pos="0 0 0" range="-45 45" type="hinge"/>
 					</body>
 				</body>
@@ -78,6 +82,7 @@
 		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint1"/>
 		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint12"/>
 		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint13"/>
+		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint14"/>
 		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint10"/>
 		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint11"/>
 		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint8"/>

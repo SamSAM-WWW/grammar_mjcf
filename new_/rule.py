@@ -63,7 +63,7 @@ def create_rules():
                         lhs_nodes={'body':{'require_label':'body'}},
                         lhs_edges=[],
                         rhs_nodes={'body':{'shape':'cylinder','length':0.1,'radius':0.5,'density':3.0},'limbmount':{'shape':'capsule','length':0.025,'radius':0.025}},
-                        rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge','offset':'0.3','axis_angle':'0 1 0 90'},])
+                        rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge','offset':'0.3'},])
     rules.append(rule)
 
     # rule2
@@ -88,7 +88,7 @@ def create_rules():
                         lhs_nodes={},
                         lhs_edges=[{'from_node':'parent','to_node':'child','require_label':'limb_joint'}],
                         rhs_nodes={},
-                        rhs_edges=[{'from_node':'parent','to_node':'child','type':'hinge','axis_angel':'0 1 0 -90','joint_axis':'1 0 0'}]
+                        rhs_edges=[{'from_node':'parent','to_node':'child','type':'hinge','joint_axis':'1 0 0'}]
                         )
     rules.append(rule)
 
@@ -170,10 +170,31 @@ def create_6leg_rules():
     rule = create_rule(name='append_limblink',
                         lhs_nodes={'limbmount':{'require_label':'limbmount'}},
                         lhs_edges=[],
-                        rhs_nodes={'limblink':{'label':'limblink','shape':'capsule','length':0.5,'radius':0.025, 'body_pos':[0,0,0]}},
+                        rhs_nodes={'limblink':{'label':'limblink','shape':'capsule','length':0.6,'radius':0.06, 'body_pos':[0,0,0]}},
                         rhs_edges=[{'from_node':'limbmount','to_node':'limblink','label':'limb_joint','axis':[0,1,0]}]
                         )
     rules.append(rule)
+
+
+    # rule8
+    rule = create_rule(name='append_thin_limblink',
+                        lhs_nodes={'limbmount':{'require_label':'limbmount'}},
+                        lhs_edges=[],
+                        rhs_nodes={'limblink':{'label':'limblink','shape':'capsule','length':0.6,'radius':0.03, 'body_pos':[0,0,0]}},
+                        rhs_edges=[{'from_node':'limbmount','to_node':'limblink','label':'limb_joint','axis':[0,1,0]}]
+                        )
+    rules.append(rule)
+
+# rule9
+    rule = create_rule(name='add_spring_leg',
+                        lhs_nodes={'limblink':{'require_label':'limblink'}},
+                        lhs_edges=[],
+                        rhs_nodes={'leg':{'label':'leg','shape':'capsule','length':0.8,'radius':0.08, 'body_pos':[0.6,0,0]}},
+                        rhs_edges=[{'from_node':'limblink','to_node':'leg','label':'spring','axis':[1,0,0],'type':'slide', 'stiffness':'80','damping':'2.5'}]
+                        )
+    rules.append(rule)
+
+
 
     return rules
 
