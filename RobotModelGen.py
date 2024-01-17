@@ -160,21 +160,24 @@ class ModelGenerator():
                     fromto = start_point,
                     name   = "geom"+robot_part.name,
                     size   = robot_part.size,
-                    type   = robot_part.link_type
+                    type   = robot_part.link_type,
+                    euler  = robot_part.geom_euler
                         )
         if robot_part.link_type == 'sphere': # 如果是球形
             geom =  e.Geom(
                     pos = robot_part.geom_pos,
                     name   = "geom"+robot_part.name,
                     size   = robot_part.size,
-                    type   = robot_part.link_type
+                    type   = robot_part.link_type,
+                    euler  = robot_part.geom_euler
                         )
         if robot_part.link_type == 'box': # 如果是box形状
             geom =  e.Geom(
                     pos = robot_part.geom_pos,
                     name   = "geom"+robot_part.name,
                     size   = robot_part.size,
-                    type   = robot_part.link_type
+                    type   = robot_part.link_type,
+                    euler  = robot_part.geom_euler
                         )
         
         if robot_part.link_type == 'cylinder': # 如果是圆柱形状
@@ -183,7 +186,8 @@ class ModelGenerator():
                     pos = robot_part.geom_pos,
                     name   = "geom"+robot_part.name,
                     size   = robot_part.size,
-                    type   = robot_part.link_type
+                    type   = robot_part.link_type,
+                    euler  = robot_part.geom_euler
                         )
         return body,geom
         
