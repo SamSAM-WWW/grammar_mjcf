@@ -120,7 +120,8 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
                                             axis=edge_info['axis'] if 'axis' in edge_info else [1, 0, 0],
                                             stiffness=edge_info['stiffness'] if 'stiffness' in edge_info else None,
                                             damping=edge_info['damping'] if 'damping' in edge_info else None,
-                                            joint_range = edge_info['range'] if 'range' in edge_info else [-45, 45])
+                                            joint_range = edge_info['range'] if 'range' in edge_info else [-45, 45],
+                                            ctrlrange = edge_info['ctrlrange'] if 'ctrlrange' in edge_info else [-1,1],)
 
                     # 将新的 RobotJoint 实例添加到 result_graph 中
                     result.add_node(node_type='joint',rule_label=edge_info['label'] if 'label' in edge_info else None, node_info=new_joint)
@@ -150,7 +151,7 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
 def example_of_apply_rule():
 
     R = make_initial_graph()
-    rules = create_6leg_rules()
+    rules = create_4leg_rules()
     #---------------------------------------------------------------------------
     # add the first body 
     R = apply_rule(rule=rules[0],input_graph=R,target_node_name='root')
@@ -181,12 +182,24 @@ def example_of_apply_rule():
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
 
-    R = apply_rule(rule=rules[10],input_graph=R,target_node_name=target_node_name)
+    R = apply_rule(rule=rules[8],input_graph=R,target_node_name=target_node_name)
+    #add a limb on motor
+    filtered_nodes = [node for node in R.nodes if  'motor' in node]
+    if filtered_nodes:
+        target_node_name = filtered_nodes[-1]
+    R = apply_rule(rule=rules[5],input_graph=R,target_node_name=target_node_name)
 
-    filtered_nodes = [node for node in R.nodes if 'motor' in node]
+    #add a motor on limb
+    filtered_nodes = [node for node in R.nodes if  'limb' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
     R = apply_rule(rule=rules[9],input_graph=R,target_node_name=target_node_name)
+
+    #add a thin leg
+    filtered_nodes = [node for node in R.nodes if  'motor' in node]
+    if filtered_nodes:
+        target_node_name = filtered_nodes[-1]
+    R = apply_rule(rule=rules[6],input_graph=R,target_node_name=target_node_name)
     #---------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------
@@ -199,17 +212,17 @@ def example_of_apply_rule():
 
 
 
-    # add a limb on limbmount
+    # add a motor on limbmount
     filtered_nodes = [node for node in R.nodes if 'limbmount' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
 
-    R = apply_rule(rule=rules[7],input_graph=R,target_node_name=target_node_name)
+    R = apply_rule(rule=rules[8],input_graph=R,target_node_name=target_node_name)
 
-    filtered_nodes = [node for node in R.nodes if 'limblink' in node]
+    filtered_nodes = [node for node in R.nodes if  'motor' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
-    R = apply_rule(rule=rules[9],input_graph=R,target_node_name=target_node_name)
+    R = apply_rule(rule=rules[5],input_graph=R,target_node_name=target_node_name)
     #---------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------
@@ -223,17 +236,17 @@ def example_of_apply_rule():
 
 
 
-    # add a limb on limbmount
+     # add a motor on limbmount
     filtered_nodes = [node for node in R.nodes if 'limbmount' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
 
-    R = apply_rule(rule=rules[7],input_graph=R,target_node_name=target_node_name)
+    R = apply_rule(rule=rules[8],input_graph=R,target_node_name=target_node_name)
 
-    filtered_nodes = [node for node in R.nodes if 'limblink' in node]
+    filtered_nodes = [node for node in R.nodes if  'motor' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
-    R = apply_rule(rule=rules[9],input_graph=R,target_node_name=target_node_name)
+    R = apply_rule(rule=rules[5],input_graph=R,target_node_name=target_node_name)
     #---------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------
@@ -246,64 +259,17 @@ def example_of_apply_rule():
 
 
 
-    # add a limb on limbmount
+    # add a motor on limbmount
     filtered_nodes = [node for node in R.nodes if 'limbmount' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
 
-    R = apply_rule(rule=rules[7],input_graph=R,target_node_name=target_node_name)
-    
-    filtered_nodes = [node for node in R.nodes if 'limblink' in node]
+    R = apply_rule(rule=rules[8],input_graph=R,target_node_name=target_node_name)
+
+    filtered_nodes = [node for node in R.nodes if  'motor' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
-    R = apply_rule(rule=rules[9],input_graph=R,target_node_name=target_node_name)    
-    #---------------------------------------------------------------------------
-
-    #---------------------------------------------------------------------------
-    # add a limbmount5 on body
-    filtered_nodes = [node for node in R.nodes if 'body' in node]
-    if filtered_nodes:
-        target_node_name = filtered_nodes[-1]
-
     R = apply_rule(rule=rules[5],input_graph=R,target_node_name=target_node_name)
-
-
-
-    # add a limb on limbmount
-    filtered_nodes = [node for node in R.nodes if 'limbmount' in node]
-    if filtered_nodes:
-        target_node_name = filtered_nodes[-1]
-
-    R = apply_rule(rule=rules[7],input_graph=R,target_node_name=target_node_name)
-    filtered_nodes = [node for node in R.nodes if 'limblink' in node]
-    if filtered_nodes:
-        target_node_name = filtered_nodes[-1]
-    R = apply_rule(rule=rules[9],input_graph=R,target_node_name=target_node_name)    
-    #---------------------------------------------------------------------------
-
-
-    #---------------------------------------------------------------------------
-    # add a limbmount6 on body
-    filtered_nodes = [node for node in R.nodes if 'body' in node]
-    if filtered_nodes:
-        target_node_name = filtered_nodes[-1]
-
-    R = apply_rule(rule=rules[6],input_graph=R,target_node_name=target_node_name)
-
-
-
-    # add a limb on limbmount
-    filtered_nodes = [node for node in R.nodes if 'limbmount' in node]
-    if filtered_nodes:
-        target_node_name = filtered_nodes[-1]
-
-    R = apply_rule(rule=rules[7],input_graph=R,target_node_name=target_node_name)
-
-
-    filtered_nodes = [node for node in R.nodes if 'limblink' in node]
-    if filtered_nodes:
-        target_node_name = filtered_nodes[-1]
-    R = apply_rule(rule=rules[9],input_graph=R,target_node_name=target_node_name)
     #---------------------------------------------------------------------------
 
 

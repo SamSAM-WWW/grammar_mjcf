@@ -112,7 +112,7 @@ def create_6leg_rules():
     rule = create_rule(name='make_robot',
                         lhs_nodes={'root':{'require_label':'root','shape':'sphere','radius':0.0005,'density':3.0, 'body_pos':[0,0,2], 'geom_pos':[0,0,2]}},
                         lhs_edges=[],
-                        rhs_nodes={'body':{'shape':'box','radius':'0.203 0.4282 0.05','density':3.0,'euler':[0,0,90]},'root':{'label':'root'}},
+                        rhs_nodes={'body':{'shape':'box','radius':'0.203 0.4282 0.05','density':3.0,'euler':[0,90,0],'geom_euler':[0,90,0]},'root':{'label':'root'}},
                         rhs_edges=[{'from_node':'root','to_node':'body'}])
     rules.append(rule)
 
@@ -211,17 +211,121 @@ def create_6leg_rules():
 
     return rules
 
+def create_4leg_rules():
+    '''
+    功能:通过调用`create_rule`创建多个指定的语法规则
+    ---------------
+    输入:无
+
+    输出:规则列表 `rules` （类型为`list`）
+    '''  
+    rules = [] 
+    # rule0
+    rule = create_rule(name='make_robot',
+                        lhs_nodes={'root':{'require_label':'root','shape':'sphere','radius':0.0005,'density':3.0, 'body_pos':[0,0,2], 'geom_pos':[0,0,2]}},
+                        lhs_edges=[],
+                        rhs_nodes={'body':{'shape':'box','radius':'0.203 0.4282 0.05','density':3.0,'euler':[0,0,0],'geom_euler':[0,0,0]},'root':{'label':'root'}},
+                        rhs_edges=[{'from_node':'root','to_node':'body'}])
+    rules.append(rule)
+
+    # rule1-1 1
+    rule = create_rule(name='make_body_with_limbmount_1',
+                        lhs_nodes={'body':{'require_label':'body'}},
+                        lhs_edges=[],
+                        rhs_nodes={'limbmount':{'shape':'capsule','length':0.025,'radius':0.025, 'body_pos':[0.1875,0.2,0],'euler':[0,90,0]}},
+                        rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge','axis':[0,1,0]},])
+    rules.append(rule)
+    
+    # rule1-2 2
+    rule = create_rule(name='make_body_with_limbmount_2',
+                        lhs_nodes={'body':{'require_label':'body'}},
+                        lhs_edges=[],
+                        rhs_nodes={'limbmount':{'shape':'capsule','length':0.025,'radius':0.025, 'body_pos':[-0.1875,0.2,0],'euler':[0,90,0]}},
+                        rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge'},])
+    rules.append(rule)
+    
+    # rule1-3 3
+    rule = create_rule(name='make_body_with_limbmount_3',
+                        lhs_nodes={'body':{'require_label':'body'}},
+                        lhs_edges=[],
+                        rhs_nodes={'limbmount':{'shape':'capsule','length':0.025,'radius':0.025, 'body_pos':[-0.1875,-0.2,0],'euler':[0,90,0]}},
+                        rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge'},])
+    rules.append(rule)
+
+    # rule1-4 4
+    rule = create_rule(name='make_body_with_limbmount_4',
+                        lhs_nodes={'body':{'require_label':'body'}},
+                        lhs_edges=[],
+                        rhs_nodes={'limbmount':{'shape':'capsule','length':0.025,'radius':0.025, 'body_pos':[0.1875,-0.2,0],'euler':[0,90,0]}},
+                        rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge'},])
+    rules.append(rule)
+    
+    # rule5
+    rule = create_rule(name='append_limblink',
+                        lhs_nodes={'motor_6020':{'require_label':'motor_6020'}},
+                        lhs_edges=[],
+                        rhs_nodes={'limblink':{'label':'limblink','shape':'capsule','length':0.3,'radius':0.06, 'body_pos':[0,0,0],'euler':[0,90,0]}},
+                        rhs_edges=[{'from_node':'motor_6020','to_node':'limblink','label':'limb_joint','axis':[0,1,0],'range':[-0.1,0.1],}]
+                        )
+    rules.append(rule)
+
+
+    # rule6
+    rule = create_rule(name='append_thin_limblink',
+                        lhs_nodes={'motor_6020':{'require_label':'motor_6020'}},
+                        lhs_edges=[],
+                        rhs_nodes={'limblink':{'label':'limblink','shape':'capsule','length':0.3,'radius':0.03, 'body_pos':[0,0,0],'euler':[0,90,0]}},
+                        rhs_edges=[{'from_node':'limbmount','to_node':'limblink','label':'limb_joint','axis':[0,1,0],'range':[-0.1,0.1]}]
+                        )
+    rules.append(rule)
+
+# rule7
+    rule = create_rule(name='add_spring_leg',
+                        lhs_nodes={'limblink':{'require_label':'limblink'}},
+                        lhs_edges=[],
+                        rhs_nodes={'leg':{'label':'leg','shape':'capsule','length':0.8,'radius':0.08, 'body_pos':[0.6,0,0]}},
+                        rhs_edges=[{'from_node':'limblink','to_node':'leg','label':'spring','axis':[1,0,0],'type':'slide', 'stiffness':'80','damping':'2.5','range':[-0.1,0.1]}]
+                        )
+    rules.append(rule)
 
 
 
-rules = create_6leg_rules()
-for rule in rules:
-    print("================================")
-    print("rule.name",rule.name)
-    print("rule.lhs_nodes",rule.lhs_nodes)
-    print("rule.lhs_edges",rule.lhs_edges)
-    print("rule.rhs_nodes",rule.rhs_nodes)
-    print("rule.rhs_edges",rule.rhs_edges)
-    print("rule.common_nodes",rule.common_nodes)
-    print("rule.common_edges",rule.common_edges)
-    print("================================")
+# rule8 基于现实物理约束
+    rule = create_rule(
+        name='add_motor_6020',
+        lhs_nodes={'limbmount':{'require_label':'limbmount'}},
+        lhs_edges=[],
+        rhs_nodes={'motor_6020':{'label':'motor_6020','shape':'cylinder','length':0.042,'radius':0.066, 'body_pos':[0,0,0],'euler':[0,-90,0]}},
+        rhs_edges=[{'from_node':'limbmount','to_node':'motor_6020','label':'motor_6020','ctrlrange':[-1.2,1.2]}]
+
+
+    )
+    rules.append(rule)
+
+# rule9 基于现实物理约束
+    rule = create_rule(
+        name='add_motor_6020',
+        lhs_nodes={'limblink':{'require_label':'limblink'}},
+        lhs_edges=[],
+        rhs_nodes={'motor_6020':{'label':'motor_6020','shape':'cylinder','length':0.042,'radius':0.066, 'body_pos':[0.3,0,0],'euler':[0,-90,0]}},
+        rhs_edges=[{'from_node':'limblink','to_node':'motor_6020','label':'motor_6020'}]
+
+
+    )
+    rules.append(rule)
+
+
+    return rules
+
+
+# rules = create_6leg_rules()
+# for rule in rules:
+#     print("================================")
+#     print("rule.name",rule.name)
+#     print("rule.lhs_nodes",rule.lhs_nodes)
+#     print("rule.lhs_edges",rule.lhs_edges)
+#     print("rule.rhs_nodes",rule.rhs_nodes)
+#     print("rule.rhs_edges",rule.rhs_edges)
+#     print("rule.common_nodes",rule.common_nodes)
+#     print("rule.common_edges",rule.common_edges)
+#     print("================================")
