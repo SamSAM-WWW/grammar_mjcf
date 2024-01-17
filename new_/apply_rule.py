@@ -175,12 +175,17 @@ def example_of_apply_rule():
 
 
 
-    # add a limb on limbmount
+    # add a motor on limbmount
     filtered_nodes = [node for node in R.nodes if 'limbmount' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
 
-    R = apply_rule(rule=rules[7],input_graph=R,target_node_name=target_node_name)
+    R = apply_rule(rule=rules[10],input_graph=R,target_node_name=target_node_name)
+
+    filtered_nodes = [node for node in R.nodes if 'motor' in node]
+    if filtered_nodes:
+        target_node_name = filtered_nodes[-1]
+    R = apply_rule(rule=rules[9],input_graph=R,target_node_name=target_node_name)
     #---------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------
@@ -199,6 +204,11 @@ def example_of_apply_rule():
         target_node_name = filtered_nodes[-1]
 
     R = apply_rule(rule=rules[7],input_graph=R,target_node_name=target_node_name)
+
+    filtered_nodes = [node for node in R.nodes if 'limblink' in node]
+    if filtered_nodes:
+        target_node_name = filtered_nodes[-1]
+    R = apply_rule(rule=rules[9],input_graph=R,target_node_name=target_node_name)
     #---------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------
@@ -218,6 +228,11 @@ def example_of_apply_rule():
         target_node_name = filtered_nodes[-1]
 
     R = apply_rule(rule=rules[7],input_graph=R,target_node_name=target_node_name)
+
+    filtered_nodes = [node for node in R.nodes if 'limblink' in node]
+    if filtered_nodes:
+        target_node_name = filtered_nodes[-1]
+    R = apply_rule(rule=rules[9],input_graph=R,target_node_name=target_node_name)
     #---------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------
@@ -236,6 +251,11 @@ def example_of_apply_rule():
         target_node_name = filtered_nodes[-1]
 
     R = apply_rule(rule=rules[7],input_graph=R,target_node_name=target_node_name)
+    
+    filtered_nodes = [node for node in R.nodes if 'limblink' in node]
+    if filtered_nodes:
+        target_node_name = filtered_nodes[-1]
+    R = apply_rule(rule=rules[9],input_graph=R,target_node_name=target_node_name)    
     #---------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------
@@ -254,6 +274,10 @@ def example_of_apply_rule():
         target_node_name = filtered_nodes[-1]
 
     R = apply_rule(rule=rules[7],input_graph=R,target_node_name=target_node_name)
+    filtered_nodes = [node for node in R.nodes if 'limblink' in node]
+    if filtered_nodes:
+        target_node_name = filtered_nodes[-1]
+    R = apply_rule(rule=rules[9],input_graph=R,target_node_name=target_node_name)    
     #---------------------------------------------------------------------------
 
 

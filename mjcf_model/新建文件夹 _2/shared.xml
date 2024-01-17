@@ -1,0 +1,8 @@
+<mujoco>
+    <mesh file="quadruped_body.stl" name="quadruped_body" scale="2.5 2.5 2.5"></mesh>
+    <mesh file="quadruped_foot.stl" name="quadruped_foot" scale="2.5 2.5 2.5"></mesh>
+    <mesh file="quadruped_lower_leg_left_side.stl" name="quadruped_lower_leg_left_side" scale="2.5 2.5 2.5"></mesh>
+    <mesh file="quadruped_lower_leg_right_side.stl" name="quadruped_lower_leg_right_side" scale="2.5 2.5 2.5"></mesh>
+    <mesh file="quadruped_upper_leg_left_side.stl" name="quadruped_upper_leg_left_side" scale="2.5 2.5 2.5"></mesh>
+    <mesh file="quadruped_upper_leg_right_side.stl" name="quadruped_upper_leg_right_side" scale="2.5 2.5 2.5"></mesh>
+</mujoco>

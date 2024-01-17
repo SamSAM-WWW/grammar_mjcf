@@ -112,7 +112,7 @@ def create_6leg_rules():
     rule = create_rule(name='make_robot',
                         lhs_nodes={'root':{'require_label':'root','shape':'sphere','radius':0.0005,'density':3.0, 'body_pos':[0,0,2], 'geom_pos':[0,0,2]}},
                         lhs_edges=[],
-                        rhs_nodes={'body':{'shape':'cylinder','length':0.1,'radius':0.5,'density':3.0,'euler':[0,90,0]},'root':{'label':'root'}},
+                        rhs_nodes={'body':{'shape':'box','radius':'0.203 0.4282 0.05','density':3.0,'euler':[0,0,90]},'root':{'label':'root'}},
                         rhs_edges=[{'from_node':'root','to_node':'body'}])
     rules.append(rule)
 
@@ -194,6 +194,19 @@ def create_6leg_rules():
                         )
     rules.append(rule)
 
+
+
+# rule10 基于现实物理约束
+    rule = create_rule(
+        name='add_motor_6020',
+        lhs_nodes={'limbmount':{'require_label':'limbmount'}},
+        lhs_edges=[],
+        rhs_nodes={'motor_6020':{'label':'motor_6020','shape':'cylinder','length':0.042,'radius':0.066, 'body_pos':[0,0,0]}},
+        rhs_edges=[{'from_node':'limbmount','to_node':'motor_6020','label':'motor_6020'}]
+
+
+    )
+    rules.append(rule)
 
 
     return rules
