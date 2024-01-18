@@ -218,11 +218,23 @@ def example_of_apply_rule():
         target_node_name = filtered_nodes[-1]
 
     R = apply_rule(rule=rules[8],input_graph=R,target_node_name=target_node_name)
-
+    #add a limb on motor
     filtered_nodes = [node for node in R.nodes if  'motor' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
     R = apply_rule(rule=rules[5],input_graph=R,target_node_name=target_node_name)
+    
+    #add a motor on limb
+    filtered_nodes = [node for node in R.nodes if  'limb' in node]
+    if filtered_nodes:
+        target_node_name = filtered_nodes[-1]
+    R = apply_rule(rule=rules[9],input_graph=R,target_node_name=target_node_name)
+
+    #add a thin leg
+    filtered_nodes = [node for node in R.nodes if  'motor' in node]
+    if filtered_nodes:
+        target_node_name = filtered_nodes[-1]
+    R = apply_rule(rule=rules[6],input_graph=R,target_node_name=target_node_name)
     #---------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------
@@ -236,17 +248,29 @@ def example_of_apply_rule():
 
 
 
-     # add a motor on limbmount
+    # add a motor on limbmount
     filtered_nodes = [node for node in R.nodes if 'limbmount' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
 
     R = apply_rule(rule=rules[8],input_graph=R,target_node_name=target_node_name)
-
+    #add a limb on motor
     filtered_nodes = [node for node in R.nodes if  'motor' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
     R = apply_rule(rule=rules[5],input_graph=R,target_node_name=target_node_name)
+    
+    #add a motor on limb
+    filtered_nodes = [node for node in R.nodes if  'limb' in node]
+    if filtered_nodes:
+        target_node_name = filtered_nodes[-1]
+    R = apply_rule(rule=rules[9],input_graph=R,target_node_name=target_node_name)
+
+    #add a thin leg
+    filtered_nodes = [node for node in R.nodes if  'motor' in node]
+    if filtered_nodes:
+        target_node_name = filtered_nodes[-1]
+    R = apply_rule(rule=rules[6],input_graph=R,target_node_name=target_node_name)
     #---------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------
@@ -265,11 +289,22 @@ def example_of_apply_rule():
         target_node_name = filtered_nodes[-1]
 
     R = apply_rule(rule=rules[8],input_graph=R,target_node_name=target_node_name)
-
+    #add a limb on motor
     filtered_nodes = [node for node in R.nodes if  'motor' in node]
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
     R = apply_rule(rule=rules[5],input_graph=R,target_node_name=target_node_name)
+    #add a motor on limb
+    filtered_nodes = [node for node in R.nodes if  'limb' in node]
+    if filtered_nodes:
+        target_node_name = filtered_nodes[-1]
+    R = apply_rule(rule=rules[9],input_graph=R,target_node_name=target_node_name)
+
+    #add a thin leg
+    filtered_nodes = [node for node in R.nodes if  'motor' in node]
+    if filtered_nodes:
+        target_node_name = filtered_nodes[-1]
+    R = apply_rule(rule=rules[6],input_graph=R,target_node_name=target_node_name)
     #---------------------------------------------------------------------------
 
 
