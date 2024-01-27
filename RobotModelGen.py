@@ -4,6 +4,7 @@ from new_.apply_rule import *
 import networkx as nx
 import matplotlib.pyplot as plt
 import queue
+from new_.trans import *
 
 class ModelGenerator():
     '''
@@ -455,3 +456,4 @@ if __name__ == '__main__':
     ax.set_title("DAG layout in topological order")
     fig.tight_layout()
     # plt.show()
+    trans_op()
