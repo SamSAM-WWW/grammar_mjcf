@@ -40,6 +40,8 @@ def is_rule_applicable_target(rule, target_node_name):
     return False
 def random_search(R, rules, available_actions):
     # 随机选择一个节点
+
+    excluded_rules = [0, 1, 2, 3, 4]
     available_nodes = [node for node in R.nodes if 'joint' not in node]
     print("available_nodes",available_nodes)
     # 如果存在可选节点，则随机选择一个
@@ -48,6 +50,8 @@ def random_search(R, rules, available_actions):
         print("selected_node",selected_node)
         # 找到适用于选定节点的规则
         applicable_rules = [action for action in available_actions if is_rule_applicable_target(rules[action], selected_node)]
+        applicable_rules = [action for action in applicable_rules if action not in excluded_rules]
+
         print("applicable_rules",applicable_rules)
         # 如果存在可应用的规则，则随机选择一个
         if applicable_rules:

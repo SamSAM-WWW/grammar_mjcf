@@ -83,6 +83,15 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
             print(node_info)
             node_info = input_graph.nodes[target_node_name]['info']
             print("node_info.start_point",node_info.start_point)
+
+            # 新添加的检查
+            existing_children = list(result.successors(target_node_name))
+            if existing_children and 'body' not in target_node_name:
+                # 如果已经有子节点且target_node_name名字不包含 'body'，直接返回
+                print(f'{target_node_name} already has a child. Rule not applied.')
+                return result
+
+
             if hasattr(node_info, 'link_type'):
                 # 处理 link 的操作
                 # Copy target nodes in common rule
