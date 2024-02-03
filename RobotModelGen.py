@@ -5,6 +5,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import queue
 from new_.trans import *
+from search import *
 
 class ModelGenerator():
     '''
@@ -427,7 +428,8 @@ class ModelGenerator():
 
 if __name__ == '__main__':
 
-    R = example_of_apply_rule()
+    # R = example_of_apply_rule()
+    R = result_R()
 
 
     M = ModelGenerator(R)

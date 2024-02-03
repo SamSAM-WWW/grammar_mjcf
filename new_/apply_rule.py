@@ -95,7 +95,7 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
                     existing_joint_nodes = [node_name_i for node_name_i in result.nodes if node_name in node_name_i]
                     n = len(existing_joint_nodes)
                     new_add_node_name = node_name + str(n + 1)
-                    # new_add_node_name = node_name + str(random.randint(1000,9999))
+
                     new_node = RobotLink(name = new_add_node_name,
                                         link_type= rule.rhs_nodes[node_name]['shape'] if 'shape' in rule.rhs_nodes[node_name] else 'capsule',
                                         length=rule.rhs_nodes[node_name]['length'] if 'length' in rule.rhs_nodes[node_name] else 0,
@@ -115,7 +115,7 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
                     existing_joint_nodes = [node_name for node_name in result.nodes if 'joint' in node_name]
                     n = len(existing_joint_nodes)
                     new_node_name = 'joint' + str(n + 1)
-                    # new_node_name = 'joint' + str(random.randint(1000,9999))
+
                     new_joint = RobotJoint(name=new_node_name, joint_type=edge_info['type'] if 'type' in edge_info else 'hinge',
                                             axis=edge_info['axis'] if 'axis' in edge_info else [1, 0, 0],
                                             stiffness=edge_info['stiffness'] if 'stiffness' in edge_info else None,
@@ -381,3 +381,15 @@ def example_of_apply_rule():
     
 
 
+
+def make_graph_by_step():
+    R = make_initial_graph()
+    rules = create_4leg_rules()
+    #---------------------------------------------------------------------------
+    # add the first body 
+    R = apply_rule(rule=rules[0],input_graph=R,target_node_name='root')
+    R = apply_rule(rule=rules[1],input_graph=R,target_node_name='body1')
+    R = apply_rule(rule=rules[2],input_graph=R,target_node_name='body1')
+    R = apply_rule(rule=rules[3],input_graph=R,target_node_name='body1')
+    R = apply_rule(rule=rules[4],input_graph=R,target_node_name='body1')
+    return R

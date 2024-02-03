@@ -92,7 +92,7 @@ xml_file_path = "mjcf_model\\xmlrobot.xml"
 left_limbmounts, right_limbmounts = determine_left_right(xml_file_path)
 
 # Rotate components associated with left limbmounts
-rotate_direct_children_of_limb_mounts(xml_file_path, left_limbmounts)
+# rotate_direct_children_of_limb_mounts(xml_file_path, left_limbmounts)
 
 # # Rotate components associated with right limbmounts
 # rotate_components(xml_file_path, right_limbmounts)

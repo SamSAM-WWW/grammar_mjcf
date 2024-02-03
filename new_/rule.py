@@ -198,11 +198,11 @@ def create_6leg_rules():
 
 # rule10 基于现实物理约束
     rule = create_rule(
-        name='add_motor_6020',
+        name='add_motor',
         lhs_nodes={'limbmount':{'require_label':'limbmount'}},
         lhs_edges=[],
-        rhs_nodes={'motor_6020':{'label':'motor_6020','shape':'cylinder','length':0.042,'radius':0.066, 'body_pos':[0,0,0]}},
-        rhs_edges=[{'from_node':'limbmount','to_node':'motor_6020','label':'motor_6020'}]
+        rhs_nodes={'motor':{'label':'motor','shape':'cylinder','length':0.042,'radius':0.066, 'body_pos':[0,0,0]}},
+        rhs_edges=[{'from_node':'limbmount','to_node':'motor','label':'motor'}]
 
 
     )
@@ -262,17 +262,17 @@ def create_4leg_rules():
     
     # rule5
     rule = create_rule(name='append_limblink',
-                        lhs_nodes={'motor_6020':{'require_label':'motor_6020'}},
+                        lhs_nodes={'motor':{'require_label':'motor'}},
                         lhs_edges=[],
                         rhs_nodes={'limblink':{'label':'limblink','shape':'capsule','length':0.3,'radius':0.06, 'body_pos':[0.042,0,0],'euler':[0,90,0]}},
-                        rhs_edges=[{'from_node':'motor_6020','to_node':'limblink','label':'limb_joint','axis':[0,1,0],'range':[-0.1,0.1],}]
+                        rhs_edges=[{'from_node':'motor','to_node':'limblink','label':'limb_joint','axis':[0,1,0],'range':[-0.1,0.1],}]
                         )
     rules.append(rule)
 
 
     # rule6
     rule = create_rule(name='append_thin_limblink',
-                        lhs_nodes={'motor_6020':{'require_label':'motor_6020'}},
+                        lhs_nodes={'motor':{'require_label':'motor'}},
                         lhs_edges=[],
                         rhs_nodes={'limblink':{'label':'limblink','shape':'capsule','length':0.3,'radius':0.03, 'body_pos':[0.042,0,0],'euler':[0,90,0]}},
                         rhs_edges=[{'from_node':'limbmount','to_node':'limblink','label':'limb_joint','axis':[0,1,0],'range':[-0.1,0.1]}]
@@ -292,67 +292,32 @@ def create_4leg_rules():
 
 # rule8 基于现实物理约束 6020
     rule = create_rule(
-        name='add_motor_6020',
+        name='add_motor',
         lhs_nodes={'limbmount':{'require_label':'limbmount'}},
         lhs_edges=[],
-        rhs_nodes={'motor_6020':{'label':'motor_6020','shape':'cylinder','length':0.042,'radius':0.066, 'body_pos':[0,0,0],'euler':[0,-90,0]}},
-        rhs_edges=[{'from_node':'limbmount','to_node':'motor_6020','label':'motor_6020','ctrlrange':[-1.2,1.2]}]
-
-
-    )
-    rules.append(rule)
-
-# rule9 基于现实物理约束 6020
-    rule = create_rule(
-        name='add_motor_6020',
-        lhs_nodes={'limblink':{'require_label':'limblink'}},
-        lhs_edges=[],
-        rhs_nodes={'motor_6020':{'label':'motor_6020','shape':'cylinder','length':0.042,'radius':0.066, 'body_pos':[0.3,0,0],'euler':[0,-90,0]}},
-        rhs_edges=[{'from_node':'limblink','to_node':'motor_6020','label':'motor_6020'}]
+        rhs_nodes={'motor':{'label':'motor','shape':'cylinder','length':0.042,'radius':0.066, 'body_pos':[0,0,0],'euler':[0,-90,0]}},
+        rhs_edges=[{'from_node':'limbmount','to_node':'motor','label':'motor','ctrlrange':[-1.2,1.2]}]
 
 
     )
     rules.append(rule)
 
 
-# rule10 基于现实物理约束 3508
-    rule = create_rule(
-        name='add_motor_3508',
-        lhs_nodes={'limbmount':{'require_label':'limbmount'}},
-        lhs_edges=[],
-        rhs_nodes={'motor_3508':{'label':'motor_3508','shape':'cylinder','length':0.0984,'radius':0.042, 'body_pos':[0,0,0],'euler':[0,-90,0]}},
-        rhs_edges=[{'from_node':'limbmount','to_node':'motor_3508','label':'motor_3508','ctrlrange':[-2.8,2.8]}]
 
-
-    )
-    rules.append(rule)
-
-    # rule11
+    # rule9
     rule = create_rule(name='append_limblink',
-                        lhs_nodes={'motor_6020':{'require_label':'motor_6020'}},
+                        lhs_nodes={'motor':{'require_label':'motor'}},
                         lhs_edges=[],
                         rhs_nodes={'limblink':{'label':'limblink','shape':'capsule','length':0.3,'radius':0.06, 'body_pos':[0,0,0],'euler':[0,90,0]}},
-                        rhs_edges=[{'from_node':'motor_6020','to_node':'limblink','label':'limb_joint','axis':[0,1,0],'range':[-0.1,0.1],}]
+                        rhs_edges=[{'from_node':'motor','to_node':'limblink','label':'limb_joint','axis':[0,1,0],'range':[-0.1,0.1],}]
                         )
     rules.append(rule)
 
 
-    # rule12 基于现实物理约束 6020 对称
-    rule = create_rule(
-        name='add_motor_6020',
-        lhs_nodes={'limbmount':{'require_label':'limbmount'}},
-        lhs_edges=[],
-        rhs_nodes={'motor_6020':{'label':'motor_6020','shape':'cylinder','length':0.042,'radius':0.066, 'body_pos':[0,0,-0.042],'euler':[0,-90,0]}},
-        rhs_edges=[{'from_node':'limbmount','to_node':'motor_6020','label':'motor_6020','ctrlrange':[-1.2,1.2]}]
-
-
-    )
-    rules.append(rule)
-
-    # rule13 short limblink
+    # rule10 short limblink
 
     rule = create_rule(name='append_short_limblink',
-                        lhs_nodes={'motor_6020':{'require_label':'motor_6020'}},
+                        lhs_nodes={'motor':{'require_label':'motor'}},
                         lhs_edges=[],
                         rhs_nodes={'limblink':{'label':'limblink','shape':'capsule','length':0.15,'radius':0.03, 'body_pos':[0.015,0,0],'euler':[0,90,0]}},
                         rhs_edges=[{'from_node':'limbmount','to_node':'limblink','label':'limb_joint','axis':[0,1,0],'range':[-0.1,0.1]}]
