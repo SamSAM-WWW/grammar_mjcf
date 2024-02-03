@@ -51,6 +51,18 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
     输出:修改后的机器人图 `result`（类型为`RobotGraph`）
     '''
     result=input_graph
+
+
+    # Check if a body already exists
+    existing_bodies = [node for node in result.nodes if 'body' in node]
+    if existing_bodies and rule.name in ['make_robot']:
+        # Body already exists, don't apply the rule
+        print('Body already exists. Rule not applied.')
+        return result
+
+
+
+
     # 判断输入的 input_graph:RobotGraph 中是否有可操作的 target_node_name
     if target_node_name not in input_graph.nodes:
         print('!target_node_name not in input_graph.nodes!')
