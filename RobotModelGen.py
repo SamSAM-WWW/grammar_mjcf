@@ -6,6 +6,15 @@ import matplotlib.pyplot as plt
 import queue
 from new_.trans import *
 from search import *
+from scipy.spatial.transform import Rotation 
+
+def euler2quaternion(euler):
+    '''
+    欧拉角转四元数
+    '''
+    r = Rotation.from_euler('xyz', euler, degrees=True)
+    quaternion = r.as_quat()
+    return quaternion
 
 class ModelGenerator():
     '''
@@ -149,49 +158,200 @@ class ModelGenerator():
         添加一个机器人部件的几何体
         return: 该部件的body和geom
         '''
-        body =  e.Body(
-                name=robot_part.name,
-                pos=robot_part.body_pos,
-                euler=robot_part.euler
-                )
-        start_point = list(robot_part.start_point)
-        end_point = [start_point[0]+robot_part.length, start_point[1]+0,start_point[2]+0]
-        start_point.extend(end_point)
-        if robot_part.link_type == 'capsule': # 如果是胶囊形状
-            geom =  e.Geom(
-                    fromto = start_point,
-                    name   = "geom"+robot_part.name,
-                    size   = robot_part.size,
-                    type   = robot_part.link_type,
-                    euler  = robot_part.geom_euler
-                        )
-        if robot_part.link_type == 'sphere': # 如果是球形
-            geom =  e.Geom(
-                    pos = robot_part.geom_pos,
-                    name   = "geom"+robot_part.name,
-                    size   = robot_part.size,
-                    type   = robot_part.link_type,
-                    euler  = robot_part.geom_euler
-                        )
-        if robot_part.link_type == 'box': # 如果是box形状
-            geom =  e.Geom(
-                    pos = robot_part.geom_pos,
-                    name   = "geom"+robot_part.name,
-                    size   = robot_part.size,
-                    type   = robot_part.link_type,
-                    euler  = robot_part.geom_euler
-                        )
-        
-        if robot_part.link_type == 'cylinder': # 如果是圆柱形状
-            geom =  e.Geom(
-                    fromto = start_point,
-                    pos = robot_part.geom_pos,
-                    name   = "geom"+robot_part.name,
-                    size   = robot_part.size,
-                    type   = robot_part.link_type,
-                    euler  = robot_part.geom_euler
-                        )
-        return body,geom
+
+        if 'link_end' in robot_part.name:
+            # 处理包含 'link_end' 的情况
+            # 这里可以加入相应的处理代码
+            print("link_end!")
+            #欧拉转换为四元数
+            quat_np = euler2quaternion(robot_part.euler)
+            quat = [0.00,0.00,0.00,0.00]
+            i = 1
+            for q in quat_np:
+                quat[i] = round(q,5)
+                i = i+1
+                if i > 3:
+                    i=0
+
+            body =  e.Body(
+                    name=robot_part.name,
+                    pos=robot_part.body_pos,
+                    # euler=robot_part.euler
+                    quat=quat
+                    )
+            start_point = list(robot_part.start_point)
+            end_point = [start_point[0]+robot_part.length, start_point[1]+0,start_point[2]+0]
+            start_point.extend(end_point)
+            if robot_part.link_type == 'capsule': # 如果是胶囊形状
+
+                #欧拉转换为四元数
+                quat_np = euler2quaternion(robot_part.geom_euler)
+                quat = [0.00,0.00,0.00,0.00]
+                i = 1
+                for q in quat_np:
+                    quat[i] = round(q,5)
+                    i = i+1
+                    if i > 3:
+                        i=0
+                geom =  e.Geom(
+                        fromto = start_point,
+                        name   = "geom"+robot_part.name,
+                        size   = robot_part.size,
+                        type   = robot_part.link_type,
+                        # euler  = robot_part.geom_euler
+                        quat=quat
+                            )
+            if robot_part.link_type == 'sphere': # 如果是球形
+
+                #欧拉转换为四元数
+                quat_np = euler2quaternion(robot_part.geom_euler)
+                quat = [0.00,0.00,0.00,0.00]
+                i = 1
+                for q in quat_np:
+                    quat[i] = round(q,5)
+                    i = i+1
+                    if i > 3:
+                        i=0
+                geom =  e.Geom(
+                        pos = robot_part.geom_pos,
+                        name   = "geom"+robot_part.name,
+                        size   = robot_part.size,
+                        type   = robot_part.link_type,
+                        # euler  = robot_part.geom_euler
+                        quat=quat
+                            )
+            if robot_part.link_type == 'box': # 如果是box形状
+
+                #欧拉转换为四元数
+                quat_np = euler2quaternion(robot_part.geom_euler)
+                quat = [0.00,0.00,0.00,0.00]
+                i = 1
+                for q in quat_np:
+                    quat[i] = round(q,5)
+                    i = i+1
+                    if i > 3:
+                        i=0
+                geom =  e.Geom(
+                        pos = robot_part.geom_pos,
+                        name   = "geom"+robot_part.name,
+                        size   = robot_part.size,
+                        type   = robot_part.link_type,
+                        # euler  = robot_part.geom_euler
+                        quat=quat
+                            )
+            
+            if robot_part.link_type == 'cylinder': # 如果是圆柱形状
+                geom =  e.Geom(
+                        fromto = start_point,
+                        pos = robot_part.geom_pos,
+                        name   = "geom"+robot_part.name,
+                        size   = robot_part.size,
+                        type   = robot_part.link_type,
+                        euler  = robot_part.geom_euler
+                            )
+            return body,geom
+
+
+
+
+
+
+
+
+
+
+
+
+
+        else:
+            
+            #欧拉转换为四元数
+            quat_np = euler2quaternion(robot_part.euler)
+            quat = [0.00,0.00,0.00,0.00]
+            i = 1
+            for q in quat_np:
+                quat[i] = round(q,5)
+                i = i+1
+                if i > 3:
+                    i=0
+
+            body =  e.Body(
+                    name=robot_part.name,
+                    pos=robot_part.body_pos,
+                    # euler=robot_part.euler
+                    quat=quat
+                    )
+            start_point = list(robot_part.start_point)
+            end_point = [start_point[0]+robot_part.length, start_point[1]+0,start_point[2]+0]
+            start_point.extend(end_point)
+            if robot_part.link_type == 'capsule': # 如果是胶囊形状
+
+                #欧拉转换为四元数
+                quat_np = euler2quaternion(robot_part.geom_euler)
+                quat = [0.00,0.00,0.00,0.00]
+                i = 1
+                for q in quat_np:
+                    quat[i] = round(q,5)
+                    i = i+1
+                    if i > 3:
+                        i=0
+                geom =  e.Geom(
+                        fromto = start_point,
+                        name   = "geom"+robot_part.name,
+                        size   = robot_part.size,
+                        type   = robot_part.link_type,
+                        # euler  = robot_part.geom_euler
+                        quat=quat
+                            )
+            if robot_part.link_type == 'sphere': # 如果是球形
+
+                #欧拉转换为四元数
+                quat_np = euler2quaternion(robot_part.geom_euler)
+                quat = [0.00,0.00,0.00,0.00]
+                i = 1
+                for q in quat_np:
+                    quat[i] = round(q,5)
+                    i = i+1
+                    if i > 3:
+                        i=0
+                geom =  e.Geom(
+                        pos = robot_part.geom_pos,
+                        name   = "geom"+robot_part.name,
+                        size   = robot_part.size,
+                        type   = robot_part.link_type,
+                        # euler  = robot_part.geom_euler
+                        quat=quat
+                            )
+            if robot_part.link_type == 'box': # 如果是box形状
+
+                #欧拉转换为四元数
+                quat_np = euler2quaternion(robot_part.geom_euler)
+                quat = [0.00,0.00,0.00,0.00]
+                i = 1
+                for q in quat_np:
+                    quat[i] = round(q,5)
+                    i = i+1
+                    if i > 3:
+                        i=0
+                geom =  e.Geom(
+                        pos = robot_part.geom_pos,
+                        name   = "geom"+robot_part.name,
+                        size   = robot_part.size,
+                        type   = robot_part.link_type,
+                        # euler  = robot_part.geom_euler
+                        quat=quat
+                            )
+            
+            if robot_part.link_type == 'cylinder': # 如果是圆柱形状
+                geom =  e.Geom(
+                        fromto = start_point,
+                        pos = robot_part.geom_pos,
+                        name   = "geom"+robot_part.name,
+                        size   = robot_part.size,
+                        type   = robot_part.link_type,
+                        euler  = robot_part.geom_euler
+                            )
+            return body,geom
         
     def get_joint(self, robot_joint: RobotJoint) :
         '''

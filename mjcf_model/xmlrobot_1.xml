@@ -17,71 +17,111 @@
 	<worldbody>
 		<light cutoff="100" diffuse="1 1 1" dir="0 0 -1.3" directional="true" exponent="1" pos="0 0 1.3" specular="0.1 0.1 0.1" />
 		<geom conaffinity="1" condim="3" material="MatPlane" name="floor" pos="0 0 0" rgba="0.8 0.9 0.8 1" size="40 40 40" type="plane" />
-		<body euler="0 0 0" name="root" pos="0 0 2">
-			<geom euler="0 0 0" name="geomroot" pos="0 0 2" size="0.0005" type="sphere" />
-			<body euler="0 0 0" name="body1" pos="0 0 0">
-				<geom euler="0 0 0" name="geombody1" pos="-0.02 0 0" size="0.2 0.4 0.05" type="box" />
+		<body name="root" pos="0 0 2" quat="1.0 0.0 0.0 0.0">
+			<geom name="geomroot" pos="0 0 2" quat="1.0 0.0 0.0 0.0" size="0.0005" type="sphere" />
+			<body name="body1" pos="0 0 0" quat="1.0 0.0 0.0 0.0">
+				<geom name="geombody1" pos="-0.02 0 0" quat="1.0 0.0 0.0 0.0" size="0.2 0.4 0.05" type="box" />
 				<joint axis="1 0 0" name="joint_joint1" pos="0 0 0" range="-45 45" type="hinge" />
-				<body euler="0 90 0" name="limbmount4" pos="0.1875 -0.2 0">
-					<geom euler="0 0 0" fromto="0 0 0 0.025 0 0" name="geomlimbmount4" size="0.025" type="capsule" />
-					<joint axis="1 0 0" name="joint_joint5" pos="0 0 0" range="-45 45" type="hinge" />
-					<body euler="0 -90 0" name="motor4" pos="0 0 0">
-						<geom euler="0 0 0" fromto="0 0 0 0.042 0 0" name="geommotor4" pos="0 0 0" size="0.066" type="cylinder" />
-						<joint axis="1 0 0" name="joint_joint12" pos="0 0 0" range="-45 45" type="hinge" />
-						<body euler="0 90 0" name="limblink4" pos="0.042 0 0">
-							<geom euler="0 0 0" fromto="0 0 0 0.3 0 0" name="geomlimblink4" size="0.03" type="capsule" />
-							<joint axis="0 1 0" name="joint_joint14" pos="0 0 0" range="-0.1 0.1" type="hinge" />
-							<body euler="0 0 0" name="leg2" pos="0.6 0 0">
-								<geom euler="0 0 0" fromto="0 0 0 0.8 0 0" name="geomleg2" size="0.08" type="capsule" />
-								<joint axis="1 0 0" damping="2.5" name="joint_joint15" pos="0 0 0" range="-0.1 0.1" stiffness="80" type="slide" />
+				<body name="limbmount4" pos="0.1875 -0.2 0" quat="0.70711 0.0 0.70711 0.0">
+					<geom fromto="0 0 0 0.025 0 0" name="geomlimbmount4" quat="1.0 0.0 0.0 0.0" size="0.025" type="capsule" />
+					<joint axis="0 1 0" name="joint_joint5" pos="0 0 0" range="-45 45" type="hinge" />
+					<body name="motor6" pos="0 0 0" quat="0.70711 0.0 -0.70711 0.0">
+						<geom euler="0 0 0" fromto="0 0 0 0.042 0 0" name="geommotor6" pos="0 0 0" size="0.066" type="cylinder" />
+						<joint axis="1 0 0" name="joint_joint15" pos="0 0 0" range="-45 45" type="hinge" />
+						<body name="limblink7" pos="0 0 0" quat="0.70711 0.0 0.70711 0.0">
+							<geom fromto="0 0 0 0.3 0 0" name="geomlimblink7" quat="1.0 0.0 0.0 0.0" size="0.06" type="capsule" />
+							<joint axis="0 1 0" name="joint_joint20" pos="0 0 0" range="-0.1 0.1" type="hinge" />
+							<body name="motor_link_end5" pos="0.3 0 0" quat="0.70711 0.0 -0.70711 0.0">
+								<geom euler="0 0 0" fromto="0 0 0 0.042 0 0" name="geommotor_link_end5" pos="0 0 0" size="0.066" type="cylinder" />
+								<joint axis="1 0 0" name="joint_joint21" pos="0 0 0" range="-45 45" type="hinge" />
+								<body name="limblink8" pos="0.042 0 0" quat="0.70711 0.0 0.70711 0.0">
+									<geom fromto="0 0 0 0.3 0 0" name="geomlimblink8" quat="1.0 0.0 0.0 0.0" size="0.06" type="capsule" />
+									<joint axis="0 1 0" name="joint_joint22" pos="0 0 0" range="-0.1 0.1" type="hinge" />
+									<body name="motor_link_end6" pos="0.3 0 0" quat="0.70711 0.0 -0.70711 0.0">
+										<geom euler="0 0 0" fromto="0 0 0 0.042 0 0" name="geommotor_link_end6" pos="0 0 0" size="0.066" type="cylinder" />
+										<joint axis="1 0 0" name="joint_joint24" pos="0 0 0" range="-45 45" type="hinge" />
+									</body>
+								</body>
 							</body>
 						</body>
 					</body>
 				</body>
-				<body euler="0 90 0" name="limbmount3" pos="-0.225 -0.2 0">
-					<geom euler="0.0 0.0 180.0" fromto="0 0 0 0.025 0 0" name="geomlimbmount3" size="0.025" type="capsule" />
-					<joint axis="1 0 0" name="joint_joint4" pos="0 0 0" range="-45 45" type="hinge" />
-					<body euler="0.0 -90.0 180.0" name="motor3" pos="0 0 0">
+				<body name="limbmount3" pos="-0.225 -0.2 0" quat="0.70711 0.0 0.70711 0.0">
+					<geom fromto="0 0 0 0.025 0 0" name="geomlimbmount3" quat="1.0 0.0 0.0 0.0" size="0.025" type="capsule" />
+					<joint axis="0 1 0" name="joint_joint4" pos="0 0 0" range="-45 45" type="hinge" />
+					<body name="motor3" pos="0 0 0" quat="0.70711 0.0 -0.70711 0.0">
 						<geom euler="0 0 0" fromto="0 0 0 0.042 0 0" name="geommotor3" pos="0 0 0" size="0.066" type="cylinder" />
-						<joint axis="1 0 0" name="joint_joint9" pos="0 0 0" range="-45 45" type="hinge" />
-						<body euler="0 90 0" name="limblink2" pos="0.042 0 0">
-							<geom euler="0 0 0" fromto="0 0 0 0.3 0 0" name="geomlimblink2" size="0.06" type="capsule" />
-							<joint axis="0 1 0" name="joint_joint11" pos="0 0 0" range="-0.1 0.1" type="hinge" />
-							<body euler="0 0 0" name="leg3" pos="0.6 0 0">
-								<geom euler="0 0 0" fromto="0 0 0 0.8 0 0" name="geomleg3" size="0.08" type="capsule" />
-								<joint axis="1 0 0" damping="2.5" name="joint_joint16" pos="0 0 0" range="-0.1 0.1" stiffness="80" type="slide" />
+						<joint axis="1 0 0" name="joint_joint8" pos="0 0 0" range="-45 45" type="hinge" />
+						<body name="short_limblink1" pos="0.015 0 0" quat="0.70711 0.0 0.70711 0.0">
+							<geom fromto="0 0 0 0.15 0 0" name="geomshort_limblink1" quat="1.0 0.0 0.0 0.0" size="0.03" type="capsule" />
+							<joint axis="0 1 0" name="joint_joint9" pos="0 0 0" range="-0.1 0.1" type="hinge" />
+							<body name="motor_link_end1" pos="0.15 0 0" quat="0.70711 0.0 -0.70711 0.0">
+								<geom euler="0 0 0" fromto="0 0 0 0.042 0 0" name="geommotor_link_end1" pos="0 0 0" size="0.066" type="cylinder" />
+								<joint axis="1 0 0" name="joint_joint10" pos="0 0 0" range="-45 45" type="hinge" />
+								<body name="limblink6" pos="0.042 0 0" quat="0.70711 0.0 0.70711 0.0">
+									<geom fromto="0 0 0 0.3 0 0" name="geomlimblink6" quat="1.0 0.0 0.0 0.0" size="0.06" type="capsule" />
+									<joint axis="0 1 0" name="joint_joint19" pos="0 0 0" range="-0.1 0.1" type="hinge" />
+									<body name="motor_link_end8" pos="0.3 0 0" quat="0.70711 0.0 -0.70711 0.0">
+										<geom euler="0 0 0" fromto="0 0 0 0.042 0 0" name="geommotor_link_end8" pos="0 0 0" size="0.066" type="cylinder" />
+										<joint axis="1 0 0" name="joint_joint27" pos="0 0 0" range="-45 45" type="hinge" />
+									</body>
+								</body>
 							</body>
 						</body>
 					</body>
 				</body>
-				<body euler="0 90 0" name="limbmount2" pos="-0.225 0.2 0">
-					<geom euler="0.0 0.0 180.0" fromto="0 0 0 0.025 0 0" name="geomlimbmount2" size="0.025" type="capsule" />
-					<joint axis="1 0 0" name="joint_joint3" pos="0 0 0" range="-45 45" type="hinge" />
-					<body euler="0.0 -90.0 180.0" name="motor1" pos="0 0 0">
-						<geom euler="0 0 0" fromto="0 0 0 0.042 0 0" name="geommotor1" pos="0 0 0" size="0.066" type="cylinder" />
-						<joint axis="1 0 0" name="joint_joint6" pos="0 0 0" range="-45 45" type="hinge" />
-						<body euler="0 90 0" name="limblink3" pos="0.042 0 0">
-							<geom euler="0 0 0" fromto="0 0 0 0.3 0 0" name="geomlimblink3" size="0.06" type="capsule" />
-							<joint axis="0 1 0" name="joint_joint13" pos="0 0 0" range="-0.1 0.1" type="hinge" />
-							<body euler="0 0 0" name="leg4" pos="0.6 0 0">
-								<geom euler="0 0 0" fromto="0 0 0 0.8 0 0" name="geomleg4" size="0.08" type="capsule" />
-								<joint axis="1 0 0" damping="2.5" name="joint_joint17" pos="0 0 0" range="-0.1 0.1" stiffness="80" type="slide" />
-							</body>
-						</body>
-					</body>
-				</body>
-				<body euler="0 90 0" name="limbmount1" pos="0.1875 0.2 0">
-					<geom euler="0 0 0" fromto="0 0 0 0.025 0 0" name="geomlimbmount1" size="0.025" type="capsule" />
-					<joint axis="0 1 0" name="joint_joint2" pos="0 0 0" range="-45 45" type="hinge" />
-					<body euler="0 -90 0" name="motor2" pos="0 0 0">
+				<body name="limbmount2" pos="-0.225 0.2 0" quat="0.70711 0.0 0.70711 0.0">
+					<geom fromto="0 0 0 0.025 0 0" name="geomlimbmount2" quat="1.0 0.0 0.0 0.0" size="0.025" type="capsule" />
+					<joint axis="0 1 0" name="joint_joint3" pos="0 0 0" range="-45 45" type="hinge" />
+					<body name="motor2" pos="0 0 0" quat="0.70711 0.0 -0.70711 0.0">
 						<geom euler="0 0 0" fromto="0 0 0 0.042 0 0" name="geommotor2" pos="0 0 0" size="0.066" type="cylinder" />
 						<joint axis="1 0 0" name="joint_joint7" pos="0 0 0" range="-45 45" type="hinge" />
-						<body euler="0 90 0" name="limblink1" pos="0 0 0">
-							<geom euler="0 0 0" fromto="0 0 0 0.3 0 0" name="geomlimblink1" size="0.06" type="capsule" />
-							<joint axis="0 1 0" name="joint_joint8" pos="0 0 0" range="-0.1 0.1" type="hinge" />
-							<body euler="0 0 0" name="leg1" pos="0.6 0 0">
-								<geom euler="0 0 0" fromto="0 0 0 0.8 0 0" name="geomleg1" size="0.08" type="capsule" />
-								<joint axis="1 0 0" damping="2.5" name="joint_joint10" pos="0 0 0" range="-0.1 0.1" stiffness="80" type="slide" />
+						<body name="short_limblink2" pos="0.015 0 0" quat="0.70711 0.0 0.70711 0.0">
+							<geom fromto="0 0 0 0.15 0 0" name="geomshort_limblink2" quat="1.0 0.0 0.0 0.0" size="0.03" type="capsule" />
+							<joint axis="0 1 0" name="joint_joint12" pos="0 0 0" range="-0.1 0.1" type="hinge" />
+							<body name="motor_link_end4" pos="0.15 0 0" quat="0.70711 0.0 -0.70711 0.0">
+								<geom euler="0 0 0" fromto="0 0 0 0.042 0 0" name="geommotor_link_end4" pos="0 0 0" size="0.066" type="cylinder" />
+								<joint axis="1 0 0" name="joint_joint18" pos="0 0 0" range="-45 45" type="hinge" />
+								<body name="limblink9" pos="0.042 0 0" quat="0.70711 0.0 0.70711 0.0">
+									<geom fromto="0 0 0 0.3 0 0" name="geomlimblink9" quat="1.0 0.0 0.0 0.0" size="0.03" type="capsule" />
+									<joint axis="0 1 0" name="joint_joint23" pos="0 0 0" range="-0.1 0.1" type="hinge" />
+									<body name="motor_link_end7" pos="0.3 0 0" quat="0.70711 0.0 -0.70711 0.0">
+										<geom euler="0 0 0" fromto="0 0 0 0.042 0 0" name="geommotor_link_end7" pos="0 0 0" size="0.066" type="cylinder" />
+										<joint axis="1 0 0" name="joint_joint25" pos="0 0 0" range="-45 45" type="hinge" />
+										<body name="short_limblink4" pos="0.015 0 0" quat="0.70711 0.0 0.70711 0.0">
+											<geom fromto="0 0 0 0.15 0 0" name="geomshort_limblink4" quat="1.0 0.0 0.0 0.0" size="0.03" type="capsule" />
+											<joint axis="0 1 0" name="joint_joint26" pos="0 0 0" range="-0.1 0.1" type="hinge" />
+										</body>
+									</body>
+								</body>
+							</body>
+						</body>
+					</body>
+				</body>
+				<body name="limbmount1" pos="0.1875 0.2 0" quat="0.70711 0.0 0.70711 0.0">
+					<geom fromto="0 0 0 0.025 0 0" name="geomlimbmount1" quat="1.0 0.0 0.0 0.0" size="0.025" type="capsule" />
+					<joint axis="0 1 0" name="joint_joint2" pos="0 0 0" range="-45 45" type="hinge" />
+					<body name="motor1" pos="0 0 0" quat="0.70711 0.0 -0.70711 0.0">
+						<geom euler="0 0 0" fromto="0 0 0 0.042 0 0" name="geommotor1" pos="0 0 0" size="0.066" type="cylinder" />
+						<joint axis="1 0 0" name="joint_joint6" pos="0 0 0" range="-45 45" type="hinge" />
+						<body name="limblink2" pos="0.042 0 0" quat="0.70711 0.0 0.70711 0.0">
+							<geom fromto="0 0 0 0.3 0 0" name="geomlimblink2" quat="1.0 0.0 0.0 0.0" size="0.03" type="capsule" />
+							<joint axis="0 1 0" name="joint_joint11" pos="0 0 0" range="-0.1 0.1" type="hinge" />
+							<body name="motor_link_end2" pos="0.3 0 0" quat="0.70711 0.0 -0.70711 0.0">
+								<geom euler="0 0 0" fromto="0 0 0 0.042 0 0" name="geommotor_link_end2" pos="0 0 0" size="0.066" type="cylinder" />
+								<joint axis="1 0 0" name="joint_joint13" pos="0 0 0" range="-45 45" type="hinge" />
+								<body name="limblink4" pos="0 0 0" quat="0.70711 0.0 0.70711 0.0">
+									<geom fromto="0 0 0 0.3 0 0" name="geomlimblink4" quat="1.0 0.0 0.0 0.0" size="0.06" type="capsule" />
+									<joint axis="0 1 0" name="joint_joint14" pos="0 0 0" range="-0.1 0.1" type="hinge" />
+									<body name="motor_link_end3" pos="0.3 0 0" quat="0.70711 0.0 -0.70711 0.0">
+										<geom euler="0 0 0" fromto="0 0 0 0.042 0 0" name="geommotor_link_end3" pos="0 0 0" size="0.066" type="cylinder" />
+										<joint axis="1 0 0" name="joint_joint16" pos="0 0 0" range="-45 45" type="hinge" />
+										<body name="short_limblink3" pos="0.015 0 0" quat="0.70711 0.0 0.70711 0.0">
+											<geom fromto="0 0 0 0.15 0 0" name="geomshort_limblink3" quat="1.0 0.0 0.0 0.0" size="0.03" type="capsule" />
+											<joint axis="0 1 0" name="joint_joint17" pos="0 0 0" range="-0.1 0.1" type="hinge" />
+										</body>
+									</body>
+								</body>
 							</body>
 						</body>
 					</body>
@@ -92,20 +132,30 @@
 	<actuator>
 		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint1" />
 		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint5" />
-		<motor ctrllimited="true" ctrlrange="-1.2 1.2" joint="joint_joint12" />
-		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint14" />
-		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint15" />
+		<motor ctrllimited="true" ctrlrange="-1.2 1.2" joint="joint_joint15" />
+		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint20" />
+		<motor ctrllimited="true" ctrlrange="-1.2 1.2" joint="joint_joint21" />
+		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint22" />
+		<motor ctrllimited="true" ctrlrange="-1.2 1.2" joint="joint_joint24" />
 		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint4" />
-		<motor ctrllimited="true" ctrlrange="-1.2 1.2" joint="joint_joint9" />
-		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint11" />
-		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint16" />
+		<motor ctrllimited="true" ctrlrange="-1.2 1.2" joint="joint_joint8" />
+		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint9" />
+		<motor ctrllimited="true" ctrlrange="-1.2 1.2" joint="joint_joint10" />
+		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint19" />
+		<motor ctrllimited="true" ctrlrange="-1.2 1.2" joint="joint_joint27" />
 		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint3" />
-		<motor ctrllimited="true" ctrlrange="-1.2 1.2" joint="joint_joint6" />
-		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint13" />
-		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint17" />
-		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint2" />
 		<motor ctrllimited="true" ctrlrange="-1.2 1.2" joint="joint_joint7" />
-		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint8" />
-		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint10" />
+		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint12" />
+		<motor ctrllimited="true" ctrlrange="-1.2 1.2" joint="joint_joint18" />
+		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint23" />
+		<motor ctrllimited="true" ctrlrange="-1.2 1.2" joint="joint_joint25" />
+		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint26" />
+		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint2" />
+		<motor ctrllimited="true" ctrlrange="-1.2 1.2" joint="joint_joint6" />
+		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint11" />
+		<motor ctrllimited="true" ctrlrange="-1.2 1.2" joint="joint_joint13" />
+		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint14" />
+		<motor ctrllimited="true" ctrlrange="-1.2 1.2" joint="joint_joint16" />
+		<motor ctrllimited="true" ctrlrange="-1 1" joint="joint_joint17" />
 	</actuator>
 </mujoco>
