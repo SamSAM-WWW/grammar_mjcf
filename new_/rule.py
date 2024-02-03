@@ -264,7 +264,7 @@ def create_4leg_rules():
     rule = create_rule(name='append_limblink',
                         lhs_nodes={'motor':{'require_label':'motor'}},
                         lhs_edges=[],
-                        rhs_nodes={'limblink':{'label':'limblink','shape':'capsule','length':0.3,'radius':0.06, 'body_pos':[0.042,0,0],'euler':[0,90,0]}},
+                        rhs_nodes={'limblink':{'label':'limblink','shape':'capsule','length':0.3,'radius':0.035, 'body_pos':[0.042,0,0],'euler':[0,90,0]}},
                         rhs_edges=[{'from_node':'motor','to_node':'limblink','label':'limb_joint','axis':[0,1,0],'range':[-0.1,0.1],}]
                         )
     rules.append(rule)
