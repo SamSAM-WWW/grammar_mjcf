@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import queue
 from new_.trans import *
 import random
+import copy
 
 def get_available_actions(R, rules):
     available_actions = []
@@ -62,6 +63,81 @@ def random_search(R, rules, available_actions):
 
     return R
 
+
+# def copy_subtree(R, source_node, target_node):
+#     # 获取 source_node 的所有子节点
+#     children = list(R.successors(source_node))
+
+#     # 复制 source_node 及其子节点到 target_node
+#     for child in children:
+#         print("Edges in R:", R.edges)
+#         if ('limbmount1', source_node) in R.edges:
+#             print(f"Edge ('limbmount1', {source_node}) found in R.edges.")
+#         else:
+#             print(f"Error: Edge ('limbmount1', {source_node}) not found in R.edges.")
+#         new_child = copy.deepcopy(R.nodes[child]['info'])
+#         R.add_node(node_type=R.nodes[child]['type'], node_info=new_child)
+#         R.add_edge(target_node, new_child.name)
+#         # 递归调用 copy_subtree 函数以复制所有子节点
+#         copy_subtree(R, child, new_child.name)
+
+def copy_subtree(R, source_node, target_node_prefix):
+    # 获取 source_node 的所有子节点
+    children = list(R.successors(source_node))
+
+    # 复制 source_node 及其子节点到 target_node
+    for child in children:
+        # 生成新节点的名称，确保不与已有节点重复
+        new_child_name = f"{target_node_prefix}_{child}"
+        new_child = copy.deepcopy(R.nodes[child]['info'])
+        
+        # 修改节点名称
+        new_child.name = new_child_name
+        
+        # 添加新节点
+        R.add_node(node_type=R.nodes[child]['type'], node_info=new_child)
+
+        # 添加边
+        R.add_edge(target_node_prefix, new_child_name)
+
+        # 递归调用 copy_subtree 函数以复制所有子节点
+        copy_subtree(R, child, new_child_name)
+
+def replace_limbmounts_recursive(R, limbmount_node):
+    # 获取 limbmount_node 的所有子节点
+    print("Nodes in R:", R.nodes)
+    children = list(R.successors(limbmount_node))
+    
+    
+    # 删除当前节点
+    R.remove_node(limbmount_node)
+
+    
+
+    # 递归调用 replace_limbmounts_recursive 函数以删除所有子节点
+    for child in children:
+        replace_limbmounts_recursive(R, child)
+
+def replace_limbmounts(R):
+    # 删除 limbmount_2 的子树
+    limbmount_2_children = list(R.successors("limbmount2"))
+    if limbmount_2_children:
+        limbmount_2_first_child = limbmount_2_children[0]
+    replace_limbmounts_recursive(R, limbmount_2_first_child)
+
+    # 复制 limbmount_1 的子树到 limbmount_2
+    copy_subtree(R, "limbmount1", "limbmount2")
+
+    # 删除 limbmount_4 的子树
+    limbmount_4_children = list(R.successors("limbmount4"))
+    if limbmount_4_children:
+        limbmount_4_first_child = limbmount_4_children[0]
+    replace_limbmounts_recursive(R, limbmount_4_first_child)
+
+    # 复制 limbmount_3 的子树到 limbmount_4
+    copy_subtree(R, "limbmount3", "limbmount4")
+
+    return R
 # 示例用法
 def result_R():
 
@@ -79,6 +155,7 @@ def result_R():
         available_actions = get_available_actions(R, rules)
         print("可执行的规则序号：", available_actions)
 
+    R = replace_limbmounts(R)
     return R
 
 

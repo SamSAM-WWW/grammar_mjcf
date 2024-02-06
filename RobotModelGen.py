@@ -504,6 +504,8 @@ class ModelGenerator():
             fh.write(model_xml)
 
 
+    
+
 # if __name__ == '__main__':
 
 #     R = RobotGraph(name='antrobot')
@@ -617,5 +619,5 @@ if __name__ == '__main__':
     nx.draw_networkx(R, ax=ax,pos=pos)
     ax.set_title("DAG layout in topological order")
     fig.tight_layout()
-    # plt.show()
+    plt.show()
     trans_op()
