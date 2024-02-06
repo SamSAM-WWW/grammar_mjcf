@@ -88,7 +88,7 @@ def copy_subtree(R, source_node, target_node_prefix):
     # 复制 source_node 及其子节点到 target_node
     for child in children:
         # 生成新节点的名称，确保不与已有节点重复
-        new_child_name = f"{target_node_prefix}_{child}"
+        new_child_name = f"{target_node_prefix}_new"
         new_child = copy.deepcopy(R.nodes[child]['info'])
         
         # 修改节点名称
