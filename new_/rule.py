@@ -225,7 +225,7 @@ def create_4leg_rules():
                         lhs_nodes={'root':{'require_label':'root','shape':'sphere','radius':0.0005,'density':3.0, 'body_pos':[0,0,2], 'geom_pos':[0,0,2]}},
                         lhs_edges=[],
                         rhs_nodes={'body':{'shape':'box','radius':'0.2 0.4 0.05','density':3.0,'euler':[0,0,0],'geom_euler':[0,0,0], 'geom_pos':[-0.02,0,0]},'root':{'label':'root'}},
-                        rhs_edges=[{'from_node':'root','to_node':'body'}])
+                        rhs_edges=[{'from_node':'root','to_node':'body','range':[-0.0001,0.0001]}])
     rules.append(rule)
 
     # rule1-1 1 右前

@@ -100,20 +100,64 @@ class ModelGenerator():
             mat2,
         ])
     
-    def set_default(self,):
-            # Default
-        default_joint = e.Joint(
-            armature=1,
-            damping=1,
-            limited=True
+    # def set_default(self,):
+    #         # Default
+    #     default_joint = e.Joint(
+    #         armature=1,
+    #         damping=1,
+    #         limited=True
+    #     )
+    #     d_geom = e.Geom(
+    #         conaffinity=0,
+    #         condim=3,
+    #         margin=0.01,
+    #         rgba=[0.8, 0.6, 0.4, 1]
+    #     )
+    #     self.default.add_children([default_joint, d_geom])
+        
+    def set_default(self):
+        # Create the <motor> element
+        motor = e.Motor(ctrlrange="-1 1", ctrllimited="true")
+
+        # Create the <default> element for bodies
+        body_default = e.Default(class_="body")
+
+        # Create the <geom> element inside body_default
+        geom = e.Geom(
+            type="capsule",
+            condim="1",
+            friction="1.0 0.05 0.05",
+            solimp=".9 .99 .003",
+            solref=".015 1",
+            material="self"
         )
-        d_geom = e.Geom(
-            conaffinity=0,
-            condim=3,
-            margin=0.01,
-            rgba=[0.8, 0.6, 0.4, 1]
+
+        # Create the <joint> element inside body_default
+        joint = e.Joint(
+            type="hinge",
+            damping="0.1",
+            stiffness="5",
+            armature=".007",
+            limited="true",
+            solimplimit="0 .99 .01"
         )
-        self.default.add_children([default_joint, d_geom])
+
+        # Create the <default> element for small joints
+        joint_default = e.Default(class_="joint")
+
+        # Create the <joint> element inside joint_default
+        joint = e.Joint(
+            damping="1.0",
+            stiffness="2",
+            armature=".006"
+        )
+
+        # Add elements to the respective defaults
+        body_default.add_children([geom, joint])
+        joint_default.add_child(joint)
+
+        # Add the <motor> element and both <default> elements to the model
+        self.default.add_children([motor, body_default, joint_default])
 
     def set_compiler(self, angle = 'radian', eulerseq = 'xyz',**kwargs):
         self.compiler.angle = angle
