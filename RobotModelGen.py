@@ -115,49 +115,48 @@ class ModelGenerator():
     #     )
     #     self.default.add_children([default_joint, d_geom])
         
-    def set_default(self):
-        # Create the <motor> element
-        motor = e.Motor(ctrlrange="-1 1", ctrllimited="true")
+    #       
 
-        # Create the <default> element for bodies
-        body_default = e.Default(class_="body")
+        # # Create the <default> element for bodies
+        # body_default = e.Default(class_="body")
 
-        # Create the <geom> element inside body_default
-        geom = e.Geom(
-            type="capsule",
-            condim="1",
-            friction="1.0 0.05 0.05",
-            solimp=".9 .99 .003",
-            solref=".015 1",
-            material="self"
-        )
+        # # Create the <geom> element inside body_default
+        # geom = e.Geom(
+        #     type="capsule",
+        #     condim="1",
+        #     friction="1.0 0.05 0.05",
+        #     solimp=".9 .99 .003",
+        #     solref=".015 1",
+        #     density='1000'
+        # )
 
-        # Create the <joint> element inside body_default
-        joint = e.Joint(
-            type="hinge",
-            damping="0.1",
-            stiffness="5",
-            armature=".007",
-            limited="true",
-            solimplimit="0 .99 .01"
-        )
+        # # # Create the <joint> element inside body_default
+        # # joint = e.Joint(
+        # #     type="hinge",
+        # #     damping="0.1",
+        # #     stiffness="5",
+        # #     armature=".007",
+        # #     limited="true",
+        # #     solimplimit="0 .99 .01"
+        # # )
 
-        # Create the <default> element for small joints
-        joint_default = e.Default(class_="joint")
+        # # Create the <default> element for small joints
+        # joint_default = e.Default(class_="joint")
 
-        # Create the <joint> element inside joint_default
-        joint = e.Joint(
-            damping="1.0",
-            stiffness="2",
-            armature=".006"
-        )
+        # # Create the <joint> element inside joint_default
+        # joint = e.Joint(
+        #     limited="true",
+        #     damping="2.0",
+        #     stiffness="10",
+        #     armature=".006"
+        # )
 
-        # Add elements to the respective defaults
-        body_default.add_children([geom, joint])
-        joint_default.add_child(joint)
+        # # Add elements to the respective defaults
+        # # body_default.add_children([geom, joint])
+        # joint_default.add_child(joint)
 
-        # Add the <motor> element and both <default> elements to the model
-        self.default.add_children([motor, body_default, joint_default])
+        # # Add the <motor> element and both <default> elements to the model
+        # self.default.add_children([joint_default])
 
     def set_compiler(self, angle = 'radian', eulerseq = 'xyz',**kwargs):
         self.compiler.angle = angle
@@ -221,7 +220,8 @@ class ModelGenerator():
                     name=robot_part.name,
                     pos=robot_part.body_pos,
                     # euler=robot_part.euler
-                    quat=quat
+                    quat=quat,
+                    # childclass = 'body'
                     )
             start_point = list(robot_part.start_point)
             end_point = [start_point[0]+robot_part.length, start_point[1]+0,start_point[2]+0]
@@ -238,7 +238,8 @@ class ModelGenerator():
                     if i > 3:
                         i=0
                 geom =  e.Geom(
-                        fromto = start_point,
+                        # fromto = start_point,
+                        pos = robot_part.geom_pos,
                         name   = "geom"+robot_part.name,
                         size   = robot_part.size,
                         type   = robot_part.link_type,
@@ -408,17 +409,22 @@ class ModelGenerator():
                         pos=robot_joint.pos,
                         range=robot_joint.joint_range,
                         type=robot_joint.joint_type,
-                        damping=robot_joint.damping
+                        damping="1.0",
+                        stiffness="2.0",
+                        # armature="0.005",
+                        limited=True if robot_joint.joint_range != None else False,
                             )
-        if robot_joint.armature != None:
-            joint.armature = robot_joint.armature
-        if robot_joint.stiffness != None:
-            joint.stiffness = robot_joint.stiffness
-
+        # if robot_joint.armature != None:
+        #     joint.armature = robot_joint.armature
+        # if robot_joint.stiffness != None:
+        #     joint.stiffness = robot_joint.stiffness
+        # if robot_joint.joint_class != None:
+        #     joint.class_ = robot_joint.joint_class
         actuator  = e.Motor(
                         ctrllimited=robot_joint.ctrllimited,
                         ctrlrange= robot_joint.ctrlrange,
                         joint="joint_"+robot_joint.name,
+                        gear=15
                         
                     )
         return joint,actuator
@@ -643,7 +649,7 @@ if __name__ == '__main__':
     M.set_basic_assets()
     M.set_size()
     M.set_option(gravity=0)
-    M.set_default()
+    # M.set_default()
     M.set_ground()
     #M.get_robot(R)
     M.get_robot_dfs()

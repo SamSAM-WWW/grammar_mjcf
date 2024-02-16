@@ -19,7 +19,8 @@ class RobotLink():
                  geom_pos = [0,0,0], # 几何体位置，sphere用
                  body_pos = [0,0,0],
                  euler = [0,0,0],  # body坐标系旋转的欧拉角
-                 geom_euler = [0,0,0] # geom几何旋转的欧拉角
+                 geom_euler = [0,0,0], # geom几何旋转的欧拉角
+                 link_class = 'body'
                 ):
         self.name = name
         self.length = length
@@ -31,6 +32,7 @@ class RobotLink():
         self.euler = euler
         self.geom_pos = geom_pos
         self.geom_euler = geom_euler
+        self.link_class = link_class
 
 
 class RobotJoint():
@@ -47,7 +49,8 @@ class RobotJoint():
                  damping = None,
                  armature = None,  
                  ctrlrange = [-1,1],
-                 ctrllimited = True):
+                 ctrllimited = True,
+                 joint_class = 'joint'):
         self.name = name
         self.joint_type = joint_type
         self.armature = armature
@@ -58,7 +61,7 @@ class RobotJoint():
         self.damping = damping
         self.ctrlrange = ctrlrange
         self.ctrllimited = ctrllimited
-
+        self.joint_class = joint_class
 
 class RobotGraph(DiGraph):
 

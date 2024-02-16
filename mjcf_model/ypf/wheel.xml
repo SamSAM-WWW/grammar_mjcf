@@ -1,5 +1,6 @@
 <mujoco model="robot">
     <compiler angle="degree" inertiafromgeom="true" />
+    <option gravity="0 0 0" />
     <default class="decor">
         <site type="box" rgba="0.5 1 0.5 1" />
     </default>
