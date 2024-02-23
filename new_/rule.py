@@ -218,6 +218,7 @@ def create_4leg_rules():
     输入:无
 
     输出:规则列表 `rules` （类型为`list`）
+    注意：若添加新规则 需要判断是否允许重复搜索该规则 若不允许 需要同步修改search.py 45行 apply_rule.py 410行
     '''  
     rules = [] 
     # rule0 
@@ -290,13 +291,13 @@ def create_4leg_rules():
 
 
 
-# rule8 在limbmount 添加一个motor
+# rule7 在limbmount 添加一个motor
     rule = create_rule(
         name='add_motor',
         lhs_nodes={'limbmount':{'require_label':'limbmount'}},
         lhs_edges=[],
         rhs_nodes={'motor':{'label':'motor','shape':'cylinder','length':0.042,'radius':0.066, 'body_pos':[0,0,0],'euler':[0,-90,0]}},
-        rhs_edges=[{'from_node':'limbmount','to_node':'motor','label':'mount-motor','ctrlrange':[-1.2,1.2]}]
+        rhs_edges=[{'from_node':'limbmount','to_node':'motor','label':'mount-motor','ctrlrange':[-1,1]}]
 
 
     )
@@ -314,7 +315,7 @@ def create_4leg_rules():
     # rules.append(rule)
 
 
-    # rule10 在motor上连short limblink
+    # rule8 在motor上连short limblink
 
     rule = create_rule(name='append_short_limblink',
                         lhs_nodes={'motor':{'require_label':'motor'}},
@@ -324,32 +325,97 @@ def create_4leg_rules():
                         )
     rules.append(rule)
 
-    #rule11 在link/thinlink末端添加一个motor
+    #rule9 在link/thinlink末端添加一个motor
 
     rule = create_rule(
         name='add_motor_link_end',
         lhs_nodes={'limblink':{'require_label':'limblink'}},
         lhs_edges=[],
         rhs_nodes={'motor_link_end':{'label':'motor_link_end','shape':'cylinder','length':0.042,'radius':0.066, 'body_pos':[0.3,0,0],'euler':[0,-90,0]}},
-        rhs_edges=[{'from_node':'limblink','to_node':'motor_link_end','label':'motor-end','ctrlrange':[-1.2,1.2]}]
+        rhs_edges=[{'from_node':'limblink','to_node':'motor_link_end','label':'motor-end','ctrlrange':[-1,1]}]
 
 
     )
     rules.append(rule)
 
 
-    #rule12 在shortlink末端添加一个motor
+    #rule10 在shortlink末端添加一个motor
 
     rule = create_rule(
         name='add_motor_link_end',
         lhs_nodes={'short_limblink':{'require_label':'short_limblink'}},
         lhs_edges=[],
         rhs_nodes={'motor_link_end':{'label':'motor_link_end','shape':'cylinder','length':0.042,'radius':0.066, 'body_pos':[0.15,0,0],'euler':[0,-90,0]}},
-        rhs_edges=[{'from_node':'short_limblink','to_node':'motor_link_end','label':'motor-shend','ctrlrange':[-1.2,1.2]}]
+        rhs_edges=[{'from_node':'short_limblink','to_node':'motor_link_end','label':'motor-shend','ctrlrange':[-1,1]}]
 
 
     )
     rules.append(rule)
+
+    #rule11 在body上加一个手的底座
+
+    rule = create_rule(
+        name='add_hand_mount',
+        lhs_nodes={'body':{'require_label':'body'}},
+        lhs_edges=[],
+        rhs_nodes={'hand_mount':{'shape':'capsule','length':0.025,'radius':0.025, 'body_pos':[-0.01875,0.2,0.1],'euler':[0,90,0]}},
+        rhs_edges=[{'from_node':'body','to_node':'hand_mount','label':'hand_mount','ctrlrange':[-1,1],'range':[-180,180]}]
+
+
+    )
+    rules.append(rule)
+
+    #rule12 手的底座加连杆1
+
+    rule = create_rule(
+        name='add_hand_mount_link',
+        lhs_nodes={'hand_mount':{'require_label':'hand_mount'}},
+        lhs_edges=[],
+        rhs_nodes={'hand_link':{'shape':'capsule','length':0.055,'radius':0.025, 'body_pos':[0.0,0,0.055],'euler':[0,90,0]}},
+        rhs_edges=[{'from_node':'hand_mount','to_node':'hand_link','label':'hand_link','ctrlrange':[-1,1],'range':[-60,60]}]
+
+
+    )
+    rules.append(rule)
+
+    #rule13 手的底座加连杆1+连杆2
+
+    rule = create_rule(
+        name='add_hand_link',
+        lhs_nodes={'hand_link':{'require_label':'hand_link'}},
+        lhs_edges=[],
+        rhs_nodes={'hand_link_2':{'shape':'capsule','length':0.2,'radius':0.025, 'body_pos':[0,0,0],'euler':[0,90,0]}},
+        rhs_edges=[{'from_node':'hand_link','to_node':'hand_link_2','label':'hand_link_2','ctrlrange':[-1,1],'range':[-60,60]}]
+
+
+    )
+    rules.append(rule)
+
+    #rule14 手的底座加连杆1+连杆2+爪子1
+    rule = create_rule(
+        name='add_hand_',
+        lhs_nodes={'hand_link_2':{'require_label':'hand_link_2'}},
+        lhs_edges=[],
+        rhs_nodes={'hand_1':{'shape':'capsule','length':0.05,'radius':0.005, 'body_pos':[0.2,0,0],'euler':[0,60,0]}},
+        rhs_edges=[{'from_node':'hand_link','to_node':'hand_1','label':'hand_1','ctrlrange':[-1,1],'axis':[0,1,0],'range':[-30,30],'type':'hinge'}]
+
+
+    )
+    rules.append(rule)
+
+
+    #rule15 手的底座加连杆1+连杆2+爪子2
+    rule = create_rule(
+        name='add_hand_',
+        lhs_nodes={'hand_link_2':{'require_label':'hand_link_2'}},
+        lhs_edges=[],
+        rhs_nodes={'hand_2':{'shape':'capsule','length':0.05,'radius':0.005, 'body_pos':[0.2,0,0],'euler':[60,180,0]}},
+        rhs_edges=[{'from_node':'hand_link','to_node':'hand_2','label':'hand_2','ctrlrange':[-1,1],'axis':[0,1,0],'range':[-30,30],'type':'hinge'}]
+
+
+    )
+    rules.append(rule)
+
 
     return rules
 

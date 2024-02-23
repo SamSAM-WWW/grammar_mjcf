@@ -86,7 +86,12 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
 
             # 新添加的检查
             existing_children = list(result.successors(target_node_name))
-            if existing_children and 'body' not in target_node_name:
+            multi_target = 0
+            if 'body'  in target_node_name:
+                multi_target = 1
+            if 'hand_link_2' in target_node_name:
+                multi_target = 1
+            if existing_children and multi_target==0 :
                 # 如果已经有子节点且target_node_name名字不包含 'body'，直接返回
                 print(f'{target_node_name} already has a child. Rule not applied.')
                 return result
@@ -408,9 +413,15 @@ def make_graph_by_step():
     rules = create_4leg_rules()
     #---------------------------------------------------------------------------
     # add the first body 
+    #需要同步修改search.py 45行
     R = apply_rule(rule=rules[0],input_graph=R,target_node_name='root')
     R = apply_rule(rule=rules[1],input_graph=R,target_node_name='body1')
     R = apply_rule(rule=rules[2],input_graph=R,target_node_name='body1')
     R = apply_rule(rule=rules[3],input_graph=R,target_node_name='body1')
     R = apply_rule(rule=rules[4],input_graph=R,target_node_name='body1')
+    R = apply_rule(rule=rules[11],input_graph=R,target_node_name='body1')
+    R = apply_rule(rule=rules[12],input_graph=R,target_node_name='hand_mount1')
+    R = apply_rule(rule=rules[13],input_graph=R,target_node_name='hand_link1')
+    R = apply_rule(rule=rules[14],input_graph=R,target_node_name='hand_link_21')
+    R = apply_rule(rule=rules[15],input_graph=R,target_node_name='hand_link_21')
     return R

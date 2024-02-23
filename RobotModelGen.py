@@ -158,9 +158,10 @@ class ModelGenerator():
         # # Add the <motor> element and both <default> elements to the model
         # self.default.add_children([joint_default])
 
-    def set_compiler(self, angle = 'radian', eulerseq = 'xyz',**kwargs):
+    def set_compiler(self, angle = 'degree', eulerseq = 'xyz',inertiafromgeom ='true',**kwargs):
         self.compiler.angle = angle
         self.compiler.eulerseq = eulerseq
+        self.compiler.inertiafromgeom = inertiafromgeom
 
     def set_size(self, njmax = 1000, nconmax = 500 ):
         self.size.njmax = njmax
@@ -424,7 +425,7 @@ class ModelGenerator():
                         ctrllimited=robot_joint.ctrllimited,
                         ctrlrange= robot_joint.ctrlrange,
                         joint="joint_"+robot_joint.name,
-                        gear=15
+                        gear=robot_joint.gear,
                         
                     )
         return joint,actuator
@@ -645,13 +646,13 @@ if __name__ == '__main__':
 
 
     M = ModelGenerator(R)
-    M.set_compiler(angle='degree')
-    M.set_basic_assets()
+    M.set_compiler(angle='degree',inertiafromgeom='true')
+    # M.set_basic_assets()
     M.set_size()
-    M.set_option(gravity=0)
+    M.set_option(gravity=-9.8)
     # M.set_default()
-    M.set_ground()
-    #M.get_robot(R)
+    # M.set_ground()
+    # M.get_robot(R)
     M.get_robot_dfs()
 
     M.generate()

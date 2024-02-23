@@ -50,7 +50,8 @@ class RobotJoint():
                  armature = None,  
                  ctrlrange = [-1,1],
                  ctrllimited = True,
-                 joint_class = 'joint'):
+                 joint_class = 'joint',
+                 gear = 22.5):
         self.name = name
         self.joint_type = joint_type
         self.armature = armature
@@ -62,7 +63,7 @@ class RobotJoint():
         self.ctrlrange = ctrlrange
         self.ctrllimited = ctrllimited
         self.joint_class = joint_class
-
+        self.gear = gear
 class RobotGraph(DiGraph):
 
     def __init__(self, name = 'RobotGraph'):

@@ -42,7 +42,7 @@ def is_rule_applicable_target(rule, target_node_name):
 def random_search(R, rules, available_actions):
     # 随机选择一个节点
 
-    excluded_rules = [0, 1, 2, 3, 4]
+    excluded_rules = [0, 1, 2, 3, 4, 11, 12, 13, 14, 15] #需要同步修改apply_rule.py 410行
     available_nodes = [node for node in R.nodes if 'joint' not in node]
     print("available_nodes",available_nodes)
     # 如果存在可选节点，则随机选择一个

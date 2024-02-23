@@ -45,7 +45,8 @@ class RobotJoint():
                  damping = None,
                  armature = None,  
                  ctrlrange = [-1,1],
-                 ctrllimited = True):
+                 ctrllimited = True,
+                 gear = 22.5):
         self.name = name
         self.joint_type = joint_type
         self.armature = armature
@@ -56,6 +57,7 @@ class RobotJoint():
         self.damping = damping
         self.ctrlrange = ctrlrange
         self.ctrllimited = ctrllimited
+        self.gear = gear
 
 
 class RobotGraph(DiGraph):
