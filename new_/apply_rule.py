@@ -147,7 +147,8 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
                                             stiffness=edge_info['stiffness'] if 'stiffness' in edge_info else None,
                                             damping=edge_info['damping'] if 'damping' in edge_info else None,
                                             joint_range = edge_info['range'] if 'range' in edge_info else [-45, 45],
-                                            ctrlrange = edge_info['ctrlrange'] if 'ctrlrange' in edge_info else [-1,1],)
+                                            ctrlrange = edge_info['ctrlrange'] if 'ctrlrange' in edge_info else [-1,1],
+                                            gear = edge_info['gear'] if 'gear' in edge_info else 22.5,)
 
                     # 将新的 RobotJoint 实例添加到 result_graph 中
                     result.add_node(node_type='joint',rule_label=edge_info['label'] if 'label' in edge_info else None, node_info=new_joint)
