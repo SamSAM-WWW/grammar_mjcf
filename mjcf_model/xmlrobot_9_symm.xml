@@ -1,0 +1,16 @@
+<mujoco model="xmlrobot_9">
+	<compiler inertiafromgeom="true" />
+	<option gravity="0 0 -9.8" />
+	<size nconmax="500" njmax="1000" />
+	<custom />
+	<default />
+	<asset />
+	<worldbody>
+		<body name="root" pos="0 0 2" quat="1.0 0.0 0.0 0.0">
+			<geom name="geomroot" pos="0 0 2" quat="1.0 0.0 0.0 0.0" size="0.0005" type="sphere" />
+			<body name="body1" pos="0 0 0" quat="1.0 0.0 0.0 0.0">
+				<geom name="geombody1" pos="-0.02 0 0" quat="1.0 0.0 0.0 0.0" size="0.2 0.2 0.02" type="box" />
+			</body>
+		</body>
+	</worldbody>
+</mujoco>

@@ -7,6 +7,7 @@ import queue
 from new_.trans import *
 from search import *
 from scipy.spatial.transform import Rotation 
+import os
 
 def euler2quaternion(euler):
     '''
@@ -638,11 +639,10 @@ class ModelGenerator():
 #     M.generate()
 #     print(M.compiler.angle)
 
-
-if __name__ == '__main__':
-
-    # R = example_of_apply_rule()
-    R = result_R()
+def enum_1():
+        # R = example_of_apply_rule()
+    filename = 'xmlrobot'
+    R = result_R(filename)
 
 
     M = ModelGenerator(R)
@@ -671,4 +671,46 @@ if __name__ == '__main__':
     ax.set_title("DAG layout in topological order")
     fig.tight_layout()
     # plt.show()
-    trans_op()
+    xml_file_path = os.path.join("mjcf_model", filename + ".xml")
+    xml_out_path = os.path.join("mjcf_model", filename + "_symm.xml")
+    trans_op(xml_file_path=xml_file_path, xml_out_path=xml_out_path)
+
+def enum_10():
+    for i in range(10):
+        # R = example_of_apply_rule()
+        filename = 'xmlrobot_' + str(i)
+        R = result_R(filename)
+
+
+        M = ModelGenerator(R)
+        M.set_compiler(angle='degree',inertiafromgeom='true')
+        # M.set_basic_assets()
+        M.set_size()
+        M.set_option(gravity=-9.8)
+        # M.set_default()
+        # M.set_ground()
+        # M.get_robot(R)
+        M.get_robot_dfs()
+
+        M.generate()
+        print(M.compiler.angle)
+        for layer, nodes in enumerate(nx.topological_generations(R)):
+        # `multipartite_layout` expects the layer as a node attribute, so add the
+        # numeric layer value as a node attribute
+            for node in nodes:
+                R.nodes[node]["layer"] = layer
+
+        # Compute the multipartite_layout using the "layer" node attribute
+        # pos = nx.multipartite_layout(R, subset_key="layer")
+
+        # fig, ax = plt.subplots()
+        # nx.draw_networkx(R, ax=ax,pos=pos)
+        # ax.set_title("DAG layout in topological order")
+        # fig.tight_layout()
+        # plt.show()
+        xml_file_path = os.path.join("mjcf_model", filename + ".xml")
+        xml_out_path = os.path.join("mjcf_model", filename + "_symm.xml")
+        trans_op(xml_file_path=xml_file_path, xml_out_path=xml_out_path)
+
+if __name__ == '__main__':
+    enum_10()

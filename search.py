@@ -139,9 +139,9 @@ def replace_limbmounts(R):
 
     return R
 # 示例用法
-def result_R():
+def result_R(filename='xmlrobot'):
 
-    R = make_graph_by_step()
+    R = make_graph_by_step(filename)
     rules = create_4leg_rules()
     available_actions = get_available_actions(R, rules)
     print("可执行的规则序号：", available_actions)

@@ -15,15 +15,15 @@ from RobotGraph import RobotLink
 from RobotGraph import RobotJoint
 from new_.rule import *
 
-def make_initial_graph():
+def make_initial_graph(filename='xmlrobot'):
     '''
     功能:生成初始机器人图
     ---------------
-    输入:无
+    输入:自定义的xml文件名
 
     输出:初始机器人图 `R` （类型为`RobotGraph`）
     '''
-    R = RobotGraph(name='xmlrobot')
+    R = RobotGraph(name=filename)
     root = RobotLink('root',link_type = 'sphere',size=0.025,body_pos=[0,0,2],geom_pos=[0,0,0])
     R.add_node( node_type='link',node_info = root)
     print(R.nodes)
@@ -409,8 +409,13 @@ def example_of_apply_rule():
 
 
 
-def make_graph_by_step():
-    R = make_initial_graph()
+def make_graph_by_step(filename='xmlrobot'):
+    '''
+    输入：自定义的xml文件名
+
+    输出：最基本的机器人结构
+    '''
+    R = make_initial_graph(filename)
     rules = create_4leg_rules()
     #---------------------------------------------------------------------------
     # add the first body 

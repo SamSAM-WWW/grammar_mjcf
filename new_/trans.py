@@ -152,7 +152,7 @@ def rotate_components_recursive(element, rotation_angle_degrees=180):
     for child in element:
         rotate_components_recursive(child, rotation_angle_degrees)
 
-def rotate_direct_children_of_limb_mounts(xml_file, limbmounts, rotation_angle_degrees=180):
+def rotate_direct_children_of_limb_mounts(xml_file, limbmounts, rotation_angle_degrees=180, xml_out_path="mjcf_model\\xmlrobot_1.xml"):
     tree = ET.parse(xml_file)
     root = tree.getroot()
 
@@ -177,12 +177,12 @@ def rotate_direct_children_of_limb_mounts(xml_file, limbmounts, rotation_angle_d
                 child.set("quat", " ".join(str(val) for val in rotated_quaternion))
 
     # Save the modified XML to a new file or overwrite the existing one
-    tree.write("mjcf_model\\xmlrobot_1.xml")
+    tree.write(xml_out_path)
 
-xml_file_path = "mjcf_model\\xmlrobot.xml"
 
-def trans_op():
+
+def trans_op(xml_file_path = "mjcf_model\\xmlrobot.xml", xml_out_path="mjcf_model\\xmlrobot_1.xml"):
     left_limbmounts, right_limbmounts = determine_left_right(xml_file_path)
 
 # Rotate components associated with left limbmounts
-    rotate_direct_children_of_limb_mounts(xml_file_path, left_limbmounts)
+    rotate_direct_children_of_limb_mounts(xml_file_path, left_limbmounts, rotation_angle_degrees=180, xml_out_path=xml_out_path)
