@@ -123,7 +123,7 @@ def replace_limbmounts(R):
     limbmount_2_children = list(R.successors("limbmount2"))
     if limbmount_2_children:
         limbmount_2_first_child = limbmount_2_children[0]
-    replace_limbmounts_recursive(R, limbmount_2_first_child)
+        replace_limbmounts_recursive(R, limbmount_2_first_child)
 
     # 复制 limbmount_1 的子树到 limbmount_2
     copy_subtree(R, "limbmount1", "limbmount2")
@@ -132,13 +132,19 @@ def replace_limbmounts(R):
     limbmount_4_children = list(R.successors("limbmount4"))
     if limbmount_4_children:
         limbmount_4_first_child = limbmount_4_children[0]
-    replace_limbmounts_recursive(R, limbmount_4_first_child)
+        replace_limbmounts_recursive(R, limbmount_4_first_child)
 
     # 复制 limbmount_3 的子树到 limbmount_4
     copy_subtree(R, "limbmount3", "limbmount4")
 
     return R
 # 示例用法
+def has_child_nodes(graph, node):
+    """
+    检查给定节点的子节点是否有子节点。
+    """
+    return any(graph.successors(child) for child in graph.successors(node))
+    
 def result_R(filename='xmlrobot'):
 
     R = make_graph_by_step(filename)

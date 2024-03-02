@@ -638,6 +638,11 @@ class ModelGenerator():
 
 #     M.generate()
 #     print(M.compiler.angle)
+def has_child_nodes(graph, node):
+    """
+    检查给定节点的子节点是否有子节点。
+    """
+    return any(graph.successors(child) for child in graph.successors(node))
 
 def enum_1():
         # R = example_of_apply_rule()
@@ -676,10 +681,19 @@ def enum_1():
     trans_op(xml_file_path=xml_file_path, xml_out_path=xml_out_path)
 
 def enum_10():
+    invalid_design = 0
     for i in range(10):
         # R = example_of_apply_rule()
         filename = 'xmlrobot_' + str(i)
+        #
+        #
+        #添加预筛选机制
         R = result_R(filename)
+        # 如果 limbmount1 或 limbmount3 的子节点没有子节点，则跳过
+        
+        if not has_child_nodes(R, "limbmount1") or not has_child_nodes(R, "limbmount3"):
+            invalid_design = invalid_design + 1
+            continue
 
 
         M = ModelGenerator(R)
@@ -694,6 +708,7 @@ def enum_10():
 
         M.generate()
         print(M.compiler.angle)
+        
         for layer, nodes in enumerate(nx.topological_generations(R)):
         # `multipartite_layout` expects the layer as a node attribute, so add the
         # numeric layer value as a node attribute
@@ -711,6 +726,7 @@ def enum_10():
         xml_file_path = os.path.join("mjcf_model", filename + ".xml")
         xml_out_path = os.path.join("mjcf_model", filename + "_symm.xml")
         trans_op(xml_file_path=xml_file_path, xml_out_path=xml_out_path)
-
+        os.remove(xml_file_path)
+    print(invalid_design)
 if __name__ == '__main__':
     enum_10()

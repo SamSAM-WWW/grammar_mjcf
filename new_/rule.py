@@ -221,12 +221,12 @@ def create_4leg_rules():
     注意：若添加新规则 需要判断是否允许重复搜索该规则 若不允许 需要同步修改search.py 45行 apply_rule.py 410行
     '''  
     rules = [] 
-    # rule0 
+    # rule0 battery
     rule = create_rule(name='make_robot',
-                        lhs_nodes={'root':{'require_label':'root','shape':'sphere','radius':0.0005,'density':3.0, 'body_pos':[0,0,2], 'geom_pos':[0,0,2]}},
+                        lhs_nodes={'root':{'require_label':'root','shape':'box','radius':'0.2 0.2 0.02','density':3.0, 'body_pos':[0,0,2], 'geom_pos':[-0.002,0,0.02]}},
                         lhs_edges=[],
                         rhs_nodes={'body':{'shape':'box','radius':'0.2 0.4 0.05','density':3.0,'euler':[0,0,0],'geom_euler':[0,0,0], 'geom_pos':[-0.02,0,0]},'root':{'label':'root'}},
-                        rhs_edges=[{'from_node':'root','to_node':'body','range':[-0.0001,0.0001]}])
+                        rhs_edges=[{'from_node':'root','to_node':'body','range':[-45,45]}])
     rules.append(rule)
 
     # rule1-1 1 右前
@@ -266,7 +266,7 @@ def create_4leg_rules():
                         lhs_nodes={'motor':{'require_label':'motor'}},
                         lhs_edges=[],
                         rhs_nodes={'limblink':{'label':'limblink','shape':'capsule','length':0.3,'radius':0.035, 'body_pos':[0.042,0,0],'euler':[0,90,0]}},
-                        rhs_edges=[{'from_node':'motor','to_node':'limblink','label':'mo-li','axis':[0,1,0],'range':[-0.1,0.1],}]
+                        rhs_edges=[{'from_node':'motor','to_node':'limblink','label':'mo-li','axis':[0,1,0],'range':[-45,45],}]
                         )
     rules.append(rule)
 
@@ -276,7 +276,7 @@ def create_4leg_rules():
                         lhs_nodes={'motor':{'require_label':'motor'}},
                         lhs_edges=[],
                         rhs_nodes={'limblink':{'label':'limblink','shape':'capsule','length':0.3,'radius':0.03, 'body_pos':[0.042,0,0],'euler':[0,90,0]}},
-                        rhs_edges=[{'from_node':'limbmount','to_node':'limblink','label':'mo-thin','axis':[0,1,0],'range':[-0.1,0.1]}]
+                        rhs_edges=[{'from_node':'limbmount','to_node':'limblink','label':'mo-thin','axis':[0,1,0],'range':[-45,45]}]
                         )
     rules.append(rule)
 
@@ -321,7 +321,7 @@ def create_4leg_rules():
                         lhs_nodes={'motor':{'require_label':'motor'}},
                         lhs_edges=[],
                         rhs_nodes={'short_limblink':{'label':'short_limblink','shape':'capsule','length':0.15,'radius':0.03, 'body_pos':[0.015,0,0],'euler':[0,90,0]}},
-                        rhs_edges=[{'from_node':'short_limbmount','to_node':'limblink','label':'mo-sh','axis':[0,1,0],'range':[-0.1,0.1]}]
+                        rhs_edges=[{'from_node':'short_limbmount','to_node':'limblink','label':'mo-sh','axis':[0,1,0],'range':[-45,45]}]
                         )
     rules.append(rule)
 
