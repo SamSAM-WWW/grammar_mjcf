@@ -13,7 +13,8 @@ def euler2quaternion(euler):
     '''
     欧拉角转四元数
     '''
-    r = Rotation.from_euler('xyz', euler, degrees=True)
+    # r = Rotation.from_euler('xyz', euler, degrees=True)
+    r = Rotation.from_euler('zyz', euler, degrees=True)
     quaternion = r.as_quat()
     return quaternion
 
