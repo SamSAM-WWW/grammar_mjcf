@@ -158,8 +158,6 @@ def result_R(filename='xmlrobot'):
 
     for i in range(100):
         random_search(R,rules,available_actions)
-        available_actions = get_available_actions(R, rules)
-        print("可执行的规则序号：", available_actions)
 
     R = replace_limbmounts(R)
     return R

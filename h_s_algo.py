@@ -10,234 +10,232 @@ import numpy as np
 from apply_rule import *
 import sys
 import os
-
+from RobotGraph import RobotGraph,RobotJoint,RobotLink
+from new_.apply_rule import *
+import networkx as nx
+import matplotlib.pyplot as plt
+import queue
+from new_.trans import *
+import random
+import copy
+from mjcf import elements as e
+from new_.apply_rule import *
+import networkx as nx
+import matplotlib.pyplot as plt
+import queue
+from new_.trans import *
+from search import *
+from scipy.spatial.transform import Rotation 
+import os
+import sys
+import time
+import hashlib
+import csv
+excluded_rules = [0, 1, 2, 3, 4, 11, 12, 13, 14, 15] #需要同步修改apply_rule.py 410行
 
 def predict(V, state):
-    global preprocessor
-    adj_matrix_np, features_np, _ = preprocessor.preprocess(state)
-    masks_np = np.full(len(features_np), True)
-    with torch.no_grad():
-        features = torch.tensor(features_np).unsqueeze(0)
-        adj_matrix = torch.tensor(adj_matrix_np).unsqueeze(0)
-        masks = torch.tensor(masks_np).unsqueeze(0)
-        output, _, _ = V(features, adj_matrix, masks)
-        return output.item()
+    pass
 
-def predict_batch(V, states):
-    global preprocessor
-    adj_matrix_np, features_np, masks_np = [], [], []
-    max_nodes = 0
-    for state in states:
-        adj_matrix, features, _ = preprocessor.preprocess(state)
-        max_nodes = max(max_nodes, len(features))
-        adj_matrix_np.append(adj_matrix)
-        features_np.append(features)
+def predict_batch(V,next_state):
+    pass
 
-    for i in range(len(states)):
-        adj_matrix_np[i], features_np[i], masks = \
-            preprocessor.pad_graph(adj_matrix_np[i], features_np[i], max_nodes)
-        masks_np.append(masks)
+def transite(state,action,rules,target_node_name):
+    '''
+    从当前图向下一个图转变
+    '''
+    next_state = apply_rule(rule=rules[action], input_graph=state, target_node_name=target_node_name)
+    return next_state
 
-    with torch.no_grad():
-        adj_matrix = torch.tensor(adj_matrix_np)
-        features = torch.tensor(features_np)
-        masks = torch.tensor(masks_np)
-        output, _, _ = V(features, adj_matrix, masks)
-    return output[:, 0].detach().numpy()
-
-# def select_action(env, V, state, eps):
-#     available_actions = env.get_available_actions(state)
-#     if len(available_actions) == 0:
-#         return None, None
-#     sample = random.random()
-#     step_type = ""
-#     if sample > eps:
-#         next_states = []
-#         for action in available_actions:
-#             next_states.append(env.transite(state, action))
-#         values = predict_batch(V, next_states)
-#         best_action = available_actions[np.argmax(values)]
-#         step_type = 'optimal'
-#     else:
-#         best_action = available_actions[random.randrange(len(available_actions))]
-#         step_type = 'random'
+def select_action( V, state, rules, target_node, eps):
+    '''
+    根据选定的目标节点选取可执行的规则
+    '''
+    available_actions = get_available_actions_for_target_node(rules, target_node)
+    if len(available_actions) == 0:
+        return None, None
     
-#     return best_action, step_type
-
-def select_action(env, state):
-    available_actions = env.get_available_actions(state)
-    print("available actions = ",available_actions)
-    best_action = available_actions[random.randrange(len(available_actions))]
-    step_type = 'random'
+    sample = random.random()
+    step_type = ""
+    if sample > eps:
+        # Exploit
+        values = []
+        next_states = []
+        for action in available_actions:
+            # 评估每个动作的值
+            next_state = transite(state, action, rules, target_node) 
+            values.append(predict_batch(V,next_state))
+            next_states.append(next_state)
+        
+        # 选择值最大的动作
+        best_action_index = np.argmax(values)
+        best_action = available_actions[best_action_index]
+        step_type = 'optimal'
+    else:
+        # Explore
+        # 随机选择一个动作
+        best_action = random.choice(available_actions)
+        step_type = 'random'
     
-    return best_action, step_type
+    return best_action
 
-def update_Vhat(args, V_hat, state_seq, reward):
-    for state in state_seq:
-        state_hash_key = hash(state)
-        if not (state_hash_key in V_hat):
-            V_hat[state_hash_key] = -np.inf
-        V_hat[state_hash_key] = max(V_hat[state_hash_key], reward)
+def is_valid(state):
+    pass
 
-def update_states_pool(states_pool, state_seq, states_set):
-    for state in state_seq:
-        state_hash_key = hash(state)
-        if not (state_hash_key in states_set):
-            states_pool.push(state)
-            states_set.add(state_hash_key)
+def TF():
+    pass
+
+def get_last_child_of_subtree(state, node):
+    """
+    找到某个节点的子树的最后一个子节点（包括该节点本身）。
+    """
+    if not state.successors(node):
+        # 如果节点没有子节点，则返回节点本身
+        return node
+    last_child = node  # 初始情况下最后一个子节点是节点本身
+    stack = [node]  # 使用栈来实现深度优先搜索
+
+    while stack:
+        current_node = stack.pop()
+        successors = list(state.successors(current_node))
+        if successors:
+            # 将当前节点的子节点压入栈中
+            stack.extend(successors)
+            # 更新最后一个子节点
+            last_child = current_node
+
+    return last_child
+
+def get_available_actions_for_target_node(rules, target_node):
+    available_actions = []
+
+    # 遍历规则列表
+    for i, rule in enumerate(rules):
+        # 检查当前规则是否适用于目标节点
+        if is_rule_applicable_to_target_node(rule, target_node):
+            available_actions.append(i)
+
+    return available_actions
+
+def is_rule_applicable_to_target_node(rule, target_node):
+    # 检查规则的目标节点是否与给定的目标节点匹配
+    matching_keys = [key for key in rule.lhs_nodes if target_node.startswith(key)]
+    return len(matching_keys) > 0
+
+def get_reward(selected_design):
+    pass
+
+def calculate_hash(xml_content):
+    # 计算内容的哈希值
+    hash_value = hashlib.sha256(xml_content.encode()).hexdigest()
+    return hash_value
+
+
+def calculate_hash_without_first_line(xml_file):
+    # 读取XML文件的内容
+    with open(xml_file, 'r') as file:
+        xml_content = file.read()
+
+    # 移除第一行
+    xml_content_without_first_line = '\n'.join(xml_content.split('\n')[1:])
+
+    # 计算移除第一行后的XML文件的哈希值
+    hash_without_first_line = calculate_hash(xml_content_without_first_line)
+
+    return hash_without_first_line
+# 调用函数计算XML文件的哈希值
+
+def save_to_csv(data, filename):
+    # 检查文件是否存在
+    file_exists = os.path.isfile(filename)
+
+    # 打开 CSV 文件，使用不同的模式（追加或新建）
+    with open(filename, mode='a' if file_exists else 'w', newline='') as file:
+        writer = csv.writer(file)
+        # 如果文件是新建的，则写入列标题
+        if not file_exists:
+            writer.writerow(['xml_out_path', 'hash', 'reward'])
+        # 写入数据
+        for row in data:
+            writer.writerow(row)
 
 def search_algo():
-    graph_choose = 1
-    num_samples = 16
-    graphs = create_graphs(graph_choose)
-    # for i in range(int(len(graphs))):
-    #     graph_i = graphs[i]
-    #     print(f"=================graph{i}====================")
-    #     rule = create_rule_from_graph(graph_i)
-    rules = [create_rule_from_graph(g) for g in graphs]
-    env = RobotGrammarEnv(rules)
-    state = env.reset()
-    # use e-greedy to sample a design within maximum #steps.
-    no_action_samples = 0
-    step_exceeded_samples = 0
-    self_collision_samples = 0
-    num_invalid_samples = 0
-    num_valid_samples = 0
-    num_samples_interval = 0
-    t_sample = 0 
-    t_update = 0
-    last_checkpoint = -1
+    current_time = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
+    new_folder_path = os.path.join("mjcf_model", current_time)
+    os.makedirs(new_folder_path)
+    filename = 'xmlrobot'
 
+    V = TF()
+    R = make_graph_by_step(filename)
+    rules = create_4leg_rules()
+    eps_end = 0.1
+    eps_start = 1.0
+    num_iterations = 1000
+    eps_decay= 0.3
 
+    eps_sample_end = 0.1
+    eps_sample_start = 1.0
+    eps_sample_decay = 0.3
 
-    save_dir = './trained_models/'
-    
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir)
-
-    design_csv_path = os.path.join(save_dir, 'designs.csv')
-    if not os.path.exists(design_csv_path):
-        fp_csv = open(design_csv_path, 'w')
-        fieldnames = ['rule_seq', 'reward', 'opt_seed']
-        writer = csv.DictWriter(fp_csv, fieldnames=fieldnames)
-        writer.writeheader()
-        fp_csv.close()
-
-    designs = []
-    design_rewards = []
-    design_opt_seeds = []
-
-
-
-
-
-    for epoch in range(2):
+    depth = 40
+    for epoch in range(num_iterations):
         t_start = time.time()
-
-        # V.eval()
-
-        # update eps and eps_sample
-        # if args.eps_schedule == 'linear-decay':
-        #     eps = args.eps_start + epoch / args.num_iterations * (args.eps_end - args.eps_start)
-        # elif args.eps_schedule == 'exp-decay':
-        #     eps = args.eps_end + (args.eps_start - args.eps_end) * np.exp(-1.0 * epoch / args.num_iterations / args.eps_decay)
-
-        # if args.eps_sample_schedule == 'linear-decay':
-        #     eps_sample = args.eps_sample_start + epoch / args.num_iterations * (args.eps_sample_end - args.eps_sample_start)
-        # elif args.eps_sample_schedule == 'exp-decay':
-        #     eps_sample = args.eps_sample_end + (args.eps_sample_start - args.eps_sample_end) * np.exp(-1.0 * epoch / args.num_iterations / args.eps_sample_decay)
+        eps = eps_end + (eps_start - eps_end) * np.exp(-1.0 * epoch / num_iterations / eps_decay)
+        eps_sample = eps_sample_end + (eps_sample_start - eps_sample_end) * np.exp(-1.0 * epoch / num_iterations / eps_sample_decay)
 
         t_sample, t_update, t_mpc, t_opt = 0, 0, 0, 0
-
         selected_design, selected_reward = None, -np.inf
-        selected_state_seq, selected_rule_seq = None, None
-
-        # p = random.random()
-        # if p < eps_sample:
-        #     num_samples = 1
-        # else:
-        #     num_samples = args.num_samples
-
-
+        p = random.random()
+        if p < eps_sample:
+            num_samples = 1
+        else:
+            num_samples = 16
+        
+        # use e-greedy to sample a design within maximum #steps.
         for _ in range(num_samples):
             valid = False
             while not valid:
                 t0 = time.time()
 
-                state = env.reset()
-                rule_seq = []
-                state_seq = [state]
-                no_action_flag = False
-                # print("current num",_)
-                for _ in range(3):
-                    # print("current num",_)
-                    action, step_type = select_action(env, state)
-                    print("action is ", action )
-                    if action is None:
-                        no_action_flag = True
-                        break
-                    rule_seq.append(action)
-                    next_state = env.transite(state, action)
-                    print("next_state = ",next_state.nodes)
-                    state_seq.append(next_state)
-                    state = next_state
-                    if not has_nonterminals(state):
-                        print("state = next_state not has nonterminals")
-                        break
-                    print("state = next_state has nonterminals")
-                valid = env.is_valid(state)
-                
-                t_sample += time.time() - t0
-
-                t0 = time.time()
-
-                if not valid:
-                    # update the invalid sample's count
-                    if no_action_flag:
-                        no_action_samples += 1
-                    elif has_nonterminals(state):
-                        step_exceeded_samples += 1
+                state = make_graph_by_step(filename)
+                for i in range(depth):
+                    
+                    if i % 2 == 0:
+                        # 偶数，选择 limbmount3 的子树的最后一个子节点
+                        target_node = get_last_child_of_subtree(state,'limbmount3')
+                        #针对一个特定的target_node 选一个可操作规则
+                        action = select_action(V,state,rules,target_node,eps)
                     else:
-                        self_collision_samples += 1
-                    num_invalid_samples += 1
-                else:
-                    num_valid_samples += 1
-                
-                num_samples_interval += 1
+                        # 偶数，选择 limbmount3 的子树的最后一个子节点
+                        target_node = get_last_child_of_subtree(state,'limbmount1')
+                        #针对一个特定的target_node 选一个可操作规则
+                        action = select_action(V,state,rules,target_node,eps)
+                    next_state = transite(state=state,action=action,rules=rules,target_node_name=target_node)
+                    state = next_state
+                valid = is_valid(state)
 
-                t_update += time.time() - t0
+            predicted_value = predict(V, state)
+            if predicted_value > selected_reward:
+                selected_design, selected_reward = state, predicted_value
+            
+        reward,best_reward = -np.inf,None
 
-            selected_design = state
-            selected_rule_seq, selected_state_seq = rule_seq, state_seq
-            designs.append(selected_rule_seq)
+        xml_file_path = os.path.join(new_folder_path, filename + ".xml")
+        xml_out_path = os.path.join(new_folder_path, filename + "_symm.xml")
+        trans_op(xml_file_path=xml_file_path, xml_out_path=xml_out_path)
+        os.remove(xml_file_path)
 
-
-
-            # save explored design and its reward
-            fp_csv = open(design_csv_path, 'a')
-            fieldnames = ['rule_seq', 'reward', 'opt_seed']
-            writer = csv.DictWriter(fp_csv, fieldnames=fieldnames)
-            print("last_checkpoint+1=",last_checkpoint+1)
-            print("len(designs)=",len(designs))
-            for i in range(last_checkpoint + 1, len(designs)):
-                print("writing data")
-                writer.writerow({'rule_seq': str(designs[i]), 'reward': None, 'opt_seed':None})
-            last_checkpoint = len(designs) - 1
-            fp_csv.close()
+        reward = get_reward(selected_design=xml_out_path)
+        if reward > best_reward:
+            best_reward = reward
+        data_to_save = []
 
 
+        hash_val = calculate_hash_without_first_line(xml_file=xml_out_path)
+        data_to_save.append([xml_out_path, hash_val, best_reward])
+        csv_file_path = os.path.join(new_folder_path, 'design_rewards.csv')
+        save_to_csv(data_to_save, csv_file_path)
 
 
-
-
-
-
-
-
-
-
-
-
-
-search_algo()
-
+        # optimize
+        # train V
+        

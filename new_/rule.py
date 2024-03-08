@@ -225,7 +225,7 @@ def create_4leg_rules():
     rule = create_rule(name='make_robot',
                         lhs_nodes={'root':{'require_label':'root','shape':'box','radius':'0.15 0.15 0.02','density':3.0, 'body_pos':[0,0,2], 'geom_pos':[-0.02,0,0.07]}},
                         lhs_edges=[],
-                        rhs_nodes={'body':{'shape':'box','radius':'0.2 0.4 0.05','density':3.0,'euler':[0,0,0],'geom_euler':[0,0,0], 'geom_pos':[-0.02,0,0]},'root':{'label':'root'}},
+                        rhs_nodes={'body':{'shape':'box','radius':'0.4 0.8 0.1','density':3.0,'euler':[0,0,0],'geom_euler':[0,0,0], 'geom_pos':[-0.02,0,0]},'root':{'label':'root'}},
                         rhs_edges=[{'from_node':'root','to_node':'body','range':[-5,5],'axis':[0,0,1]}])
     rules.append(rule)
 
@@ -233,7 +233,7 @@ def create_4leg_rules():
     rule = create_rule(name='make_body_with_limbmount_1',
                         lhs_nodes={'body':{'require_label':'body'}},
                         lhs_edges=[],
-                        rhs_nodes={'limbmount':{'shape':'capsule','length':0.025,'radius':0.025, 'body_pos':[0.1875,0.2,0],'euler':[0,90,0]}},
+                        rhs_nodes={'limbmount':{'shape':'capsule','length':0.05,'radius':0.05, 'body_pos':[0.42,0.4,0],'euler':[0,90,0]}},
                         rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge','axis':[0,1,0],'label':'body-mount'}])
     rules.append(rule)
     
@@ -241,23 +241,23 @@ def create_4leg_rules():
     rule = create_rule(name='make_body_with_limbmount_2',
                         lhs_nodes={'body':{'require_label':'body'}},
                         lhs_edges=[],
-                        rhs_nodes={'limbmount':{'shape':'capsule','length':0.025,'radius':0.025, 'body_pos':[-0.225,0.2,0],'euler':[0,90,0]}},
+                        rhs_nodes={'limbmount':{'shape':'capsule','length':0.05,'radius':0.05, 'body_pos':[-0.45,0.4,0],'euler':[0,90,0]}},
                         rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge','axis':[0,1,0],'label':'body-mount'},])
     rules.append(rule)
     
-    # rule1-3 3 右后
+    # rule1-3 3 
     rule = create_rule(name='make_body_with_limbmount_3',
                         lhs_nodes={'body':{'require_label':'body'}},
                         lhs_edges=[],
-                        rhs_nodes={'limbmount':{'shape':'capsule','length':0.025,'radius':0.025, 'body_pos':[-0.225,-0.2,0],'euler':[0,90,0]}},
+                        rhs_nodes={'limbmount':{'shape':'capsule','length':0.05,'radius':0.05, 'body_pos':[-0.45,-0.4,0],'euler':[0,90,0]}},
                         rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge','axis':[0,1,0],'label':'body-mount'},])
     rules.append(rule)
 
-    # rule1-4 4 左后
+    # rule1-4 4 右后
     rule = create_rule(name='make_body_with_limbmount_4',
                         lhs_nodes={'body':{'require_label':'body'}},
                         lhs_edges=[],
-                        rhs_nodes={'limbmount':{'shape':'capsule','length':0.025,'radius':0.025, 'body_pos':[0.1875,-0.2,0],'euler':[0,90,0]}},
+                        rhs_nodes={'limbmount':{'shape':'capsule','length':0.05,'radius':0.05, 'body_pos':[0.42,-0.4,0],'euler':[0,90,0]}},
                         rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge','axis':[0,1,0],'label':'body-mount'},])
     rules.append(rule)
     
@@ -265,7 +265,7 @@ def create_4leg_rules():
     rule = create_rule(name='append_limblink',
                         lhs_nodes={'motor':{'require_label':'motor'}},
                         lhs_edges=[],
-                        rhs_nodes={'limblink':{'label':'limblink','shape':'capsule','length':0.3,'radius':0.035, 'body_pos':[0.042,0,0],'euler':[0,90,0]}},
+                        rhs_nodes={'limblink':{'label':'limblink','shape':'capsule','length':0.6,'radius':0.07, 'body_pos':[0.084,0,0],'euler':[0,90,0]}},
                         rhs_edges=[{'from_node':'motor','to_node':'limblink','label':'mo-li','axis':[0,1,0],'range':[-45,45],}]
                         )
     rules.append(rule)
@@ -275,7 +275,7 @@ def create_4leg_rules():
     rule = create_rule(name='append_thin_limblink',
                         lhs_nodes={'motor':{'require_label':'motor'}},
                         lhs_edges=[],
-                        rhs_nodes={'limblink':{'label':'limblink','shape':'capsule','length':0.3,'radius':0.03, 'body_pos':[0.042,0,0],'euler':[0,90,0]}},
+                        rhs_nodes={'limblink':{'label':'limblink','shape':'capsule','length':0.6,'radius':0.06, 'body_pos':[0.084,0,0],'euler':[0,90,0]}},
                         rhs_edges=[{'from_node':'limbmount','to_node':'limblink','label':'mo-thin','axis':[0,1,0],'range':[-45,45]}]
                         )
     rules.append(rule)
@@ -296,7 +296,7 @@ def create_4leg_rules():
         name='add_motor',
         lhs_nodes={'limbmount':{'require_label':'limbmount'}},
         lhs_edges=[],
-        rhs_nodes={'motor':{'label':'motor','shape':'cylinder','length':0.042,'radius':0.066, 'body_pos':[0,0,0],'euler':[0,-90,0]}},
+        rhs_nodes={'motor':{'label':'motor','shape':'cylinder','length':0.084,'radius':0.132, 'body_pos':[0,0,0],'euler':[0,-90,0]}},
         rhs_edges=[{'from_node':'limbmount','to_node':'motor','label':'mount-motor','ctrlrange':[-1,1]}]
 
 
@@ -320,7 +320,7 @@ def create_4leg_rules():
     rule = create_rule(name='append_short_limblink',
                         lhs_nodes={'motor':{'require_label':'motor'}},
                         lhs_edges=[],
-                        rhs_nodes={'short_limblink':{'label':'short_limblink','shape':'capsule','length':0.15,'radius':0.03, 'body_pos':[0.015,0,0],'euler':[0,90,0]}},
+                        rhs_nodes={'short_limblink':{'label':'short_limblink','shape':'capsule','length':0.3,'radius':0.06, 'body_pos':[0.03,0,0],'euler':[0,90,0]}},
                         rhs_edges=[{'from_node':'short_limbmount','to_node':'limblink','label':'mo-sh','axis':[0,1,0],'range':[-45,45]}]
                         )
     rules.append(rule)
@@ -331,7 +331,7 @@ def create_4leg_rules():
         name='add_motor_link_end',
         lhs_nodes={'limblink':{'require_label':'limblink'}},
         lhs_edges=[],
-        rhs_nodes={'motor_link_end':{'label':'motor_link_end','shape':'cylinder','length':0.042,'radius':0.066, 'body_pos':[0.3,0,0],'euler':[0,-90,0]}},
+        rhs_nodes={'motor_link_end':{'label':'motor_link_end','shape':'cylinder','length':0.084,'radius':0.122, 'body_pos':[0.6,0,0],'euler':[0,-90,0]}},
         rhs_edges=[{'from_node':'limblink','to_node':'motor_link_end','label':'motor-end','ctrlrange':[-1,1]}]
 
 
@@ -345,7 +345,7 @@ def create_4leg_rules():
         name='add_motor_link_end',
         lhs_nodes={'short_limblink':{'require_label':'short_limblink'}},
         lhs_edges=[],
-        rhs_nodes={'motor_link_end':{'label':'motor_link_end','shape':'cylinder','length':0.042,'radius':0.066, 'body_pos':[0.15,0,0],'euler':[0,-90,0]}},
+        rhs_nodes={'motor_link_end':{'label':'motor_link_end','shape':'cylinder','length':0.084,'radius':0.122, 'body_pos':[0.3,0,0],'euler':[0,-90,0]}},
         rhs_edges=[{'from_node':'short_limblink','to_node':'motor_link_end','label':'motor-shend','ctrlrange':[-1,1]}]
 
 
@@ -358,7 +358,7 @@ def create_4leg_rules():
         name='add_hand_mount',
         lhs_nodes={'body':{'require_label':'body'}},
         lhs_edges=[],
-        rhs_nodes={'hand_mount':{'shape':'capsule','length':0.025,'radius':0.025, 'body_pos':[-0.05875,0.3,0.1],'euler':[0,90,0]}},
+        rhs_nodes={'hand_mount':{'shape':'capsule','length':0.05,'radius':0.05, 'body_pos':[-0.1175,0.6,0.2],'euler':[0,90,0]}},
         rhs_edges=[{'from_node':'body','to_node':'hand_mount','label':'hand_mount','ctrlrange':[-1,1],'range':[-180,180]}]
 
 
@@ -371,7 +371,7 @@ def create_4leg_rules():
         name='add_hand_mount_link',
         lhs_nodes={'hand_mount':{'require_label':'hand_mount'}},
         lhs_edges=[],
-        rhs_nodes={'hand_link':{'shape':'capsule','length':0.055,'radius':0.025, 'body_pos':[0.0,0,0.055],'euler':[0,90,0]}},
+        rhs_nodes={'hand_link':{'shape':'capsule','length':0.11,'radius':0.05, 'body_pos':[0.0,0,0.11],'euler':[0,90,0]}},
         rhs_edges=[{'from_node':'hand_mount','to_node':'hand_link','label':'hand_link','ctrlrange':[-1,1],'range':[-89,89]}]
 
 
@@ -384,7 +384,7 @@ def create_4leg_rules():
         name='add_hand_link',
         lhs_nodes={'hand_link':{'require_label':'hand_link'}},
         lhs_edges=[],
-        rhs_nodes={'hand_link_2':{'shape':'capsule','length':0.3,'radius':0.025, 'body_pos':[0,0,0],'euler':[0,90,0]}},
+        rhs_nodes={'hand_link_2':{'shape':'capsule','length':0.6,'radius':0.05, 'body_pos':[0,0,0],'euler':[0,90,0]}},
         rhs_edges=[{'from_node':'hand_link','to_node':'hand_link_2','label':'hand_link_2','ctrlrange':[-1,1],'range':[-60,60]}]
 
 
@@ -396,7 +396,7 @@ def create_4leg_rules():
         name='add_hand_',
         lhs_nodes={'hand_link_2':{'require_label':'hand_link_2'}},
         lhs_edges=[],
-        rhs_nodes={'hand_1':{'shape':'capsule','length':0.05,'radius':0.01, 'body_pos':[0.32,0,0],'euler':[0,0,0]}},
+        rhs_nodes={'hand_1':{'shape':'capsule','length':0.1,'radius':0.02, 'body_pos':[0.64,0,0],'euler':[0,0,0]}},
         rhs_edges=[{'from_node':'hand_link','to_node':'hand_1','label':'hand_1','ctrlrange':[-1,1],'axis':[0,0,1],'range':[-0.05,-0.01],'type':'slide','damping':'2.5', 'stiffness':'80'}]
 
 
@@ -409,7 +409,7 @@ def create_4leg_rules():
         name='add_hand_',
         lhs_nodes={'hand_link_2':{'require_label':'hand_link_2'}},
         lhs_edges=[],
-        rhs_nodes={'hand_2':{'shape':'capsule','length':0.05,'radius':0.01, 'body_pos':[0.32,0,0],'euler':[0,0,0]}},
+        rhs_nodes={'hand_2':{'shape':'capsule','length':0.1,'radius':0.02, 'body_pos':[0.64,0,0],'euler':[0,0,0]}},
         rhs_edges=[{'from_node':'hand_link','to_node':'hand_2','label':'hand_2','ctrlrange':[-1,1],'axis':[0,0,1],'range':[0.01,0.05],'type':'slide','damping':'2.5', 'stiffness':'80'}]
 
 
@@ -421,7 +421,7 @@ def create_4leg_rules():
         name='add_wheel_link_end',
         lhs_nodes={'limblink':{'require_label':'limblink'}},
         lhs_edges=[],
-        rhs_nodes={'wheel_link_end':{'label':'wheel_link_end','shape':'cylinder','length':0.04,'radius':0.06, 'body_pos':[0.3,0,0],'euler':[0,-90,0]}},
+        rhs_nodes={'wheel_link_end':{'label':'wheel_link_end','shape':'cylinder','length':0.08,'radius':0.12, 'body_pos':[0.6,0,0],'euler':[0,-90,0]}},
         rhs_edges=[{'from_node':'limblink','to_node':'wheel_link_end','label':'motor-end','ctrlrange':[-1,1],'gear':'45'}]
 
 
