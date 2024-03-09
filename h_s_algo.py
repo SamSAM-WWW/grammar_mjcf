@@ -31,13 +31,20 @@ import sys
 import time
 import hashlib
 import csv
+import RobotModelGen
 excluded_rules = [0, 1, 2, 3, 4, 11, 12, 13, 14, 15] #需要同步修改apply_rule.py 410行
 
-def predict(V, state):
+def predict(state,new_folder_path):
+    '''
+    输入state, 转换成xml文件后预测值函数并删除中间文件
+    '''
+    generate_xml(state,new_folder_path,'xmlrobot_temp')
+    
+    #predict
+    #predict
+    #retun predict Value
     pass
 
-def predict_batch(V,next_state):
-    pass
 
 def transite(state,action,rules,target_node_name):
     '''
@@ -46,7 +53,7 @@ def transite(state,action,rules,target_node_name):
     next_state = apply_rule(rule=rules[action], input_graph=state, target_node_name=target_node_name)
     return next_state
 
-def select_action( V, state, rules, target_node, eps):
+def select_action( state, rules, target_node, eps, new_folder_path):
     '''
     根据选定的目标节点选取可执行的规则
     '''
@@ -63,7 +70,7 @@ def select_action( V, state, rules, target_node, eps):
         for action in available_actions:
             # 评估每个动作的值
             next_state = transite(state, action, rules, target_node) 
-            values.append(predict_batch(V,next_state))
+            values.append(predict(next_state,new_folder_path))
             next_states.append(next_state)
         
         # 选择值最大的动作
@@ -78,12 +85,10 @@ def select_action( V, state, rules, target_node, eps):
     
     return best_action
 
-def is_valid(state):
-    pass
-
 def TF():
     pass
-
+def TF_train():
+    pass
 def get_last_child_of_subtree(state, node):
     """
     找到某个节点的子树的最后一个子节点（包括该节点本身）。
@@ -157,15 +162,24 @@ def save_to_csv(data, filename):
         # 写入数据
         for row in data:
             writer.writerow(row)
-
+def generate_xml(R,new_folder_path,filename):
+    M = RobotModelGen.ModelGenerator(R)
+    M.set_compiler(angle='degree',inertiafromgeom='true')
+    M.set_size()
+    M.set_option(gravity=-9.8)
+    M.get_robot_dfs()
+    M.generate()
+    xml_file_path = os.path.join(new_folder_path, filename + ".xml")
+    xml_out_path = os.path.join(new_folder_path, filename + "_symm.xml")
+    trans_op(xml_file_path=xml_file_path, xml_out_path=xml_out_path)
+    os.remove(xml_file_path)
 def search_algo():
     current_time = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
     new_folder_path = os.path.join("mjcf_model", current_time)
     os.makedirs(new_folder_path)
     filename = 'xmlrobot'
-
+    hash_pool = []
     V = TF()
-    R = make_graph_by_step(filename)
     rules = create_4leg_rules()
     eps_end = 0.1
     eps_start = 1.0
@@ -191,11 +205,13 @@ def search_algo():
             num_samples = 16
         
         # use e-greedy to sample a design within maximum #steps.
-        for _ in range(num_samples):
+        for num in range(num_samples):
             valid = False
-            while not valid:
+
+            for num_try in range(100):
                 t0 = time.time()
 
+                filename = 'xmlrobot' + str(epoch) + '_' + str(num) + '_' + str(num_try)
                 state = make_graph_by_step(filename)
                 for i in range(depth):
                     
@@ -203,39 +219,59 @@ def search_algo():
                         # 偶数，选择 limbmount3 的子树的最后一个子节点
                         target_node = get_last_child_of_subtree(state,'limbmount3')
                         #针对一个特定的target_node 选一个可操作规则
-                        action = select_action(V,state,rules,target_node,eps)
+                        action = select_action(state,rules,target_node,eps,new_folder_path)
                     else:
                         # 偶数，选择 limbmount3 的子树的最后一个子节点
                         target_node = get_last_child_of_subtree(state,'limbmount1')
                         #针对一个特定的target_node 选一个可操作规则
-                        action = select_action(V,state,rules,target_node,eps)
+                        action = select_action(state,rules,target_node,eps,new_folder_path)
                     next_state = transite(state=state,action=action,rules=rules,target_node_name=target_node)
                     state = next_state
-                valid = is_valid(state)
 
-            predicted_value = predict(V, state)
+
+
+
+            predicted_value = predict(state)
             if predicted_value > selected_reward:
                 selected_design, selected_reward = state, predicted_value
             
         reward,best_reward = -np.inf,None
 
-        xml_file_path = os.path.join(new_folder_path, filename + ".xml")
+        generate_xml(selected_design,new_folder_path,filename)
         xml_out_path = os.path.join(new_folder_path, filename + "_symm.xml")
-        trans_op(xml_file_path=xml_file_path, xml_out_path=xml_out_path)
-        os.remove(xml_file_path)
+        # M = RobotModelGen.ModelGenerator(R)
+        # M.set_compiler(angle='degree',inertiafromgeom='true')
+        # M.set_size()
+        # M.set_option(gravity=-9.8)
+        # M.get_robot_dfs()
+        # M.generate()
 
-        reward = get_reward(selected_design=xml_out_path)
-        if reward > best_reward:
-            best_reward = reward
-        data_to_save = []
+        # xml_file_path = os.path.join(new_folder_path, filename + ".xml")
+        # xml_out_path = os.path.join(new_folder_path, filename + "_symm.xml")
+        # trans_op(xml_file_path=xml_file_path, xml_out_path=xml_out_path)
+        # os.remove(xml_file_path)
+
+        # reward = get_reward(selected_design=xml_out_path)
+        # if reward > best_reward:
+        #     best_reward = reward
+        # data_to_save = []
 
 
         hash_val = calculate_hash_without_first_line(xml_file=xml_out_path)
-        data_to_save.append([xml_out_path, hash_val, best_reward])
-        csv_file_path = os.path.join(new_folder_path, 'design_rewards.csv')
-        save_to_csv(data_to_save, csv_file_path)
+        if hash_val not in hash_pool:
+            hash_pool.append(hash_val)
+
+            reward = get_reward(selected_design=xml_out_path)
+            if reward > best_reward:
+                best_reward = reward
+                best_design = xml_out_path
+            data_to_save = []
+
+            data_to_save.append([xml_out_path, hash_val, reward])
+            csv_file_path = os.path.join(new_folder_path, 'design_rewards.csv')
+            save_to_csv(data_to_save, csv_file_path)
 
 
         # optimize
         # train V
-        
+        TF_train()
