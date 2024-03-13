@@ -42,7 +42,7 @@ def is_rule_applicable_target(rule, target_node_name):
 def random_search(R, rules, available_actions):
     # 随机选择一个节点
 
-    excluded_rules = [0, 1, 2, 3, 4, 11, 12, 13, 14, 15] #需要同步修改apply_rule.py 410行
+    excluded_rules = [0, 1, 2, 3, 4, 10] #需要同步修改apply_rule.py 410行
     available_nodes = [node for node in R.nodes if 'joint' not in node]
     print("available_nodes",available_nodes)
     # 如果存在可选节点，则随机选择一个
@@ -153,10 +153,10 @@ def result_R(filename='xmlrobot'):
     print("可执行的规则序号：", available_actions)
 
     random_search(R,rules,available_actions)
-    available_actions = get_available_actions(R, rules)
-    print("可执行的规则序号：", available_actions)
+
 
     for i in range(100):
+        available_actions = get_available_actions(R, rules)
         random_search(R,rules,available_actions)
 
     R = replace_limbmounts(R)

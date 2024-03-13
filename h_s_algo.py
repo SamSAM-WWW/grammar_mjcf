@@ -32,18 +32,19 @@ import time
 import hashlib
 import csv
 import RobotModelGen
-excluded_rules = [0, 1, 2, 3, 4, 11, 12, 13, 14, 15] #需要同步修改apply_rule.py 410行
-
+excluded_rules = [0, 1, 2, 3, 4, 10] #需要同步修改apply_rule.py 410行
 def predict(state,new_folder_path):
     '''
     输入state, 转换成xml文件后预测值函数并删除中间文件
     '''
-    generate_xml(state,new_folder_path,'xmlrobot_temp')
-    
+    generate_xml_from_R(state,new_folder_path,'xmlrobot_temp')
+    xml_out_path = os.path.join(new_folder_path, 'xmlrobot_temp' + "_symm.xml")
+    os.remove(xml_out_path)
+    predict_val = 0
     #predict
     #predict
     #retun predict Value
-    pass
+    return predict_val
 
 
 def transite(state,action,rules,target_node_name):
@@ -116,7 +117,7 @@ def get_available_actions_for_target_node(rules, target_node):
     # 遍历规则列表
     for i, rule in enumerate(rules):
         # 检查当前规则是否适用于目标节点
-        if is_rule_applicable_to_target_node(rule, target_node):
+        if is_rule_applicable_to_target_node(rule, target_node) and rule not in excluded_rules:
             available_actions.append(i)
 
     return available_actions
@@ -162,7 +163,7 @@ def save_to_csv(data, filename):
         # 写入数据
         for row in data:
             writer.writerow(row)
-def generate_xml(R,new_folder_path,filename):
+def generate_xml_from_R(R,new_folder_path,filename):
     M = RobotModelGen.ModelGenerator(R)
     M.set_compiler(angle='degree',inertiafromgeom='true')
     M.set_size()
@@ -236,26 +237,9 @@ def search_algo():
                 selected_design, selected_reward = state, predicted_value
             
         reward,best_reward = -np.inf,None
-
-        generate_xml(selected_design,new_folder_path,filename)
+        filename_4_epoch = 'xmlrobot_' + str(epoch)
+        generate_xml_from_R(selected_design,new_folder_path,filename_4_epoch)
         xml_out_path = os.path.join(new_folder_path, filename + "_symm.xml")
-        # M = RobotModelGen.ModelGenerator(R)
-        # M.set_compiler(angle='degree',inertiafromgeom='true')
-        # M.set_size()
-        # M.set_option(gravity=-9.8)
-        # M.get_robot_dfs()
-        # M.generate()
-
-        # xml_file_path = os.path.join(new_folder_path, filename + ".xml")
-        # xml_out_path = os.path.join(new_folder_path, filename + "_symm.xml")
-        # trans_op(xml_file_path=xml_file_path, xml_out_path=xml_out_path)
-        # os.remove(xml_file_path)
-
-        # reward = get_reward(selected_design=xml_out_path)
-        # if reward > best_reward:
-        #     best_reward = reward
-        # data_to_save = []
-
 
         hash_val = calculate_hash_without_first_line(xml_file=xml_out_path)
         if hash_val not in hash_pool:

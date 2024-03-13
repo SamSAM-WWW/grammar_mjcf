@@ -690,11 +690,12 @@ def enum_10():
         #
         #添加预筛选机制
         R = result_R(filename)
+        
         # 如果 limbmount1 或 limbmount3 的子节点没有子节点，则跳过
         
-        if not has_child_nodes(R, "limbmount1") or not has_child_nodes(R, "limbmount3"):
-            invalid_design = invalid_design + 1
-            continue
+        # if not has_child_nodes(R, "limbmount1") or not has_child_nodes(R, "limbmount3"):
+        #     invalid_design = invalid_design + 1
+        #     continue
 
 
         M = ModelGenerator(R)
