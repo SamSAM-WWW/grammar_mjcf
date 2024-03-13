@@ -60,7 +60,7 @@ def select_action( state, rules, target_node, eps, new_folder_path):
     '''
     available_actions = get_available_actions_for_target_node(rules, target_node)
     if len(available_actions) == 0:
-        return None, None
+        return None
     
     sample = random.random()
     step_type = ""
@@ -86,10 +86,6 @@ def select_action( state, rules, target_node, eps, new_folder_path):
     
     return best_action
 
-def TF():
-    pass
-def TF_train():
-    pass
 def get_last_child_of_subtree(state, node):
     """
     找到某个节点的子树的最后一个子节点（包括该节点本身）。
@@ -180,7 +176,6 @@ def search_algo():
     os.makedirs(new_folder_path)
     filename = 'xmlrobot'
     hash_pool = []
-    V = TF()
     rules = create_4leg_rules()
     eps_end = 0.1
     eps_start = 1.0
@@ -239,7 +234,7 @@ def search_algo():
         reward,best_reward = -np.inf,None
         filename_4_epoch = 'xmlrobot_' + str(epoch)
         generate_xml_from_R(selected_design,new_folder_path,filename_4_epoch)
-        xml_out_path = os.path.join(new_folder_path, filename + "_symm.xml")
+        xml_out_path = os.path.join(new_folder_path, filename_4_epoch + "_symm.xml")
 
         hash_val = calculate_hash_without_first_line(xml_file=xml_out_path)
         if hash_val not in hash_pool:
@@ -256,6 +251,5 @@ def search_algo():
             save_to_csv(data_to_save, csv_file_path)
 
 
-        # optimize
+        # optimize estimator
         # train V
-        TF_train()
