@@ -8,13 +8,14 @@ from new_.trans import *
 from search import *
 from scipy.spatial.transform import Rotation 
 import os
+import xml.etree.ElementTree as ET
 
 def euler2quaternion(euler):
     '''
     欧拉角转四元数
     '''
     # r = Rotation.from_euler('xyz', euler, degrees=True)
-    r = Rotation.from_euler('zyz', euler, degrees=True)
+    r = Rotation.from_euler('xyz', euler, degrees=True)
     quaternion = r.as_quat()
     return quaternion
 
@@ -249,6 +250,7 @@ class ModelGenerator():
                         # euler  = robot_part.geom_euler
                         quat=quat,
                         density=robot_part.density,
+                        friction="1.5 0.005 0.0001",
                             )
             if robot_part.link_type == 'sphere': # 如果是球形
 
@@ -269,6 +271,7 @@ class ModelGenerator():
                         # euler  = robot_part.geom_euler
                         quat=quat,
                         density=robot_part.density,
+                        friction="1.5 0.005 0.0001",
                             )
             if robot_part.link_type == 'box': # 如果是box形状
 
@@ -289,6 +292,7 @@ class ModelGenerator():
                         # euler  = robot_part.geom_euler
                         quat=quat,
                         density=robot_part.density,
+                        friction="1.5 0.005 0.0001",
                             )
             
             if robot_part.link_type == 'cylinder': # 如果是圆柱形状
@@ -300,6 +304,7 @@ class ModelGenerator():
                         type   = robot_part.link_type,
                         euler  = robot_part.geom_euler,
                         density=robot_part.density,
+                        friction="1.5 0.005 0.0001",
                             )
             return body,geom
 
@@ -354,7 +359,8 @@ class ModelGenerator():
                         type   = robot_part.link_type,
                         # euler  = robot_part.geom_euler
                         quat=quat,
-                        density=robot_part.density
+                        density=robot_part.density,
+                        friction="1.5 0.005 0.0001",
                             )
             if robot_part.link_type == 'sphere': # 如果是球形
 
@@ -374,7 +380,8 @@ class ModelGenerator():
                         type   = robot_part.link_type,
                         # euler  = robot_part.geom_euler
                         quat=quat,
-                        density=robot_part.density
+                        density=robot_part.density,
+                        friction="1.5 0.005 0.0001",
                             )
             if robot_part.link_type == 'box': # 如果是box形状
 
@@ -394,7 +401,8 @@ class ModelGenerator():
                         type   = robot_part.link_type,
                         # euler  = robot_part.geom_euler
                         quat=quat,
-                        density=robot_part.density
+                        density=robot_part.density,
+                        friction="1.5 0.005 0.0001",
                             )
             
             if robot_part.link_type == 'cylinder': # 如果是圆柱形状
@@ -405,7 +413,8 @@ class ModelGenerator():
                         size   = robot_part.size,
                         type   = robot_part.link_type,
                         euler  = robot_part.geom_euler,
-                        density=robot_part.density
+                        density=robot_part.density,
+                        friction="1.5 0.005 0.0001",
                             )
             return body,geom
         
@@ -732,11 +741,11 @@ def enum_10():
         M.generate()
         print(M.compiler.angle)
         
-        for layer, nodes in enumerate(nx.topological_generations(R)):
-        # `multipartite_layout` expects the layer as a node attribute, so add the
-        # numeric layer value as a node attribute
-            for node in nodes:
-                R.nodes[node]["layer"] = layer
+        # for layer, nodes in enumerate(nx.topological_generations(R)):
+        # # `multipartite_layout` expects the layer as a node attribute, so add the
+        # # numeric layer value as a node attribute
+        #     for node in nodes:
+        #         R.nodes[node]["layer"] = layer
 
         # Compute the multipartite_layout using the "layer" node attribute
         # pos = nx.multipartite_layout(R, subset_key="layer")
@@ -749,7 +758,13 @@ def enum_10():
         xml_file_path = os.path.join("mjcf_model", filename + ".xml")
         xml_out_path = os.path.join("mjcf_model", filename + "_symm.xml")
         trans_op(xml_file_path=xml_file_path, xml_out_path=xml_out_path)
+        tree = ET.parse(xml_out_path)
+        root = tree.getroot()
+        target_body = root.find(".//body[@name='root']")
+        target_body.set('quat', '0.707 0.0 0.0 0.707')
+        tree.write(xml_out_path)
         os.remove(xml_file_path)
+        
     print(invalid_design)
 if __name__ == '__main__':
     enum_10()

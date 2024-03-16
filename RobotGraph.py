@@ -21,7 +21,7 @@ class RobotLink():
                  euler = [0,0,0],  # body坐标系旋转的欧拉角
                  geom_euler = [0,0,0], # geom几何旋转的欧拉角
                  link_class = 'body',
-                 density = 0.5
+                 density = 1000
                 ):
         self.name = name
         self.length = length

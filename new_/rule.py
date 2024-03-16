@@ -223,9 +223,9 @@ def create_4leg_rules():
     rules = [] 
     # rule0 battery
     rule = create_rule(name='make_robot',
-                        lhs_nodes={'root':{'require_label':'root','shape':'box','radius':'0.15 0.15 0.02','density':0.5, 'body_pos':[0,0,2], 'geom_pos':[-0.02,0,0.07]}},
+                        lhs_nodes={'root':{'require_label':'root','shape':'box','radius':'0.15 0.15 0.02','density':1000.0, 'body_pos':[0,0,0.82], 'geom_pos':[-0.02,0,0.07],'euler':[90,0,0]}},
                         lhs_edges=[],
-                        rhs_nodes={'body':{'shape':'box','radius':'0.4 0.8 0.1','density':0.5,'euler':[0,0,0],'geom_euler':[0,0,0], 'geom_pos':[-0.02,0,0]},'root':{'label':'root'}},
+                        rhs_nodes={'body':{'shape':'box','radius':'0.4 0.8 0.1','density':1000.0,'geom_euler':[0,0,0], 'geom_pos':[-0.02,0,0]},'root':{'label':'root'}},
                         rhs_edges=[{'from_node':'root','to_node':'body','range':[-5,5],'axis':[0,0,1]}])
     rules.append(rule)
 

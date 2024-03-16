@@ -32,6 +32,7 @@ import time
 import hashlib
 import csv
 import RobotModelGen
+import xml.etree.ElementTree as ET
 excluded_rules = [0, 1, 2, 3, 4, 10] #需要同步修改apply_rule.py 410行
 def predict(state,new_folder_path):
     '''
@@ -203,6 +204,11 @@ def generate_xml_from_R(R,new_folder_path,filename):
     xml_file_path = os.path.join(new_folder_path, filename + ".xml")
     xml_out_path = os.path.join(new_folder_path, filename + "_symm.xml")
     trans_op(xml_file_path=xml_file_path, xml_out_path=xml_out_path)
+    tree = ET.parse(xml_out_path)
+    root = tree.getroot()
+    target_body = root.find(".//body[@name='root']")
+    target_body.set('quat', '0.707 0.0 0.0 0.707')
+    tree.write(xml_out_path)
     os.remove(xml_file_path)
     print("Generate xml file successfully!")
 
