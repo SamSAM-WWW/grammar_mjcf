@@ -80,9 +80,9 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
             # 先判断target_node表示link 还是 joint
             # 判断节点类型
             node_info = input_graph.nodes[target_node_name]
-            print(node_info)
+            # print(node_info)
             node_info = input_graph.nodes[target_node_name]['info']
-            print("node_info.start_point",node_info.start_point)
+            # print("node_info.start_point",node_info.start_point)
 
             # 新添加的检查
             existing_children = list(result.successors(target_node_name))

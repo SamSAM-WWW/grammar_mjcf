@@ -39,11 +39,13 @@ def predict(state,new_folder_path):
     '''
     generate_xml_from_R(state,new_folder_path,'xmlrobot_temp')
     xml_out_path = os.path.join(new_folder_path, 'xmlrobot_temp' + "_symm.xml")
-    os.remove(xml_out_path)
+    
     predict_val = 0
+    predict_val = random.random()
     #predict
     #predict
     #retun predict Value
+    os.remove(xml_out_path)
     return predict_val
 
 
@@ -58,65 +60,93 @@ def select_action( state, rules, target_node, eps, new_folder_path):
     '''
     根据选定的目标节点选取可执行的规则
     '''
-    available_actions = get_available_actions_for_target_node(rules, target_node)
+    available_actions = get_available_actions(state,rules)
     if len(available_actions) == 0:
+        print("No available actions for target node")
         return None
     
     sample = random.random()
     step_type = ""
-    if sample > eps:
-        # Exploit
-        values = []
-        next_states = []
-        for action in available_actions:
-            # 评估每个动作的值
-            next_state = transite(state, action, rules, target_node) 
-            values.append(predict(next_state,new_folder_path))
-            next_states.append(next_state)
-        
-        # 选择值最大的动作
-        best_action_index = np.argmax(values)
-        best_action = available_actions[best_action_index]
-        step_type = 'optimal'
+    applicable_rules = [action for action in available_actions if is_rule_applicable_target(rules[action], target_node)]
+    applicable_rules = [action for action in applicable_rules if action not in excluded_rules]
+    if applicable_rules:
+        if sample > eps:
+            # Exploit
+            values = []
+            next_states = []
+            for action in applicable_rules:
+                # 评估每个动作的值
+                next_state = transite(state, action, rules, target_node) 
+                values.append(predict(next_state,new_folder_path))
+                next_states.append(next_state)
+            
+            # 选择值最大的动作
+            best_action_index = np.argmax(values)
+            best_action = available_actions[best_action_index]
+            step_type = 'optimal'
+        else:
+            # Explore
+            # 随机选择一个动作
+            best_action = random.choice(applicable_rules)
+            step_type = 'random'
+        print("best action is ",best_action)
+        return best_action
     else:
-        # Explore
-        # 随机选择一个动作
-        best_action = random.choice(available_actions)
-        step_type = 'random'
+        return None
+
+# def get_last_child_of_subtree(state, node):
+#     """
+#     找到某个节点的子树的最后一个子节点（包括该节点本身）。
+#     """
+#     if not state.successors(node):
+#         # 如果节点没有子节点，则返回节点本身
+#         return node
+#     last_child = node  # 初始情况下最后一个子节点是节点本身
+#     stack = [node]  # 使用栈来实现深度优先搜索
+
+#     while stack:
+#         current_node = stack.pop()
+#         successors = list(state.successors(current_node))
+#         if successors:
+#             # 将当前节点的子节点压入栈中
+#             stack.extend(successors)
+#             # 更新最后一个子节点
+#             last_child = current_node
+
+#     return last_child
+
+def get_non_joint_child(state, node):
+    """
+    找到某个节点的一个非 joint 类型的子节点。
+    """
+    # 获取节点的所有子节点
+    successors = list(state.successors(node))
     
-    return best_action
+    # 遍历子节点，找到第一个非 joint 类型的节点
+    for successor in successors:
+        if 'joint' not in successor:
+            return successor
+    
+    # 如果没有找到非 joint 类型的子节点，则返回 None
+    print("No non-joint child found for node:", node)
+    return node
 
-def get_last_child_of_subtree(state, node):
-    """
-    找到某个节点的子树的最后一个子节点（包括该节点本身）。
-    """
-    if not state.successors(node):
-        # 如果节点没有子节点，则返回节点本身
-        return node
-    last_child = node  # 初始情况下最后一个子节点是节点本身
-    stack = [node]  # 使用栈来实现深度优先搜索
-
-    while stack:
-        current_node = stack.pop()
-        successors = list(state.successors(current_node))
-        if successors:
-            # 将当前节点的子节点压入栈中
-            stack.extend(successors)
-            # 更新最后一个子节点
-            last_child = current_node
-
-    return last_child
-
-def get_available_actions_for_target_node(rules, target_node):
+def get_random_target_node(state):
+    available_nodes = [node for node in state.nodes if 'joint' not in node]
+    if available_nodes:
+        selected_node = random.choice(available_nodes)
+    return selected_node
+def get_available_actions(R, rules):
     available_actions = []
 
     # 遍历规则列表
     for i, rule in enumerate(rules):
-        # 检查当前规则是否适用于目标节点
-        if is_rule_applicable_to_target_node(rule, target_node) and rule not in excluded_rules:
+        # 遍历图中的节点
+        if is_rule_applicable(rule, R):
             available_actions.append(i)
-
-    return available_actions
+            # break  # 一旦找到一个可执行的规则，就不再检查当前规则的其他节点
+    applicable_rules = [action for action in available_actions if action not in excluded_rules]
+    return applicable_rules
 
 def is_rule_applicable_to_target_node(rule, target_node):
     # 检查规则的目标节点是否与给定的目标节点匹配
@@ -124,7 +154,9 @@ def is_rule_applicable_to_target_node(rule, target_node):
     return len(matching_keys) > 0
 
 def get_reward(selected_design):
-    pass
+    reward = 0
+    reward  =  random.random()
+    return reward
 
 def calculate_hash(xml_content):
     # 计算内容的哈希值
@@ -160,16 +192,27 @@ def save_to_csv(data, filename):
         for row in data:
             writer.writerow(row)
 def generate_xml_from_R(R,new_folder_path,filename):
+    R = replace_limbmounts(R)
+
     M = RobotModelGen.ModelGenerator(R)
     M.set_compiler(angle='degree',inertiafromgeom='true')
     M.set_size()
     M.set_option(gravity=-9.8)
     M.get_robot_dfs()
-    M.generate()
+    M.generate_2_folder(new_folder_path,filename)
     xml_file_path = os.path.join(new_folder_path, filename + ".xml")
     xml_out_path = os.path.join(new_folder_path, filename + "_symm.xml")
     trans_op(xml_file_path=xml_file_path, xml_out_path=xml_out_path)
     os.remove(xml_file_path)
+    print("Generate xml file successfully!")
+
+
+def test_R_gen():
+    filename = 'xmlrobot_'
+    R = result_R(filename)
+    current_time = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
+    new_folder_path = os.path.join("mjcf_model", current_time)
+    generate_xml_from_R(R,new_folder_path,filename)
 def search_algo():
     current_time = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
     new_folder_path = os.path.join("mjcf_model", current_time)
@@ -185,8 +228,10 @@ def search_algo():
     eps_sample_end = 0.1
     eps_sample_start = 1.0
     eps_sample_decay = 0.3
+    pre_pool = {}
+    depth = 20
+    
 
-    depth = 40
     for epoch in range(num_iterations):
         t_start = time.time()
         eps = eps_end + (eps_start - eps_end) * np.exp(-1.0 * epoch / num_iterations / eps_decay)
@@ -199,39 +244,39 @@ def search_algo():
             num_samples = 1
         else:
             num_samples = 16
-        
+        best_state = None
+        best_pre_val = float('-inf')  # 初始化最佳预测值为负无穷大
         # use e-greedy to sample a design within maximum #steps.
         for num in range(num_samples):
-            valid = False
-
             for num_try in range(100):
                 t0 = time.time()
-
                 filename = 'xmlrobot' + str(epoch) + '_' + str(num) + '_' + str(num_try)
-                state = make_graph_by_step(filename)
+                if best_state is None:
+                    state = make_graph_by_step(filename)
+                else: state = best_state
+                
+                #找到当前状态下，最优的下一步设计
                 for i in range(depth):
-                    
-                    if i % 2 == 0:
-                        # 偶数，选择 limbmount3 的子树的最后一个子节点
-                        target_node = get_last_child_of_subtree(state,'limbmount3')
-                        #针对一个特定的target_node 选一个可操作规则
-                        action = select_action(state,rules,target_node,eps,new_folder_path)
-                    else:
-                        # 偶数，选择 limbmount3 的子树的最后一个子节点
-                        target_node = get_last_child_of_subtree(state,'limbmount1')
-                        #针对一个特定的target_node 选一个可操作规则
-                        action = select_action(state,rules,target_node,eps,new_folder_path)
-                    next_state = transite(state=state,action=action,rules=rules,target_node_name=target_node)
-                    state = next_state
+                    available_actions = get_available_actions(state, rules) 
+                    next_state = random_search(state,rules,available_actions)
+                    pre_val = predict(next_state,new_folder_path)
+                    # 更新最佳预测值和对应的状态
+                    if pre_val > best_pre_val:
+                        best_pre_val = pre_val
+                        best_state = next_state
 
 
 
 
-            predicted_value = predict(state)
+
+
+
+
+            predicted_value = predict(best_state,new_folder_path)
             if predicted_value > selected_reward:
                 selected_design, selected_reward = state, predicted_value
             
-        reward,best_reward = -np.inf,None
+        reward,best_reward = 0,0
         filename_4_epoch = 'xmlrobot_' + str(epoch)
         generate_xml_from_R(selected_design,new_folder_path,filename_4_epoch)
         xml_out_path = os.path.join(new_folder_path, filename_4_epoch + "_symm.xml")
@@ -251,5 +296,7 @@ def search_algo():
             save_to_csv(data_to_save, csv_file_path)
 
 
-        # optimize estimator
-        # train V
+        # optimize train estimator
+
+search_algo()
+# test_R_gen()            

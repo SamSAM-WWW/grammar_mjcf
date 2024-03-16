@@ -556,6 +556,19 @@ class ModelGenerator():
         with open(save_path, 'w') as fh:
             fh.write(model_xml)
 
+    def generate_2_folder(self, folder_name,filename):
+        """
+        输出xml文档到指定文件夹中。
+        """
+        model_xml = self.model.xml()
+        folder_path = os.path.join(folder_name)
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+        save_path = os.path.join(folder_path, filename + '.xml')
+        # Output
+        with open(save_path, 'w') as fh:
+            fh.write(model_xml)
+
 
     
 

@@ -84,7 +84,8 @@ def random_search(R, rules, available_actions):
 def copy_subtree(R, source_node, target_node_prefix):
     # 获取 source_node 的所有子节点
     children = list(R.successors(source_node))
-
+    if not children:
+        return
     # 复制 source_node 及其子节点到 target_node
     for child in children:
         # 生成新节点的名称，确保不与已有节点重复
@@ -102,6 +103,8 @@ def copy_subtree(R, source_node, target_node_prefix):
 
         # 递归调用 copy_subtree 函数以复制所有子节点
         copy_subtree(R, child, new_child_name)
+    
+    
 
 def replace_limbmounts_recursive(R, limbmount_node):
     # 获取 limbmount_node 的所有子节点

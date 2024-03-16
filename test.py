@@ -1,20 +1,19 @@
-import os
-import csv
+import hashlib
+def calculate_hash_without_first_line(xml_file):
+    # 读取XML文件的内容
+    with open(xml_file, 'r') as file:
+        xml_content = file.read()
 
-def save_to_csv(data, filename):
-    # 检查文件是否存在
-    file_exists = os.path.isfile(filename)
+    # 移除第一行
+    xml_content_without_first_line = '\n'.join(xml_content.split('\n')[1:])
 
-    # 打开 CSV 文件，使用不同的模式（追加或新建）
-    with open(filename, mode='a' if file_exists else 'w', newline='') as file:
-        writer = csv.writer(file)
-        # 如果文件是新建的，则写入列标题
-        if not file_exists:
-            writer.writerow(['xml_out_path', 'hash', 'reward'])
-        # 写入数据
-        for row in data:
-            writer.writerow(row)
-
-# 使用示例
-data_to_save = [['path1', 'hash1', 10], ['path2', 'hash2', 20], ['path3', 'hash3', 30]]
-save_to_csv(data_to_save, 'design_rewards.csv')
+    # 计算移除第一行后的XML文件的哈希值
+    hash_without_first_line = calculate_hash(xml_content_without_first_line)
+    return hash_without_first_line
+def calculate_hash(xml_content):
+    # 计算内容的哈希值
+    hash_value = hashlib.sha256(xml_content.encode()).hexdigest()
+    return hash_value
+    
+hash_val = calculate_hash_without_first_line(xml_file='mjcf_model\\xmlrobot_8_symm.xml')
+print(hash_val)
