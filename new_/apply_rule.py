@@ -110,7 +110,8 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
                                         length=rule.common_nodes[prefix]['length'] if 'length' in rule.common_nodes[prefix] else 0,
                                         size=rule.common_nodes[prefix]['radius'] if 'radius' in rule.common_nodes[prefix] else 0,
                                         geom_pos=rule.common_nodes[prefix]['geom_pos'] if 'geom_pos' in rule.common_nodes[prefix] else [0,0,0],
-                                        body_pos=rule.common_nodes[prefix]['body_pos'] if 'body_pos' in rule.common_nodes[prefix] else [0,0,0] )
+                                        body_pos=rule.common_nodes[prefix]['body_pos'] if 'body_pos' in rule.common_nodes[prefix] else [0,0,0],
+                                        density=rule.common_nodes[prefix]['density'] if 'density' in rule.common_nodes[prefix] else 0)
                     result.add_node(node_type='link', node_info=new_node)
 
                 # Add RHS nodes which are not in common with the LHS

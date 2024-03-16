@@ -247,7 +247,8 @@ class ModelGenerator():
                         size   = robot_part.size,
                         type   = robot_part.link_type,
                         # euler  = robot_part.geom_euler
-                        quat=quat
+                        quat=quat,
+                        density=robot_part.density,
                             )
             if robot_part.link_type == 'sphere': # 如果是球形
 
@@ -266,7 +267,8 @@ class ModelGenerator():
                         size   = robot_part.size,
                         type   = robot_part.link_type,
                         # euler  = robot_part.geom_euler
-                        quat=quat
+                        quat=quat,
+                        density=robot_part.density,
                             )
             if robot_part.link_type == 'box': # 如果是box形状
 
@@ -285,7 +287,8 @@ class ModelGenerator():
                         size   = robot_part.size,
                         type   = robot_part.link_type,
                         # euler  = robot_part.geom_euler
-                        quat=quat
+                        quat=quat,
+                        density=robot_part.density,
                             )
             
             if robot_part.link_type == 'cylinder': # 如果是圆柱形状
@@ -295,7 +298,8 @@ class ModelGenerator():
                         name   = "geom"+robot_part.name,
                         size   = robot_part.size,
                         type   = robot_part.link_type,
-                        euler  = robot_part.geom_euler
+                        euler  = robot_part.geom_euler,
+                        density=robot_part.density,
                             )
             return body,geom
 
@@ -349,7 +353,8 @@ class ModelGenerator():
                         size   = robot_part.size,
                         type   = robot_part.link_type,
                         # euler  = robot_part.geom_euler
-                        quat=quat
+                        quat=quat,
+                        density=robot_part.density
                             )
             if robot_part.link_type == 'sphere': # 如果是球形
 
@@ -368,7 +373,8 @@ class ModelGenerator():
                         size   = robot_part.size,
                         type   = robot_part.link_type,
                         # euler  = robot_part.geom_euler
-                        quat=quat
+                        quat=quat,
+                        density=robot_part.density
                             )
             if robot_part.link_type == 'box': # 如果是box形状
 
@@ -387,7 +393,8 @@ class ModelGenerator():
                         size   = robot_part.size,
                         type   = robot_part.link_type,
                         # euler  = robot_part.geom_euler
-                        quat=quat
+                        quat=quat,
+                        density=robot_part.density
                             )
             
             if robot_part.link_type == 'cylinder': # 如果是圆柱形状
@@ -397,7 +404,8 @@ class ModelGenerator():
                         name   = "geom"+robot_part.name,
                         size   = robot_part.size,
                         type   = robot_part.link_type,
-                        euler  = robot_part.geom_euler
+                        euler  = robot_part.geom_euler,
+                        density=robot_part.density
                             )
             return body,geom
         
