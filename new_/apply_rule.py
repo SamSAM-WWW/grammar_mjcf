@@ -130,7 +130,8 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
                                         geom_pos=rule.rhs_nodes[node_name]['geom_pos'] if 'geom_pos' in rule.rhs_nodes[node_name] else [0,0,0],
                                         body_pos=rule.rhs_nodes[node_name]['body_pos'] if 'body_pos' in rule.rhs_nodes[node_name] else [0,0,0],
                                         euler=rule.rhs_nodes[node_name]['euler'] if 'euler' in rule.rhs_nodes[node_name] else [0,0,0],
-                                        geom_euler=rule.rhs_nodes[node_name]['geom_euler'] if 'geom_euler' in rule.rhs_nodes[node_name] else [0,0,0],)
+                                        geom_euler=rule.rhs_nodes[node_name]['geom_euler'] if 'geom_euler' in rule.rhs_nodes[node_name] else [0,0,0],
+                                        label=rule.rhs_nodes[node_name]['label'] if 'label' in rule.rhs_nodes[node_name] else None)
                     result.add_node(node_type='link', rule_label= rule.rhs_nodes[node_name]['label'] if 'label' in rule.rhs_nodes[node_name] else None, node_info=new_node)
 
                 # Copy target edges in LHS to result if they are in common with the RHS

@@ -2,42 +2,46 @@ import numpy as np
 from scipy.spatial.transform import Rotation 
 from RobotGraph import RobotJoint,RobotLink,RobotGraph
 import quaternion
+from enum import Enum
+
+class LinkType(Enum):
+    capsule = 0
+    cylinder = 1
+    box = 2
+    sphere = 3
+    ellipsoid = 4 
+
 
 def euler2quaternion(euler):
     '''
     欧拉角转四元数
     '''
-    # r = Rotation.from_euler('xyz', euler, degrees=True)
-    r = Rotation.from_euler('xyz', euler, degrees=True)
-    quaternion = r.as_quat()
-    np_quaternion = np.quaternion(quaternion[0], quaternion[1], quaternion[2], quaternion[3])
-    return np_quaternion
+    # Convert Euler angles to quaternion
+    q = np.quaternion(*euler, degrees=True)
+    return q
 
 def quaternion_coords(q):
     """Get the coefficients of a Quaternion as an np.ndarray."""
     return np.array([q.w, q.x, q.y, q.z])
 
 def one_hot_encode(enum_member):
-    """Encode an enum member as a one-hot vectorobot_graph."""
-    vec = np.zeros(len(type(enum_member).__members__))
-    vec[int(enum_member)] = 1
+    """Encode an enum member as a one-hot vector."""
+    vec = np.zeros(len(LinkType))  # 使用枚举类的长度来初始化向量
+    vec[enum_member.value] = 1  # 将枚举成员的值对应的索引位置设为1
     return vec
 
 def featurize_link(link):
     """Extract a feature vector from a rd.Link."""
-    return np.array([*one_hot_encode(link.joint_type),
-                    link.joint_pos,
-                    *euler2quaternion(link.joint_rot),
-                    *link.joint_axis,
-                    *one_hot_encode(link.shape),
-                    link.length,
-                    link.radius,
+    link_type_enum = LinkType[link.link_type]
+    return np.array([*one_hot_encode(link_type_enum),
+                    link.size,
+                    link.start_point,
+                    link.geom_pos,
+                    link.body_pos,
                     link.density,
-                    link.friction,
-                    link.joint_kp,
-                    link.joint_kd,
-                    link.joint_torque,
-                    *one_hot_encode(link.joint_control_mode)])
+                    link.euler,
+                    link.density,
+                    ])
 
 class Preprocessor:
     def __init__(self, all_labels = None,max_nodes=None):
@@ -57,8 +61,44 @@ class Preprocessor:
         - 节点特征
         - 掩码
     '''
+    # def get_pos_rot(self, robot_graph):
+    #     pos_rot = []
+
+    #     # 遍历机器人图中的每个连杆节点
+    #     for node_name, node_data in robot_graph.nodes(data=True):
+    #         # 检查节点是否是连杆节点
+    #         if node_data['type'] == 'link':
+    #             # 获取当前连杆节点的信息
+    #             link_info = node_data['info']
+                
+    #             # 获取当前连杆节点的父节点名称
+    #             parent_nodes = list(robot_graph.predecessors(node_name))
+                
+    #             # 初始化父节点的位置和旋转信息
+    #             if parent_nodes:
+    #                 parent_node_name = parent_nodes[0]  # 假设每个连杆只有一个父节点
+    #                 parent_pos, parent_rot = pos_rot[parent_node_name]
+    #                 parent_link_length = robot_graph.nodes[parent_node_name]['info'].length
+    #             else:
+    #                 parent_pos, parent_rot = np.zeros(3), np.quaternion(1, 0, 0, 0)
+    #                 parent_link_length = 0
+
+    #             # 计算当前连杆节点的世界位置
+    #             offset = np.array([parent_link_length * link_info.body_pos[0], 0, 0])
+    #             rel_pos = quaternion.rotate_vectors(parent_rot, offset)
+    #             pos = parent_pos + rel_pos
+
+    #             # 计算当前连杆节点的世界旋转
+    #             # print("link_info.euler",link_info.euler)
+    #             # print("quaternion(link_info.euler)",quaternion.from_euler_angles(link_info.euler))
+    #             rel_rot = quaternion.from_euler_angles(link_info.euler).conjugate()
+    #             rot = parent_rot * rel_rot
+                
+    #             # 将当前连杆节点的世界位置和旋转信息添加到 pos_rot 列表中
+    #             pos_rot.append((pos, rot))
+    #     return pos_rot
     def get_pos_rot(self, robot_graph):
-        pos_rot = []
+        pos_rot = {}
 
         # 遍历机器人图中的每个连杆节点
         for node_name, node_data in robot_graph.nodes(data=True):
@@ -73,23 +113,22 @@ class Preprocessor:
                 # 初始化父节点的位置和旋转信息
                 if parent_nodes:
                     parent_node_name = parent_nodes[0]  # 假设每个连杆只有一个父节点
-                    parent_pos, parent_rot = pos_rot[parent_node_name]
-                    parent_link_length = robot_graph.nodes[parent_node_name]['info'].length
+                    parent_pos, parent_rot = pos_rot.get(parent_node_name, (np.zeros(3), np.quaternion(1, 0, 0, 0)))
                 else:
                     parent_pos, parent_rot = np.zeros(3), np.quaternion(1, 0, 0, 0)
-                    parent_link_length = 0
+                    
 
                 # 计算当前连杆节点的世界位置
-                offset = np.array([parent_link_length * link_info.body_pos[0], 0, 0])
+                offset = np.array([1 * link_info.body_pos[0], 0, 0])
                 rel_pos = quaternion.rotate_vectors(parent_rot, offset)
                 pos = parent_pos + rel_pos
 
                 # 计算当前连杆节点的世界旋转
-                rel_rot = quaternion(link_info.euler).conjugate()
+                rel_rot = quaternion.from_euler_angles(link_info.euler).conjugate()
                 rot = parent_rot * rel_rot
                 
-                # 将当前连杆节点的世界位置和旋转信息添加到 pos_rot 列表中
-                pos_rot.append((pos, rot))
+                # 将当前连杆节点的世界位置和旋转信息添加到 pos_rot 字典中
+                pos_rot[node_name] = (pos, rot)
         return pos_rot
     def preprocess(self, robot_graph, max_nodes=None):
         
@@ -144,11 +183,20 @@ class Preprocessor:
 
         link_features = []
         links = [node_info for _, node_info in robot_graph.nodes(data='info') if isinstance(node_info, RobotLink)]
-        for i, link in enumerate(links):
-            world_pos, world_rot = pos_rot[i]
-            world_joint_axis = quaternion.rotate_vectors(world_rot, link.joint_axis)
-            label_vec = np.zeros(len(self.all_labels))
-            label_vec[self.all_labels.index(link.label)] = 1
+        for node_name, link in zip(pos_rot.keys(), links):
+            world_pos, world_rot = pos_rot[node_name]
+            parent_nodes = list(robot_graph.predecessors(node_name))
+            parent_pos, parent_rot = pos_rot[node_name]
+            
+
+            if parent_nodes:
+                parent_node_name = list(robot_graph.predecessors(node_name))[0]
+                parent_link_info = robot_graph.nodes[parent_node_name]['info']
+                world_joint_axis = quaternion.rotate_vectors(parent_rot, parent_link_info.axis)
+                # world_joint_axis = quaternion.rotate_vectors(world_rot, link.joint_axis)
+                label_vec = np.zeros(len(self.all_labels))
+                print("self.all_labels",self.all_labels)
+                label_vec[self.all_labels.index(link.label)] = 1
         
         link_features.append(np.array([
                 *featurize_link(link),
