@@ -33,6 +33,7 @@ import hashlib
 import csv
 import RobotModelGen
 import xml.etree.ElementTree as ET
+from PreProcessor import Preprocessor
 excluded_rules = [0, 1, 2, 3, 4, 10] #需要同步修改apply_rule.py 410行
 def predict(state,new_folder_path):
     '''
@@ -48,7 +49,11 @@ def predict(state,new_folder_path):
     #retun predict Value
     os.remove(xml_out_path)
     return predict_val
+    
 
+def predict_gnn(state):
+    
+    global preprocessor
 
 def transite(state,action,rules,target_node_name):
     '''
@@ -220,12 +225,30 @@ def test_R_gen():
     new_folder_path = os.path.join("mjcf_model", current_time)
     generate_xml_from_R(R,new_folder_path,filename)
 def search_algo():
+    rules = create_4leg_rules()
     current_time = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
     new_folder_path = os.path.join("mjcf_model", current_time)
     os.makedirs(new_folder_path)
     filename = 'xmlrobot'
+
+
+
+    all_labels = set()
+    for rule in rules:
+        for node_name, node_attrs in rule.lhs_nodes.items():
+            if 'require_label' in node_attrs:
+                all_labels.add(node_attrs['require_label'])
+    all_labels = sorted(list(all_labels))
+    global preprocessor
+    preprocessor = Preprocessor(all_labels = all_labels)
+    
+
+
+
+
+    
     hash_pool = []
-    rules = create_4leg_rules()
+    
     eps_end = 0.1
     eps_start = 1.0
     num_iterations = 1000
