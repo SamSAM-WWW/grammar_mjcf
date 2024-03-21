@@ -34,7 +34,11 @@ import csv
 import RobotModelGen
 import xml.etree.ElementTree as ET
 from PreProcessor import Preprocessor
+from Net import Net
+from common import *
+device = 'cpu'
 excluded_rules = [0, 1, 2, 3, 4, 10] #需要同步修改apply_rule.py 410行
+load_V_path = None
 def predict(state,new_folder_path):
     '''
     输入state, 转换成xml文件后预测值函数并删除中间文件
@@ -51,9 +55,16 @@ def predict(state,new_folder_path):
     return predict_val
     
 
-def predict_gnn(state):
-    
+def predict_gnn(V,state):
     global preprocessor
+    adj_matrix_np, features_np, _ = preprocessor.preprocess(state)
+    masks_np = np.full(len(features_np), True)
+    with torch.no_grad():
+        features = torch.tensor(features_np).unsqueeze(0)
+        adj_matrix = torch.tensor(adj_matrix_np).unsqueeze(0)
+        masks = torch.tensor(masks_np).unsqueeze(0)
+        output, _, _ = V(features, adj_matrix, masks)
+        return output.item()
 
 def transite(state,action,rules,target_node_name):
     '''
@@ -242,8 +253,15 @@ def search_algo():
     all_labels = sorted(list(all_labels))
     global preprocessor
     preprocessor = Preprocessor(all_labels = all_labels)
+    max_nodes = 80
+    state = make_graph_by_step(filename)
+    sample_adj_matrix, sample_features, sample_masks = preprocessor.preprocess(state)
+    num_features = sample_features.shape[1]
+    V = Net(max_nodes=max_nodes, num_channels = num_features,num_outputs = 1 ).to(device)
     
-
+    if load_V_path is not None:
+        V.load_state_dict(torch.load(load_V_path))
+        print_info('Loaded pretrained V function from {}'.format(load_V_path))
 
 
 
@@ -263,6 +281,7 @@ def search_algo():
     
 
     for epoch in range(num_iterations):
+        V.eval()
         t_start = time.time()
         eps = eps_end + (eps_start - eps_end) * np.exp(-1.0 * epoch / num_iterations / eps_decay)
         eps_sample = eps_sample_end + (eps_sample_start - eps_sample_end) * np.exp(-1.0 * epoch / num_iterations / eps_sample_decay)
@@ -302,7 +321,8 @@ def search_algo():
 
 
 
-            predicted_value = predict(best_state,new_folder_path)
+            # predicted_value = predict(best_state,new_folder_path)
+            predicted_value = predict_gnn(V,best_state)
             if predicted_value > selected_reward:
                 selected_design, selected_reward = state, predicted_value
             

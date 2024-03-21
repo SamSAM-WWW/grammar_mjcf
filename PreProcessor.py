@@ -101,10 +101,10 @@ class Preprocessor:
         edges = robot_graph.edges
 
         # 构建邻接矩阵
-        adj_matrix = self.build_adjacency_matrix(nodes, edges)
-
+        adj_matrix = self.build_adjacency_matrix(robot_graph)
+        pos_rot = self.get_pos_rot(robot_graph)
         # 提取节点特征
-        node_features = self.extract_node_features(nodes)
+        node_features = self.extract_node_features(robot_graph,pos_rot)
         masks = None
         # 创建掩码
         if max_nodes is not None:
@@ -113,23 +113,28 @@ class Preprocessor:
         return adj_matrix, node_features, masks
 
     def build_adjacency_matrix(self, robot_graph):
-        #判断graph里 link的数量
-        num_nodes = 0
-        for n in robot_graph.successors('root'):
-            if robot_graph.nodes[n]['type'] == 'link':
-                num_nodes = num_nodes + 1
+        # 判断graph里 link的数量
+        
 
-        adj_matrix = np.zeros((num_nodes, num_nodes))
+        
 
         # 遍历关节节点，构建邻接矩阵
+        link_nodes = [node for node in robot_graph.nodes if robot_graph.nodes[node]['type'] == 'link']
         joint_nodes = [node for node in robot_graph.nodes if robot_graph.nodes[node]['type'] == 'joint']
+        num_nodes = len(link_nodes)
+        adj_matrix = np.zeros((num_nodes, num_nodes))
+        if not joint_nodes:
+            # 如果没有找到关节节点，返回空的邻接矩阵
+            return adj_matrix
+
         for node in joint_nodes:
             children = list(robot_graph.successors(node))[0] if list(robot_graph.successors(node)) else None
             parent = list(robot_graph.predecessors(node))[0] if list(robot_graph.predecessors(node)) else None
-            parent_index = joint_nodes.index(parent)
-            child_index = joint_nodes.index(children)
-            adj_matrix[parent_index, child_index] = 1
-            adj_matrix[child_index, parent_index] = 1
+            parent_index = link_nodes.index(parent) if parent in link_nodes else -1
+            child_index = link_nodes.index(children) if children in link_nodes else -1
+            if parent_index >= 0 and child_index >= 0:
+                adj_matrix[parent_index, child_index] = 1
+                adj_matrix[child_index, parent_index] = 1
         return adj_matrix
 
     def extract_node_features(self, robot_graph,pos_rot):
