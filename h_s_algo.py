@@ -225,11 +225,12 @@ def test_R_gen():
     new_folder_path = os.path.join("mjcf_model", current_time)
     generate_xml_from_R(R,new_folder_path,filename)
 def search_algo():
-    rules = create_4leg_rules()
     current_time = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
     new_folder_path = os.path.join("mjcf_model", current_time)
     os.makedirs(new_folder_path)
     filename = 'xmlrobot'
+    rules = create_4leg_rules()
+
 
 
 
@@ -246,7 +247,7 @@ def search_algo():
 
 
 
-    
+
     hash_pool = []
     
     eps_end = 0.1
