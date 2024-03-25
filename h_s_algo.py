@@ -80,6 +80,7 @@ def update_Vhat(V_hat, state_seq, reward):
         if not (state_hash_key in V_hat):
             V_hat[state_hash_key] = -np.inf
         V_hat[state_hash_key] = max(V_hat[state_hash_key], reward)
+        print(f"Updated V_hat[{state_hash_key}]with reward {reward}")
 
 def predict_gnn(V,state):
     global preprocessor
@@ -299,7 +300,9 @@ def search_algo():
         print_info('Loaded pretrained V function from {}'.format(load_V_path))
 
 
-
+    # initialize target V_hat look up table
+    V_hat = dict()
+    # initialize states_pool
     states_pool = StatesPool(capacity = states_pool_capacity)
     states_set = set()
 
@@ -327,37 +330,37 @@ def search_algo():
         selected_design, selected_reward = None, -np.inf
         p = random.random()
         if p < eps_sample:
-            num_samples = 1
+            num_samples = 10
         else:
-            num_samples = 16
+            num_samples = 400
         best_state = None
 
-        # initialize target V_hat look up table
-        V_hat = dict()
+        
         global optimizer
         optimizer = torch.optim.Adam(V.parameters(), lr = 1e-4)
         best_pre_val = float('-inf')  # 初始化最佳预测值为负无穷大
         # use e-greedy to sample a design within maximum #steps.
         for num in range(num_samples):
-            for num_try in range(100):
-                t0 = time.time()
-                
-                filename = 'xmlrobot' + str(epoch) + '_' + str(num) + '_' + str(num_try)
-                if best_state is None:
-                    state = make_graph_by_step(filename)
-                else: state = best_state
-                state_seq = [state]
+            # for num_try in range(100):
+            t0 = time.time()
+            
+            filename = 'xmlrobot' + str(epoch) + '_' + str(num)
+            # filename = 'xmlrobot' + str(epoch) + '_' + str(num) + '_' + str(num_try)
+            if best_state is None:
+                state = make_graph_by_step(filename)
+            else: state = best_state
+            state_seq = [state]
 
-                #找到当前状态下，最优的下一步设计
-                for i in range(depth):
-                    available_actions = get_available_actions(state, rules) 
-                    next_state = random_search(state,rules,available_actions)
-                    state_seq.append(next_state)
-                    pre_val = predict(next_state,new_folder_path)
-                    # 更新最佳预测值和对应的状态
-                    if pre_val > best_pre_val:
-                        best_pre_val = pre_val
-                        best_state = next_state
+            #找到当前状态下，最优的下一步设计
+            for i in range(depth):
+                available_actions = get_available_actions(state, rules) 
+                next_state = random_search(state,rules,available_actions)
+                state_seq.append(next_state)
+                pre_val = predict_gnn(V,next_state)
+                # 更新最佳预测值和对应的状态
+                if pre_val > best_pre_val:
+                    best_pre_val = pre_val
+                    best_state = next_state
 
 
 
@@ -373,10 +376,6 @@ def search_algo():
                 selected_design, selected_reward = state, predicted_value
                 selected_state_seq = state_seq
         
-        repeated = False
-        if hash(selected_design) in V_hat:
-            repeated = True
-            repeated_cnt += 1
 
         reward,best_reward = 0,0
         filename_4_epoch = 'xmlrobot_' + str(epoch)
@@ -410,6 +409,7 @@ def search_algo():
             max_nodes = 0
             for robot_graph in minibatch:
                 hash_key = hash(robot_graph)
+                print("hash_key:",hash_key)
                 target_reward = V_hat[hash_key]
                 adj_matrix, features, _ = preprocessor.preprocess(robot_graph)
                 max_nodes = max(max_nodes, len(features))
