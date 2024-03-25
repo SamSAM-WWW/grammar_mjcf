@@ -13,7 +13,7 @@ from RobotGraph import RobotGraph
 def make_initial_graph():
     G = nx.DiGraph(name = 'arobot')
     G.add_node('robot',label ='robot')
-    print(G.nodes.data())
+    # print(G.nodes.data())
     return G
 
 
@@ -26,36 +26,36 @@ def apply_rule(rule,target_graph:RobotGraph ,lhs_to_target,target_node_name):
     输出:修改后的机器人图（类型为RobotGraph）
     '''
     # Copy target nodes not in LHS to result
-    print("trying to apply rule 1 Copy target nodes not in LHS to result")
+    # print("trying to apply rule 1 Copy target nodes not in LHS to result")
     result_graph = target_graph.copy()
     lhs_nodes = set(rule.lhs_node.keys())
-    print("lhs_nodes = ",lhs_nodes)
+    # print("lhs_nodes = ",lhs_nodes)
         # 遍历目标图的节点
     for node in target_graph.nodes(data=True):
         node_name, node_data = node
-        print("target_graph.nodes node_name, node_data = ",node_name, node_data)
+        # print("target_graph.nodes node_name, node_data = ",node_name, node_data)
         # 如果节点不在LHS中，将其复制到结果图中
         if node_name not in lhs_nodes and node_name != 'parent' and node_name != 'child':
-            print("apply rule 1 Copy target nodes not in LHS to result",node_name)
+            # print("apply rule 1 Copy target nodes not in LHS to result",node_name)
             result_graph.add_node(node_name, **node_data)
 
     # Copy target nodes in LHS to result if they are in common with the RHS
     common_nodes = set(rule.common_node.keys())
-    print("common_nodes = ", common_nodes)
-    print("trying to apply rule 2 Copy target nodes in LHS to result if they are in common with the RHS")
+    # print("common_nodes = ", common_nodes)
+    # print("trying to apply rule 2 Copy target nodes in LHS to result if they are in common with the RHS")
     for lhs_node_name in rule.lhs_node.keys():
         # Check if the corresponding RHS node is in the target graph and in common with the LHS
         if lhs_node_name in common_nodes and lhs_node_name in target_graph.nodes() and node_name != 'parent' and node_name != 'child':
             # Copy the common node to the result graph
-            print("apply rule 2 Copy target nodes in LHS to result if they are in common with the RHS", lhs_node_name)
+            # print("apply rule 2 Copy target nodes in LHS to result if they are in common with the RHS", lhs_node_name)
             result_graph.add_node(lhs_node_name, **target_graph.nodes[lhs_node_name])
     
     # Add RHS nodes which are not in common with the LHS
     rhs_node_info = rule.rhs_node
-    print("trying to apply rule 3 Add RHS nodes which are not in common with the LHS")
+    # print("trying to apply rule 3 Add RHS nodes which are not in common with the LHS")
     for node_name, node_attrs in rhs_node_info.items():
         if node_name not in lhs_to_target['node_mapping'].values() and node_name != 'parent' and node_name != 'child':
-            print("apply rule 3 Add RHS nodes which are not in common with the LHS",node_name)
+            # print("apply rule 3 Add RHS nodes which are not in common with the LHS",node_name)
             result_graph.add_node(node_name, **node_attrs)  
 
 
@@ -68,21 +68,21 @@ def apply_rule(rule,target_graph:RobotGraph ,lhs_to_target,target_node_name):
     common_lhs_edges = lhs_edges - lhs_edges_with_parent - lhs_edges_with_child
 
 
-    print("trying to apply rule 4 Copy target edges not in LHS to result")
+    # print("trying to apply rule 4 Copy target edges not in LHS to result")
     for edge in target_graph.edges():
         edge_start, edge_end = edge
-        print(edge,edge_start,edge_end)
+        # print(edge,edge_start,edge_end)
 
         if (edge_start, edge_end) not in common_lhs_edges:
-            print("apply rule 4 Copy target edges not in LHS to result",edge_start,edge_end)
+            # print("apply rule 4 Copy target edges not in LHS to result",edge_start,edge_end)
             result_graph.add_edge(edge_start, edge_end, **target_graph.edges[edge])
         
         if any(edge_end == dest for _, dest in lhs_edges_with_parent):
-            print("apply rule 4 Copy target edges not in LHS to result")
+            # print("apply rule 4 Copy target edges not in LHS to result")
             result_graph.add_edge(edge_start, edge_end, **target_graph.edges[edge])
         
         if any(edge_start == src for src, _ in lhs_edges_with_child):
-            print("apply rule 4 Copy target edges not in LHS to result")
+            # print("apply rule 4 Copy target edges not in LHS to result")
             result_graph.add_edge(edge_start, edge_end, **target_graph.edges[edge])
 
 
@@ -99,17 +99,17 @@ def apply_rule(rule,target_graph:RobotGraph ,lhs_to_target,target_node_name):
     lhs_edges_with_child = set({(src, dest) for src, dest_info in rule.lhs_edge.items() for dest, _ in dest_info.items() if "child" in dest})
     common_lhs_edges = lhs_edges - lhs_edges_with_parent - lhs_edges_with_child
 
-    print("trying to apply rule 5 Copy target edges not in LHS to result")
+    # print("trying to apply rule 5 Copy target edges not in LHS to result")
     # print("lhs_edges = ",lhs_edges)
 
     for lhs_edge in lhs_edges:
         if lhs_edge in target_graph.edges() and lhs_edge in common_edges:
-            print("apply rule 5 Copy target edges not in LHS to result", lhs_edge)
+            # print("apply rule 5 Copy target edges not in LHS to result", lhs_edge)
             result_graph.add_edge(lhs_edge[0], lhs_edge[1], **target_graph.edges[lhs_edge])
 
     # Add RHS edges which are not in common with the LHS
     rhs_edges = rule.rhs_edge.items()
-    print("trying to apply rule 6 Add RHS edges which are not in common with the LHS")
+    # ("trying to apply rule 6 Add RHS edges which are not in common with the LHS")
     for start_node, edge_data in rhs_edges:
         for end_node, attributes in edge_data.items():
             # Now 'start_node', 'end_node', and 'attributes' hold the necessary information
@@ -123,21 +123,21 @@ def find_matches(rule,graph):
     matches = []
     # 遍历图中的节点
     for node in graph.nodes(data=True):
-        print("finding matches")
+        # print("finding matches")
         node_name, node_data = node
-        print("finding matches, graph node name = ", node_name)
-        print("finding matches, graph node data = ", node_data)
+        # print("finding matches, graph node name = ", node_name)
+        # print("finding matches, graph node data = ", node_data)
 
         # 检查节点是否匹配规则的左侧
-        print ("find_matches rule.lhs_node = ",rule.lhs_node)
+        # print ("find_matches rule.lhs_node = ",rule.lhs_node)
         if node_name in rule.lhs_node:
             lhs_mapping = rule.lhs_node[node_name]
             match = {'node_mapping': {tuple(lhs_mapping.items()): node_name}}
-            print("Debug: Initial match:", match)
+            # print("Debug: Initial match:", match)
             matches.append(match)
-            print("Debug: Initial matches:", matches)
+            # print("Debug: Initial matches:", matches)
     
-    print("return matches = ", matches)
+    # print("return matches = ", matches)
     return matches
 
 
@@ -148,15 +148,15 @@ def check_rule_applicability(rule, target_graph, match):
     for node_name, node_data in target_graph.nodes(data=True):
         if node_name in rule.lhs_node and node_name not in rule.common_node:
             target_nodes_to_remove.append(node_name)
-    print("target_graph.nodes = ",target_graph.nodes)
-    print("target_nodes_to_remove = ",target_nodes_to_remove)
+    # print("target_graph.nodes = ",target_graph.nodes)
+    # print("target_nodes_to_remove = ",target_nodes_to_remove)
     # 检查不在LHS中的目标边是否与将要移除的节点相邻（悬空条件）
     for target_edge in target_graph.edges:
-        print("target_edge = ",target_edge)
+        # print("target_edge = ",target_edge)
         if target_edge not in rule.lhs_edge:
             source, target = target_edge
-            print("source = ",source)
-            print("target = ",target)
+            # print("source = ",source)
+            # print("target = ",target)
             # if source not in target_nodes_to_remove or target not in target_nodes_to_remove: wrong 
             if source in target_nodes_to_remove or target in target_nodes_to_remove:
                 #只要有一个在就说明是悬空的，那就返回False
@@ -169,10 +169,10 @@ def check_rule_applicability(rule, target_graph, match):
 def get_applicable_matches(rule, graph):
     """Generates all applicable matches for rule in graph."""
     for match in find_matches(rule, graph):
-        print("match in find_matches = ",match)
-        print("check_rule_applicability(rule, graph, match)",check_rule_applicability(rule, graph, match))
+        # print("match in find_matches = ",match)
+        # print("check_rule_applicability(rule, graph, match)",check_rule_applicability(rule, graph, match))
         if check_rule_applicability(rule, graph, match):
-            print("get applicable matches!",match)
+            # print("get applicable matches!",match)
             yield match
 
 
@@ -187,15 +187,15 @@ def has_nonterminals(graph):
         if node == initial_node:
             continue
         
-        print("node,data",node,data)
+        # print("node,data",node,data)
         if 'shape' not in data.keys():
-            print("has_nonterminals")
+            # print("has_nonterminals")
             return True
         
     for edge, data in graph.edges(data=True):
-        print("edge,data",edge,data)
+        # print("edge,data",edge,data)
         if 'type' not in data.keys():
-            print("has_nonterminals")
+            # print("has_nonterminals")
             return True
         
     return False

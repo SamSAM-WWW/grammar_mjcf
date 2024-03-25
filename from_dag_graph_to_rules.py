@@ -23,7 +23,7 @@ def create_rule_from_graph(graph):
     '''
     rule = Rule()
     rule.name = graph.name
-    print("rule_name is",rule.name)
+    # print("rule_name is",rule.name)
 
     # Graph must have subgraphs named "L" and "R"
     if not any(graph.lr_subgraph['L'].node_info) or not any(graph.lr_subgraph['R'].node_info):
@@ -75,12 +75,12 @@ def create_rule_from_graph(graph):
     rule.rhs_edge = OrderedDict(rule.rhs_edge)
     rule.common_edge = OrderedDict(rule.common_edge)
 
-    print("rule.lhs_node=",rule.lhs_node)
-    print("rule.lhs_edge=",rule.lhs_edge)
-    print("rule.rhs_node=",rule.rhs_node)
-    print("rule.rhs_edge=",rule.rhs_edge)
-    print("rule.common_node=",rule.common_node)
-    print("rule.common_edge=",rule.common_edge)
+    # print("rule.lhs_node=",rule.lhs_node)
+    # print("rule.lhs_edge=",rule.lhs_edge)
+    # print("rule.rhs_node=",rule.rhs_node)
+    # print("rule.rhs_edge=",rule.rhs_edge)
+    # print("rule.common_node=",rule.common_node)
+    # print("rule.common_edge=",rule.common_edge)
 
 
     return rule

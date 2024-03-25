@@ -22,7 +22,7 @@ class RobotLink():
                  geom_euler = [0,0,0], # geom几何旋转的欧拉角
                  link_class = 'body',
                  density = 1000,
-                 label = None,
+                 label = 'root',
                 ):
         self.name = name
         self.length = length

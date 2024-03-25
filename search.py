@@ -44,20 +44,20 @@ def random_search(R, rules, available_actions):
 
     excluded_rules = [0, 1, 2, 3, 4, 10] #需要同步修改apply_rule.py 410行
     available_nodes = [node for node in R.nodes if 'joint' not in node]
-    print("available_nodes",available_nodes)
+    # print("available_nodes",available_nodes)
     # 如果存在可选节点，则随机选择一个
     if available_nodes:
         selected_node = random.choice(available_nodes)
-        print("selected_node",selected_node)
+        # print("selected_node",selected_node)
         # 找到适用于选定节点的规则
         applicable_rules = [action for action in available_actions if is_rule_applicable_target(rules[action], selected_node)]
         applicable_rules = [action for action in applicable_rules if action not in excluded_rules]
 
-        print("applicable_rules",applicable_rules)
+        # print("applicable_rules",applicable_rules)
         # 如果存在可应用的规则，则随机选择一个
         if applicable_rules:
             selected_action = random.choice(applicable_rules)
-            print("selected_action",selected_action)
+            # print("selected_action",selected_action)
             # 应用规则
             R = apply_rule(rule=rules[selected_action], input_graph=R, target_node_name=selected_node)
 
@@ -108,7 +108,7 @@ def copy_subtree(R, source_node, target_node_prefix):
 
 def replace_limbmounts_recursive(R, limbmount_node):
     # 获取 limbmount_node 的所有子节点
-    print("Nodes in R:", R.nodes)
+    # print("Nodes in R:", R.nodes)
     children = list(R.successors(limbmount_node))
     
     
@@ -153,7 +153,7 @@ def result_R(filename='xmlrobot'):
     R = make_graph_by_step(filename)
     rules = create_4leg_rules()
     available_actions = get_available_actions(R, rules)
-    print("可执行的规则序号：", available_actions)
+    # print("可执行的规则序号：", available_actions)
 
     random_search(R,rules,available_actions)
 

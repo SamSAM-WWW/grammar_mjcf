@@ -16,10 +16,10 @@ def my_graph():
 
     G0.add_node("robot", label="robot", type="hinge",joint_axis="1 0 0")
     G0.add_node("head", label="head", type="hinge",joint_axis="0 1 0")
-    for node in G0.nodes:
-        node_data = G0.nodes[node]
-        print("node info test")
-        print(node_data['label'], node_data['type'], node_data['joint_axis'])
+    # for node in G0.nodes:
+    #     node_data = G0.nodes[node]
+    #     print("node info test")
+    #     print(node_data['label'], node_data['type'], node_data['joint_axis'])
     
     # # 添加左子图及其节点和边
     # L_nodes_0 = ["robot"]
@@ -707,25 +707,25 @@ def my_graph():
 def read_graph_info(num):
     # 示例调用
     all_graphs, subgraph_info_dict = my_graph()
-    print("--------------------test-------------------------")
-    print("-------------warning:counting from 0-------------")
-    print(f"Graph {num}")
+    # print("--------------------test-------------------------")
+    # print("-------------warning:counting from 0-------------")
+    # print(f"Graph {num}")
     # 访问图的左右子图信息示例
     '''
     from 0 to the last graph
     '''
-    print(all_graphs[num].name)
+    # print(all_graphs[num].name)
     left_nodes = subgraph_info_dict[num]['left_nodes']
-    print("left_nodes",left_nodes)
+    # print("left_nodes",left_nodes)
 
     left_edges = subgraph_info_dict[num]['left_edges']
-    print("left_edges",left_edges)
+    # print("left_edges",left_edges)
 
     right_nodes = subgraph_info_dict[num]['right_nodes']
-    print("right_nodes",right_nodes)
+    # print("right_nodes",right_nodes)
 
     right_edges = subgraph_info_dict[num]['right_edges']
-    print("right_edges",right_edges)
+    # print("right_edges",right_edges)
 
 
 read_graph_info(19)

@@ -24,9 +24,9 @@ def make_initial_graph(filename='xmlrobot'):
     输出:初始机器人图 `R` （类型为`RobotGraph`）
     '''
     R = RobotGraph(name=filename)
-    root = RobotLink('root',link_type = 'sphere',size=0.025,body_pos=[0,0,2],geom_pos=[0,0,0])
+    root = RobotLink('root',link_type = 'sphere',size=0.025,body_pos=[0,0,2],geom_pos=[0,0,0],label='root')
     R.add_node( node_type='link',node_info = root)
-    print(R.nodes)
+    # print(R.nodes)
     return R
 
 def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
@@ -57,7 +57,7 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
     existing_bodies = [node for node in result.nodes if 'body' in node]
     if existing_bodies and rule.name in ['make_robot']:
         # Body already exists, don't apply the rule
-        print('Body already exists. Rule not applied.')
+        # print('Body already exists. Rule not applied.')
         return result
 
 
@@ -68,14 +68,14 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
         print('!target_node_name not in input_graph.nodes!')
     
     else:
-        print('target_node_name in input_graph.nodes')
+        # print('target_node_name in input_graph.nodes')
         # 判断输入的 rule 是否匹配 target_node_name
         matching_keys = [key for key in rule.lhs_nodes if target_node_name.startswith(key)]
         if not matching_keys:
             # 无法操作
             print('target_node_name not in rule.lhs_nodes')
         if matching_keys:
-            print(f'target_node_name = {target_node_name} in rule.lhs_nodes')
+            # print(f'target_node_name = {target_node_name} in rule.lhs_nodes')
             # 对input_graph进行操作
             # 先判断target_node表示link 还是 joint
             # 判断节点类型
@@ -93,7 +93,7 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
                 multi_target = 1
             if existing_children and multi_target==0 :
                 # 如果已经有子节点且target_node_name名字不包含 'body'，直接返回
-                print(f'{target_node_name} already has a child. Rule not applied.')
+                # print(f'{target_node_name} already has a child. Rule not applied.')
                 return result
 
 
@@ -103,7 +103,7 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
                 prefix = re.match(r'([a-zA-Z]+)', target_node_name).group(1)
                 if prefix in rule.common_nodes:
                     # print("------",rule.common_nodes[prefix]['length'])
-                    print("Updated info in rule.common_nodes",target_node_name)
+                    # print("Updated info in rule.common_nodes",target_node_name)
                     new_target_node_name = target_node_name
                     new_node = RobotLink(name = target_node_name,
                                         link_type= rule.common_nodes[prefix]['shape'] if 'shape' in rule.common_nodes[prefix] else 'capsule',
@@ -116,7 +116,7 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
 
                 # Add RHS nodes which are not in common with the LHS
                 additional_rhs_nodes = {node_name: node_info for node_name, node_info in rule.rhs_nodes.items() if node_name not in rule.common_nodes}    
-                print("additional_rhs_nodes",additional_rhs_nodes)
+                # print("additional_rhs_nodes",additional_rhs_nodes)
                 new_add_node_names = []
                 for node_name, node_info in additional_rhs_nodes.items():
                     existing_joint_nodes = [node_name_i for node_name_i in result.nodes if node_name in node_name_i]
@@ -158,8 +158,8 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
                     # 添加边到 result_graph 中
                     result.add_edge(from_node, new_node_name, **edge_info)
                     result.add_edge(new_node_name, to_node, **edge_info)
-                    print(result.nodes)
-                    print(result.nodes[new_node_name]['info'].joint_type)
+                    # print(result.nodes)
+                    # print(result.nodes[new_node_name]['info'].joint_type)
 
             
             elif hasattr(node_info, 'joint_type'):
@@ -191,18 +191,18 @@ def example_of_apply_rule():
     #---------------------------------------------------------------------------
     # add a limbmount1 on body 右前
     filtered_nodes = [node for node in R.nodes if 'body' in node]
-    print("---",filtered_nodes)
+    # print("---",filtered_nodes)
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
 
     R = apply_rule(rule=rules[1],input_graph=R,target_node_name=target_node_name)
     
     filtered_nodes = [node for node in R.nodes if 'body' in node]
-    print(filtered_nodes)
+    # print(filtered_nodes)
     if filtered_nodes:
         target_node_name = filtered_nodes[-1]
-    print('R.nodes[target_node_name][info].size',R.nodes[target_node_name]['info'].size)
-    print('R.nodes[target_node_name][info].length',R.nodes[target_node_name]['info'].length)
+    # print('R.nodes[target_node_name][info].size',R.nodes[target_node_name]['info'].size)
+    # print('R.nodes[target_node_name][info].length',R.nodes[target_node_name]['info'].length)
 
 
 
@@ -384,27 +384,27 @@ def example_of_apply_rule():
 
 
 
-    for node in R.nodes:
-        print('---------------------------')
-        print(node)
-        node_info = R.nodes[str(node)]['info']
+    # for node in R.nodes:
+    #     # print('---------------------------')
+    #     # print(node)
+    #     node_info = R.nodes[str(node)]['info']
         
-        if hasattr(node_info, 'link_type'):
-            print("link_type",R.nodes[str(node)]['info'].link_type)
-            print("start_point",R.nodes[str(node)]['info'].start_point)
-            print("end_point",R.nodes[str(node)]['info'].end_point)
-            print("geom_pos",R.nodes[str(node)]['info'].geom_pos)
-            print("body_pos",R.nodes[str(node)]['info'].body_pos)
-            print("euler",R.nodes[str(node)]['info'].euler)
-            print("size",R.nodes[str(node)]['info'].size)
-        if hasattr(node_info, 'joint_type'):
-            print("joint_type",R.nodes[str(node)]['info'].joint_type)
-            print("axis",R.nodes[str(node)]['info'].axis)
-            print("pos",R.nodes[str(node)]['info'].pos)
-            print("joint_range",R.nodes[str(node)]['info'].joint_range)
+    #     if hasattr(node_info, 'link_type'):
+    #         print("link_type",R.nodes[str(node)]['info'].link_type)
+    #         print("start_point",R.nodes[str(node)]['info'].start_point)
+    #         print("end_point",R.nodes[str(node)]['info'].end_point)
+    #         print("geom_pos",R.nodes[str(node)]['info'].geom_pos)
+    #         print("body_pos",R.nodes[str(node)]['info'].body_pos)
+    #         print("euler",R.nodes[str(node)]['info'].euler)
+    #         print("size",R.nodes[str(node)]['info'].size)
+    #     if hasattr(node_info, 'joint_type'):
+    #         print("joint_type",R.nodes[str(node)]['info'].joint_type)
+    #         print("axis",R.nodes[str(node)]['info'].axis)
+    #         print("pos",R.nodes[str(node)]['info'].pos)
+    #         print("joint_range",R.nodes[str(node)]['info'].joint_range)
 
-    print('+++++++++++++++++++++++++++++++++++++')
-    print(R.edges)
+    # print('+++++++++++++++++++++++++++++++++++++')
+    # print(R.edges)
     return R
 
     

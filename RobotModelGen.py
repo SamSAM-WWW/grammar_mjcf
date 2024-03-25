@@ -209,7 +209,7 @@ class ModelGenerator():
         if 'link_end' in robot_part.name:
             # 处理包含 'link_end' 的情况
             # 这里可以加入相应的处理代码
-            print("link_end!")
+            # print("link_end!")
             #欧拉转换为四元数
             quat_np = euler2quaternion(robot_part.euler)
             quat = [0.00,0.00,0.00,0.00]

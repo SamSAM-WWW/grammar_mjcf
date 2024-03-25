@@ -36,9 +36,22 @@ import xml.etree.ElementTree as ET
 from PreProcessor import Preprocessor
 from Net import Net
 from common import *
+from states_pool import StatesPool
+import torch.nn.functional as F
+import argparse
+import time
+import random
+import pickle
+import csv
+import numpy as np
+import torch
 device = 'cpu'
 excluded_rules = [0, 1, 2, 3, 4, 10] #需要同步修改apply_rule.py 410行
 load_V_path = None
+opt_iter = 25 
+batch_size = 32
+states_pool_capacity = 10000000
+
 def predict(state,new_folder_path):
     '''
     输入state, 转换成xml文件后预测值函数并删除中间文件
@@ -54,6 +67,19 @@ def predict(state,new_folder_path):
     os.remove(xml_out_path)
     return predict_val
     
+def update_states_pool(states_pool, state_seq, states_set):
+    for state in state_seq:
+        state_hash_key = hash(state)
+        if not (state_hash_key in states_set):
+            states_pool.push(state)
+            states_set.add(state_hash_key)
+
+def update_Vhat(V_hat, state_seq, reward):
+    for state in state_seq:
+        state_hash_key = hash(state)
+        if not (state_hash_key in V_hat):
+            V_hat[state_hash_key] = -np.inf
+        V_hat[state_hash_key] = max(V_hat[state_hash_key], reward)
 
 def predict_gnn(V,state):
     global preprocessor
@@ -63,6 +89,12 @@ def predict_gnn(V,state):
         features = torch.tensor(features_np).unsqueeze(0)
         adj_matrix = torch.tensor(adj_matrix_np).unsqueeze(0)
         masks = torch.tensor(masks_np).unsqueeze(0)
+        
+        #turn to float32
+        features = features.to(torch.float32)
+        adj_matrix = adj_matrix.to(torch.float32)
+        masks = masks.to(torch.float32)
+
         output, _, _ = V(features, adj_matrix, masks)
         return output.item()
 
@@ -79,7 +111,7 @@ def select_action( state, rules, target_node, eps, new_folder_path):
     '''
     available_actions = get_available_actions(state,rules)
     if len(available_actions) == 0:
-        print("No available actions for target node")
+        # print("No available actions for target node")
         return None
     
     sample = random.random()
@@ -106,7 +138,7 @@ def select_action( state, rules, target_node, eps, new_folder_path):
             # 随机选择一个动作
             best_action = random.choice(applicable_rules)
             step_type = 'random'
-        print("best action is ",best_action)
+        # print("best action is ",best_action)
         return best_action
     else:
         return None
@@ -145,7 +177,7 @@ def get_non_joint_child(state, node):
             return successor
     
     # 如果没有找到非 joint 类型的子节点，则返回 None
-    print("No non-joint child found for node:", node)
+    # print("No non-joint child found for node:", node)
     return node
 
 def get_random_target_node(state):
@@ -226,7 +258,7 @@ def generate_xml_from_R(R,new_folder_path,filename):
     target_body.set('quat', '0.707 0.0 0.0 0.707')
     tree.write(xml_out_path)
     os.remove(xml_file_path)
-    print("Generate xml file successfully!")
+    # print("Generate xml file successfully!")
 
 
 def test_R_gen():
@@ -250,6 +282,9 @@ def search_algo():
         for node_name, node_attrs in rule.lhs_nodes.items():
             if 'require_label' in node_attrs:
                 all_labels.add(node_attrs['require_label'])
+        for node_name, node_attrs in rule.rhs_nodes.items():
+            if 'require_label' in node_attrs:
+                all_labels.add(node_attrs['require_label'])
     all_labels = sorted(list(all_labels))
     global preprocessor
     preprocessor = Preprocessor(all_labels = all_labels)
@@ -265,6 +300,8 @@ def search_algo():
 
 
 
+    states_pool = StatesPool(capacity = states_pool_capacity)
+    states_set = set()
 
     hash_pool = []
     
@@ -278,7 +315,7 @@ def search_algo():
     eps_sample_decay = 0.3
     pre_pool = {}
     depth = 20
-    
+    repeated_cnt = 0
 
     for epoch in range(num_iterations):
         V.eval()
@@ -294,20 +331,28 @@ def search_algo():
         else:
             num_samples = 16
         best_state = None
+
+        # initialize target V_hat look up table
+        V_hat = dict()
+        global optimizer
+        optimizer = torch.optim.Adam(V.parameters(), lr = 1e-4)
         best_pre_val = float('-inf')  # 初始化最佳预测值为负无穷大
         # use e-greedy to sample a design within maximum #steps.
         for num in range(num_samples):
             for num_try in range(100):
                 t0 = time.time()
+                
                 filename = 'xmlrobot' + str(epoch) + '_' + str(num) + '_' + str(num_try)
                 if best_state is None:
                     state = make_graph_by_step(filename)
                 else: state = best_state
-                
+                state_seq = [state]
+
                 #找到当前状态下，最优的下一步设计
                 for i in range(depth):
                     available_actions = get_available_actions(state, rules) 
                     next_state = random_search(state,rules,available_actions)
+                    state_seq.append(next_state)
                     pre_val = predict(next_state,new_folder_path)
                     # 更新最佳预测值和对应的状态
                     if pre_val > best_pre_val:
@@ -323,30 +368,78 @@ def search_algo():
 
             # predicted_value = predict(best_state,new_folder_path)
             predicted_value = predict_gnn(V,best_state)
+            print("predicted_value:",predicted_value)
             if predicted_value > selected_reward:
                 selected_design, selected_reward = state, predicted_value
-            
+                selected_state_seq = state_seq
+        
+        repeated = False
+        if hash(selected_design) in V_hat:
+            repeated = True
+            repeated_cnt += 1
+
         reward,best_reward = 0,0
         filename_4_epoch = 'xmlrobot_' + str(epoch)
         generate_xml_from_R(selected_design,new_folder_path,filename_4_epoch)
         xml_out_path = os.path.join(new_folder_path, filename_4_epoch + "_symm.xml")
 
-        hash_val = calculate_hash_without_first_line(xml_file=xml_out_path)
-        if hash_val not in hash_pool:
-            hash_pool.append(hash_val)
+        # hash_val = calculate_hash_without_first_line(xml_file=xml_out_path)
+        # if hash_val not in hash_pool:
+        # hash_pool.append(hash_val)
 
-            reward = get_reward(selected_design=xml_out_path)
-            if reward > best_reward:
-                best_reward = reward
-                best_design = xml_out_path
-            data_to_save = []
-
-            data_to_save.append([xml_out_path, hash_val, reward])
-            csv_file_path = os.path.join(new_folder_path, 'design_rewards.csv')
-            save_to_csv(data_to_save, csv_file_path)
+        reward = get_reward(selected_design=xml_out_path)
+        if reward > best_reward:
+            best_reward = reward
+            best_design = xml_out_path
+        data_to_save = []
 
 
+    
+        update_Vhat(V_hat, selected_state_seq, reward)
+        update_states_pool(states_pool, selected_state_seq, states_set)
+        hash_val = hash(selected_design)
+        data_to_save.append([xml_out_path, hash_val, reward])
+        csv_file_path = os.path.join(new_folder_path, 'design_rewards.csv')
+        save_to_csv(data_to_save, csv_file_path)
         # optimize train estimator
+        V.train()
+        total_loss = 0.0
+        for _ in range(opt_iter):
+            minibatch = states_pool.sample(min(len(states_pool), batch_size))
+            train_adj_matrix, train_features, train_masks, train_reward = [], [], [], []
+            max_nodes = 0
+            for robot_graph in minibatch:
+                hash_key = hash(robot_graph)
+                target_reward = V_hat[hash_key]
+                adj_matrix, features, _ = preprocessor.preprocess(robot_graph)
+                max_nodes = max(max_nodes, len(features))
+                train_adj_matrix.append(adj_matrix)
+                train_features.append(features)
+                train_reward.append(target_reward)
+
+            for i in range(len(minibatch)):
+                train_adj_matrix[i], train_features[i], masks = \
+                    preprocessor.pad_graph(train_adj_matrix[i], train_features[i], max_nodes)
+                train_masks.append(masks)
+
+            train_adj_matrix_torch = torch.tensor(train_adj_matrix)
+            train_features_torch = torch.tensor(train_features)
+            train_masks_torch = torch.tensor(train_masks)
+            train_reward_torch = torch.tensor(train_reward)
+            
+            train_adj_matrix_torch = train_adj_matrix_torch.to(torch.float32)
+            train_features_torch = train_features_torch.to(torch.float32)
+            train_masks_torch = train_masks_torch.to(torch.float32)
+            train_reward_torch = train_reward_torch.to(torch.float32)
+
+            optimizer.zero_grad()
+            output, loss_link, loss_entropy = V(train_features_torch, train_adj_matrix_torch, train_masks_torch)
+            loss = F.mse_loss(output[:, 0], train_reward_torch)
+            loss.backward()
+            total_loss += loss.item()
+            optimizer.step()
+
+
 
 search_algo()
 # test_R_gen()            

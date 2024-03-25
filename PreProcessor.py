@@ -33,15 +33,28 @@ def one_hot_encode(enum_member):
 def featurize_link(link):
     """Extract a feature vector from a rd.Link."""
     link_type_enum = LinkType[link.link_type]
-    return np.array([*one_hot_encode(link_type_enum),
-                    link.size,
-                    link.start_point,
-                    link.geom_pos,
-                    link.body_pos,
-                    link.density,
-                    link.euler,
-                    link.density,
-                    ])
+    if link.link_type != 'box':
+        return np.array([*one_hot_encode(link_type_enum),
+                        link.size,
+                        *link.start_point,
+                        *link.geom_pos,
+                        *link.body_pos,
+                        link.density,
+                        *link.euler,
+                        link.density,
+                        ])
+    else:
+        size_x, size_y, size_z = map(float, link.size.split())  # 假设尺寸参数以空格分隔
+        size_all = (size_x+size_y+size_z)*0.33
+        return np.array([*one_hot_encode(link_type_enum),
+                        size_all,
+                        *link.start_point,
+                        *link.geom_pos,
+                        *link.body_pos,
+                        link.density,
+                        *link.euler,
+                        link.density,
+                        ])
 
 class Preprocessor:
     def __init__(self, all_labels = None,max_nodes=None):
@@ -130,7 +143,7 @@ class Preprocessor:
                 # 将当前连杆节点的世界位置和旋转信息添加到 pos_rot 字典中
                 pos_rot[node_name] = (pos, rot)
         return pos_rot
-    def preprocess(self, robot_graph, max_nodes=None):
+    def preprocess(self, robot_graph, max_nodes = None):
         
 
         # 现在 pos_rot 列表中存储了所有连杆节点的世界位置和旋转信息
@@ -146,9 +159,14 @@ class Preprocessor:
         node_features = self.extract_node_features(robot_graph,pos_rot)
         masks = None
         # 创建掩码
-        if max_nodes is not None:
-            masks = self.create_masks(nodes, max_nodes)
+        if max_nodes is None:
+            max_nodes = self.max_nodes
 
+        if max_nodes is not None:
+            if max_nodes > len(node_features):
+                adj_matrix, node_features, masks = self.pad_graph(adj_matrix, node_features, max_nodes)
+            else:
+                masks = np.full(len(node_features), True)
         return adj_matrix, node_features, masks
 
     def build_adjacency_matrix(self, robot_graph):
@@ -195,16 +213,29 @@ class Preprocessor:
                 world_joint_axis = quaternion.rotate_vectors(parent_rot, parent_link_info.axis)
                 # world_joint_axis = quaternion.rotate_vectors(world_rot, link.joint_axis)
                 label_vec = np.zeros(len(self.all_labels))
-                print("self.all_labels",self.all_labels)
+                # print("self.all_labels",self.all_labels)
                 label_vec[self.all_labels.index(link.label)] = 1
         
-        link_features.append(np.array([
-                *featurize_link(link),
-                *world_pos,
-                *quaternion_coords(world_rot),
-                *world_joint_axis,
-                *label_vec]))
-        
+                link_features.append(np.array([
+                        *featurize_link(link),
+                        *world_pos,
+                        *quaternion_coords(world_rot),
+                        *world_joint_axis,
+                        *label_vec]))
+            else:
+
+
+                data = [0.0, 0.0, 1.0]
+                label_vec = np.zeros(len(self.all_labels))
+                label_vec[self.all_labels.index(link.label)] = 1
+
+                link_features.append(np.array([
+                        *featurize_link(link),
+                        *world_pos,
+                        *quaternion_coords(world_rot),
+                        *np.array(data, dtype=float),
+                        *label_vec]))
+                    
         link_features = np.array(link_features)
 
         return link_features
@@ -217,3 +248,31 @@ class Preprocessor:
         masks = np.zeros(num_nodes, dtype=bool)
         masks[:num_nodes] = True
         return masks
+    
+    def pad_graph(self, adj_matrix, features, max_nodes):
+        real_size = features.shape[0]
+
+        # add blank nodes
+        adj_matrix = self.pad(adj_matrix, (max_nodes, max_nodes))
+        features = self.pad(features, (max_nodes, features.shape[1]))
+
+        # create mask
+        masks = np.array([True if i < real_size else False for i in range(max_nodes)])
+
+        return adj_matrix, features, masks
+    
+    def pad(self, array, shape):
+        """
+        array: Array to be padded
+        reference: Reference array with the desired shape
+        offsets: list of offsets (number of elements must be equal to the dimension of the array)
+        """
+        # Create an array of zeros with the reference shape
+        result = np.zeros(shape)
+        if len(shape) == 1:
+            result[:array.shape[0], :] = array # ERROR: why result is 2d
+        elif len(shape) == 2:
+            result[:array.shape[0], :array.shape[1]] = array
+        else:
+            raise Exception('only 1 and 2d supported for now')
+        return result

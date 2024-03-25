@@ -51,6 +51,9 @@ class GNN(torch.nn.Module):
         return x
 
     def forward(self, x, adj, mask=None):
+        # x = x.to(torch.double)
+        # adj = adj.to(torch.double)
+        # mask = mask.to(torch.double) if mask is not None else None
         batch_size, num_nodes, in_channels = x.size()
 
         if self.add_loop:
@@ -107,7 +110,9 @@ class Net(torch.nn.Module):
         self.lin2 = torch.nn.Linear(64, num_outputs)
         
     def forward(self, x, adj, mask=None):
-        
+        # x = x.to(torch.double)
+        # adj = adj.to(torch.double)
+
         s = self.gnn1_pool(x, adj, mask)
         x = self.gnn1_embed(x, adj, mask)
 
