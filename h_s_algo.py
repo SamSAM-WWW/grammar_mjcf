@@ -1,3 +1,5 @@
+from uni import UniSimulator
+
 from create_graphs_with_dag import create_graphs
 from DAG import *
 from collections import OrderedDict
@@ -44,7 +46,7 @@ import pickle
 import csv
 import numpy as np
 
-from uni import UniSimulator
+
 
 import torch
 import torch.nn.functional as F
