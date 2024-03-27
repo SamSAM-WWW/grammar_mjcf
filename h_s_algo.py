@@ -1,4 +1,4 @@
-from uni import UniSimulator
+from uni.src.uni import UniSimulator
 
 from create_graphs_with_dag import create_graphs
 from DAG import *
@@ -215,7 +215,7 @@ def get_reward(folder_path):
 
     def simulate(self, folder:str, train t:int=20000000,record:bool=False):
     '''
-    reward_dict = simu().simulate(folder_path)
+    reward_dict = simu.simulate(folder_path)
     # 获取字典的第一个键值对
     first_key, first_value = next(iter(reward_dict.items()))
     reward = first_value
