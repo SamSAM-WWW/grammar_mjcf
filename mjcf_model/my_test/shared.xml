@@ -1,3 +1,0 @@
-<mujoco>
-    <mesh file="SPI_base.stl" name="SPI_base" scale="0.008 0.008 0.008"></mesh>
-</mujoco>
