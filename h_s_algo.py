@@ -5,7 +5,6 @@ from from_dag_graph_to_rules import *
 from RobotGrammarEnv import RobotGrammarEnv
 import time
 import random
-import torch
 import numpy as np
 from apply_rule import *
 import sys
