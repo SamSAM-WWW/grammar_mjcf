@@ -37,14 +37,18 @@ from PreProcessor import Preprocessor
 from Net import Net
 from common import *
 from states_pool import StatesPool
-import torch.nn.functional as F
+
 import argparse
 import time
 import random
 import pickle
 import csv
 import numpy as np
+
+from uni import UniSimulator
+
 import torch
+import torch.nn.functional as F
 device = 'cpu'
 excluded_rules = [0, 1, 2, 3, 4, 10] #需要同步修改apply_rule.py 410行
 load_V_path = None
@@ -52,6 +56,7 @@ opt_iter = 25
 batch_size = 32
 states_pool_capacity = 10000000
 
+simu = UniSimulator()
 # def predict(state,new_folder_path):
 #     '''
 #     输入state, 转换成xml文件后预测值函数并删除中间文件
@@ -203,9 +208,16 @@ def is_rule_applicable_to_target_node(rule, target_node):
     matching_keys = [key for key in rule.lhs_nodes if target_node.startswith(key)]
     return len(matching_keys) > 0
 
-def get_reward(selected_design):
-    reward = 0
-    reward  =  random.random()
+def get_reward(folder_path):
+    '''
+    输入文件夹绝对路径，读取文件夹下的所有xml文件，返回reward值 返回一个字典
+
+    def simulate(self, folder:str, train t:int=20000000,record:bool=False):
+    '''
+    reward_dict = simu().simulate()
+    # 获取字典的第一个键值对
+    first_key, first_value = next(iter(reward_dict.items()))
+    reward = first_value
     return reward
 
 def calculate_hash(xml_content):
@@ -379,14 +391,20 @@ def search_algo():
 
         reward,best_reward = 0,0
         filename_4_epoch = 'xmlrobot_' + str(epoch)
-        generate_xml_from_R(selected_design,new_folder_path,filename_4_epoch)
-        xml_out_path = os.path.join(new_folder_path, filename_4_epoch + "_symm.xml")
+
+        # create a folder for each design to train
+        epoch_folder_path = os.path.join(new_folder_path, f"epoch_{epoch}")
+
+        generate_xml_from_R(selected_design,epoch_folder_path,filename_4_epoch)
+        xml_out_path = os.path.join(epoch_folder_path, filename_4_epoch + "_symm.xml")
 
         # hash_val = calculate_hash_without_first_line(xml_file=xml_out_path)
         # if hash_val not in hash_pool:
         # hash_pool.append(hash_val)
 
-        reward = get_reward(selected_design=xml_out_path)
+        #通过相对路径获取xml文件的绝对路径进行训练
+        absolute_path = os.path.abspath(epoch_folder_path)
+        reward = get_reward(folder_path=absolute_path)
         print(f"current-design:{epoch},reward-for-current-design:{reward}")
         if reward > best_reward:
             best_reward = reward
