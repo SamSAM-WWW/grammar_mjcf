@@ -102,6 +102,10 @@ def predict_gnn(V,state):
         adj_matrix = adj_matrix.to(torch.float32)
         masks = masks.to(torch.float32)
 
+        features = features.to(device)
+        adj_matrix = adj_matrix.to(device)
+        masks = masks.to(device)
+
         output, _, _ = V(features, adj_matrix, masks)
         return output.item()
 
