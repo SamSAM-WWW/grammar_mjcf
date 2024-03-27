@@ -52,20 +52,20 @@ opt_iter = 25
 batch_size = 32
 states_pool_capacity = 10000000
 
-def predict(state,new_folder_path):
-    '''
-    输入state, 转换成xml文件后预测值函数并删除中间文件
-    '''
-    generate_xml_from_R(state,new_folder_path,'xmlrobot_temp')
-    xml_out_path = os.path.join(new_folder_path, 'xmlrobot_temp' + "_symm.xml")
+# def predict(state,new_folder_path):
+#     '''
+#     输入state, 转换成xml文件后预测值函数并删除中间文件
+#     '''
+#     generate_xml_from_R(state,new_folder_path,'xmlrobot_temp')
+#     xml_out_path = os.path.join(new_folder_path, 'xmlrobot_temp' + "_symm.xml")
     
-    predict_val = 0
-    predict_val = random.random()
-    #predict
-    #predict
-    #retun predict Value
-    os.remove(xml_out_path)
-    return predict_val
+#     predict_val = 0
+#     predict_val = random.random()
+#     #predict
+#     #predict
+#     #retun predict Value
+#     os.remove(xml_out_path)
+#     return predict_val
     
 def update_states_pool(states_pool, state_seq, states_set):
     for state in state_seq:
@@ -80,7 +80,7 @@ def update_Vhat(V_hat, state_seq, reward):
         if not (state_hash_key in V_hat):
             V_hat[state_hash_key] = -np.inf
         V_hat[state_hash_key] = max(V_hat[state_hash_key], reward)
-        print(f"Updated V_hat[{state_hash_key}]with reward {reward}")
+        # print(f"Updated V_hat[{state_hash_key}]with reward {reward}")
 
 def predict_gnn(V,state):
     global preprocessor
@@ -106,7 +106,7 @@ def transite(state,action,rules,target_node_name):
     next_state = apply_rule(rule=rules[action], input_graph=state, target_node_name=target_node_name)
     return next_state
 
-def select_action( state, rules, target_node, eps, new_folder_path):
+def select_action( state, rules, target_node, eps, V):
     '''
     根据选定的目标节点选取可执行的规则
     '''
@@ -127,7 +127,7 @@ def select_action( state, rules, target_node, eps, new_folder_path):
             for action in applicable_rules:
                 # 评估每个动作的值
                 next_state = transite(state, action, rules, target_node) 
-                values.append(predict(next_state,new_folder_path))
+                values.append(predict_gnn(V,next_state))
                 next_states.append(next_state)
             
             # 选择值最大的动作
@@ -310,7 +310,7 @@ def search_algo():
     
     eps_end = 0.1
     eps_start = 1.0
-    num_iterations = 1000
+    num_iterations = 100
     eps_decay= 0.3
 
     eps_sample_end = 0.1
@@ -332,7 +332,7 @@ def search_algo():
         if p < eps_sample:
             num_samples = 10
         else:
-            num_samples = 400
+            num_samples = 40
         best_state = None
 
         
@@ -371,7 +371,7 @@ def search_algo():
 
             # predicted_value = predict(best_state,new_folder_path)
             predicted_value = predict_gnn(V,best_state)
-            print("predicted_value:",predicted_value)
+            # print("predicted_value:",predicted_value)
             if predicted_value > selected_reward:
                 selected_design, selected_reward = state, predicted_value
                 selected_state_seq = state_seq
@@ -387,6 +387,7 @@ def search_algo():
         # hash_pool.append(hash_val)
 
         reward = get_reward(selected_design=xml_out_path)
+        print(f"current-design:{epoch},reward-for-current-design:{reward}")
         if reward > best_reward:
             best_reward = reward
             best_design = xml_out_path
@@ -401,6 +402,7 @@ def search_algo():
         csv_file_path = os.path.join(new_folder_path, 'design_rewards.csv')
         save_to_csv(data_to_save, csv_file_path)
         # optimize train estimator
+        print
         V.train()
         total_loss = 0.0
         for _ in range(opt_iter):
@@ -409,7 +411,7 @@ def search_algo():
             max_nodes = 0
             for robot_graph in minibatch:
                 hash_key = hash(robot_graph)
-                print("hash_key:",hash_key)
+                # print("hash_key:",hash_key)
                 target_reward = V_hat[hash_key]
                 adj_matrix, features, _ = preprocessor.preprocess(robot_graph)
                 max_nodes = max(max_nodes, len(features))
@@ -438,6 +440,13 @@ def search_algo():
             loss.backward()
             total_loss += loss.item()
             optimizer.step()
+    
+    #save gnn - pt file
+    save_path = os.path.join(new_folder_path, 'V_gnn.pt')
+    torch.save(V.state_dict(), save_path)
+    exit_time = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
+    print(f"Start time:{current_time}")
+    print(f"Exit time: {exit_time}")
 
 
 
