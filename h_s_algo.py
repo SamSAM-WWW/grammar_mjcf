@@ -472,6 +472,5 @@ def search_algo():
     print(f"Exit time: {exit_time}")
 
 
-
-search_algo()
-# test_R_gen()            
+if __name__ == '__main__':
+    search_algo()    
