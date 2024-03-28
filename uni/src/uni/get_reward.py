@@ -33,7 +33,7 @@ class UniSimulator():
             alg.save()
             alg.close()
         # Evaluate
-        num_envs = len(os.listdir(self.xml_root))
+        num_envs = len(os.listdir(folder))
         assert num_envs > 0, f'No environments found in {folder}'
         print(f'Found {num_envs} environments in {folder}')
         
