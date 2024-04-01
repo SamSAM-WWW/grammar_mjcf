@@ -56,6 +56,7 @@ load_V_path = None
 opt_iter = 25 
 batch_size = 32
 states_pool_capacity = 10000000
+reward,best_reward = 0,0
 
 simu = UniSimulator()
 # def predict(state,new_folder_path):
@@ -221,8 +222,8 @@ def get_reward(folder_path):
     '''
     reward_dict = simu.simulate(folder_path)
     # 获取字典的第一个键值对
-    first_key, first_value = next(iter(reward_dict.items()))
-    reward = first_value
+    
+    reward = reward_dict['mean_reward']
     return reward
 
 def calculate_hash(xml_content):
@@ -337,6 +338,7 @@ def search_algo():
     depth = 20
     repeated_cnt = 0
 
+    best_reward = -np.inf
     for epoch in range(num_iterations):
         V.eval()
         t_start = time.time()
@@ -394,7 +396,7 @@ def search_algo():
                 selected_state_seq = state_seq
         
 
-        reward,best_reward = 0,0
+        
         filename_4_epoch = 'xmlrobot_' + str(epoch)
 
         # create a folder for each design to train
@@ -411,6 +413,7 @@ def search_algo():
         absolute_path = os.path.abspath(epoch_folder_path)
         reward = get_reward(folder_path=absolute_path)
         print(f"current-design:{epoch},reward-for-current-design:{reward}")
+        reward = reward[0]
         if reward > best_reward:
             best_reward = reward
             best_design = xml_out_path
@@ -425,7 +428,6 @@ def search_algo():
         csv_file_path = os.path.join(new_folder_path, 'design_rewards.csv')
         save_to_csv(data_to_save, csv_file_path)
         # optimize train estimator
-        print
         V.train()
         total_loss = 0.0
         for _ in range(opt_iter):
