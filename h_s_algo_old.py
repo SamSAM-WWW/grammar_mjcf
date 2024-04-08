@@ -1,4 +1,4 @@
-from uni import UniSimulator
+from uni.src.uni import UniSimulator
 
 from create_graphs_with_dag import create_graphs
 from DAG import *
@@ -47,11 +47,10 @@ import csv
 import numpy as np
 
 
+
 import torch
 import torch.nn.functional as F
-from torch.utils.tensorboard import SummaryWriter
-
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device ("cuda" if torch.cuda.is_available () else "cpu")
 excluded_rules = [0, 1, 2, 3, 4, 10] #需要同步修改apply_rule.py 410行
 load_V_path = None
 opt_iter = 25 
@@ -220,11 +219,10 @@ def get_reward(folder_path):
     输入文件夹绝对路径，读取文件夹下的所有xml文件，返回reward值 返回一个字典
 
     def simulate(self, folder:str, train t:int=20000000,record:bool=False):
-    
-    {'episode_lengths': [152.0], 'episode_rewards': [0.03287003934383392], 'mean_length': 152.0, 'mean_reward': 0.03287003934383392, 'median_length': 152.0, 'median_reward': 0.03287003934383392}
     '''
     reward_dict = simu.simulate(folder_path)
-    #mean_reward
+    # 获取字典的第一个键值对
+    
     reward = reward_dict['mean_reward']
     return reward
 
@@ -292,16 +290,10 @@ def search_algo():
     current_time = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
     new_folder_path = os.path.join("mjcf_model", current_time)
     os.makedirs(new_folder_path)
-
-    log_dir = new_folder_path  # 日志文件夹路径
-    # 创建 SummaryWriter 对象时指定 log_dir
-    writer = SummaryWriter(log_dir=log_dir)
-
-
     filename = 'xmlrobot'
     rules = create_4leg_rules()
 
-    best_reward = -np.inf
+
 
 
     all_labels = set()
@@ -346,6 +338,7 @@ def search_algo():
     depth = 20
     repeated_cnt = 0
 
+    best_reward = -np.inf
     for epoch in range(num_iterations):
         V.eval()
         t_start = time.time()
@@ -419,14 +412,13 @@ def search_algo():
         #通过相对路径获取xml文件的绝对路径进行训练
         absolute_path = os.path.abspath(epoch_folder_path)
         reward = get_reward(folder_path=absolute_path)
-        print(f"predict-reward:{selected_reward},current-design:{epoch},reward-for-current-design:{reward}")
+        print(f"current-design:{epoch},reward-for-current-design:{reward}")
+        reward = reward[0]
         if reward > best_reward:
             best_reward = reward
             best_design = xml_out_path
         data_to_save = []
-        writer.add_scalar("Predicted Reward", selected_reward, epoch)
-        writer.add_scalar("Actual Reward", reward, epoch)
-        writer.add_scalar("Reward Difference", reward - selected_reward, epoch)
+
 
     
         update_Vhat(V_hat, selected_state_seq, reward)
@@ -436,7 +428,6 @@ def search_algo():
         csv_file_path = os.path.join(new_folder_path, 'design_rewards.csv')
         save_to_csv(data_to_save, csv_file_path)
         # optimize train estimator
-
         V.train()
         total_loss = 0.0
         for _ in range(opt_iter):
@@ -468,31 +459,20 @@ def search_algo():
             train_masks_torch = train_masks_torch.to(torch.float32)
             train_reward_torch = train_reward_torch.to(torch.float32)
 
-            train_adj_matrix_torch = train_adj_matrix_torch.to(device)
-            train_features_torch = train_features_torch.to(device)
-            train_masks_torch = train_masks_torch.to(device)
-            train_reward_torch = train_reward_torch.to(device)
-
-
             optimizer.zero_grad()
             output, loss_link, loss_entropy = V(train_features_torch, train_adj_matrix_torch, train_masks_torch)
             loss = F.mse_loss(output[:, 0], train_reward_torch)
             loss.backward()
             total_loss += loss.item()
             optimizer.step()
-
-            #save gnn - pt file
-            temp_save_path = os.path.join(new_folder_path, 'V_gnn_inpro.pt')
-            torch.save(V.state_dict(), temp_save_path)
-
+    
     #save gnn - pt file
-    save_path = os.path.join(new_folder_path, 'V_gnn_final.pt')
+    save_path = os.path.join(new_folder_path, 'V_gnn.pt')
     torch.save(V.state_dict(), save_path)
     exit_time = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
     print(f"Start time:{current_time}")
     print(f"Exit time: {exit_time}")
-    writer.close()
 
 
 if __name__ == '__main__':
-    search_algo()
+    search_algo()    

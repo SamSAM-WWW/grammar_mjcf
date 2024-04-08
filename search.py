@@ -42,7 +42,7 @@ def is_rule_applicable_target(rule, target_node_name):
 def random_search(R, rules, available_actions):
     # 随机选择一个节点
 
-    excluded_rules = [0, 1, 2, 3, 4, 10] #需要同步修改apply_rule.py 410行
+    excluded_rules = [0, 1, 2, 3, 4] #需要同步修改apply_rule.py 410行
     available_nodes = [node for node in R.nodes if 'joint' not in node]
     # print("available_nodes",available_nodes)
     # 如果存在可选节点，则随机选择一个
@@ -151,7 +151,7 @@ def has_child_nodes(graph, node):
 def result_R(filename='xmlrobot'):
 
     R = make_graph_by_step(filename)
-    rules = create_4leg_rules()
+    rules = create_4leg_rules_v2()
     available_actions = get_available_actions(R, rules)
     # print("可执行的规则序号：", available_actions)
 

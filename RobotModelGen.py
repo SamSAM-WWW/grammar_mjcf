@@ -431,8 +431,8 @@ class ModelGenerator():
                         type=robot_joint.joint_type,
                         damping="1.0",
                         stiffness="2.0",
-                        # armature="0.005",
-                        limited=True if robot_joint.joint_range != None else False,
+                        armature="0.005",
+                        limited=True if robot_joint.joint_range != None else None,
                             )
         # if robot_joint.armature != None:
         #     joint.armature = robot_joint.armature
@@ -713,7 +713,7 @@ def enum_1():
 
 def enum_10():
     invalid_design = 0
-    for i in range(100):
+    for i in range(10):
         # R = example_of_apply_rule()
         filename = 'xmlrobot_' + str(i)
         #
@@ -757,13 +757,14 @@ def enum_10():
         # plt.show()
         xml_file_path = os.path.join("mjcf_model", filename + ".xml")
         xml_out_path = os.path.join("mjcf_model", filename + "_symm.xml")
-        trans_op(xml_file_path=xml_file_path, xml_out_path=xml_out_path)
-        tree = ET.parse(xml_out_path)
+        # trans_op(xml_file_path=xml_file_path, xml_out_path=xml_out_path)
+        # tree = ET.parse(xml_out_path)
+        tree = ET.parse(xml_file_path)
         root = tree.getroot()
         target_body = root.find(".//body[@name='root']")
         target_body.set('quat', '0.707 0.0 0.0 0.707')
-        tree.write(xml_out_path)
-        os.remove(xml_file_path)
+        tree.write(xml_file_path)
+        # os.remove(xml_file_path)
         
     print(invalid_design)
 if __name__ == '__main__':

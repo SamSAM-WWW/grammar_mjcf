@@ -148,7 +148,7 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
                                             axis=edge_info['axis'] if 'axis' in edge_info else [1, 0, 0],
                                             stiffness=edge_info['stiffness'] if 'stiffness' in edge_info else None,
                                             damping=edge_info['damping'] if 'damping' in edge_info else None,
-                                            joint_range = edge_info['range'] if 'range' in edge_info else [-45, 45],
+                                            joint_range = edge_info['range'] if 'range' in edge_info else None,
                                             ctrlrange = edge_info['ctrlrange'] if 'ctrlrange' in edge_info else [-1,1],
                                             gear = edge_info['gear'] if 'gear' in edge_info else 22.5,)
 
@@ -180,7 +180,7 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
 def example_of_apply_rule():
 
     R = make_initial_graph()
-    rules = create_4leg_rules()
+    rules = create_4leg_rules_v2()
     #---------------------------------------------------------------------------
     # add the first body 
     R = apply_rule(rule=rules[0],input_graph=R,target_node_name='root')
@@ -418,7 +418,7 @@ def make_graph_by_step(filename='xmlrobot'):
     输出：最基本的机器人结构
     '''
     R = make_initial_graph(filename)
-    rules = create_4leg_rules()
+    rules = create_4leg_rules_v2()
     #---------------------------------------------------------------------------
     # add the first body 
     #需要同步修改search.py 45行
@@ -427,7 +427,7 @@ def make_graph_by_step(filename='xmlrobot'):
     R = apply_rule(rule=rules[2],input_graph=R,target_node_name='body1')
     R = apply_rule(rule=rules[3],input_graph=R,target_node_name='body1')
     R = apply_rule(rule=rules[4],input_graph=R,target_node_name='body1')
-    R = apply_rule(rule=rules[10],input_graph=R,target_node_name='body1')
+    # R = apply_rule(rule=rules[10],input_graph=R,target_node_name='body1')
     # R = apply_rule(rule=rules[12],input_graph=R,target_node_name='hand_mount1')
     # R = apply_rule(rule=rules[13],input_graph=R,target_node_name='hand_link1')
     # R = apply_rule(rule=rules[14],input_graph=R,target_node_name='hand_link_21')
