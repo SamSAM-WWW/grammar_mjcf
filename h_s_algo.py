@@ -299,7 +299,8 @@ def search_algo():
 
 
     filename = 'xmlrobot'
-    rules = create_4leg_rules()
+    # rules = create_4leg_rules()
+    rules = create_4leg_rules_v2()
 
     best_reward = -np.inf
 
