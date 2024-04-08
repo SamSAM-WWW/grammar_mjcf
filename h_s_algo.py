@@ -59,7 +59,7 @@ batch_size = 32
 states_pool_capacity = 10000000
 reward,best_reward = 0,0
 
-simu = UniSimulator()
+
 # def predict(state,new_folder_path):
 #     '''
 #     输入state, 转换成xml文件后预测值函数并删除中间文件
@@ -223,9 +223,11 @@ def get_reward(folder_path):
     
     {'episode_lengths': [152.0], 'episode_rewards': [0.03287003934383392], 'mean_length': 152.0, 'mean_reward': 0.03287003934383392, 'median_length': 152.0, 'median_reward': 0.03287003934383392}
     '''
-    reward_dict = simu.simulate(folder_path)
+    simu = UniSimulator(folder_path)
+    reward_dict = simu.simulate()
     #mean_reward
     reward = reward_dict['mean_reward']
+    simu.close()
     return reward
 
 def calculate_hash(xml_content):

@@ -489,7 +489,7 @@ def create_4leg_rules_v2():
     rule = create_rule(name='make_upper_link_b',
                         lhs_nodes={'limbmount':{'require_label':'limbmount'}},
                         lhs_edges=[],
-                        rhs_nodes={'upper_link_b':{'label':'upper_link_b','shape':'capsule','length':0.3,'radius':0.07, 'body_pos':[0.1,0,0],'euler':[0,0,-45]}},#'euler' need test
+                        rhs_nodes={'upper_link_b':{'require_label':'upper_link_b','label':'upper_link_b','shape':'capsule','length':0.3,'radius':0.07, 'body_pos':[0.1,0,0],'euler':[0,0,-45]}},#'euler' need test
                         rhs_edges=[{'from_node':'limbmount','to_node':'upper_link_b','label':'mount-upper','axis':[0,0,1],'range':[-45,45],'gear':'45'}])
     rules.append(rule)
 
@@ -497,7 +497,7 @@ def create_4leg_rules_v2():
     rule = create_rule(name='make_upper_link_f',
                         lhs_nodes={'limbmount':{'require_label':'limbmount'}},
                         lhs_edges=[],
-                        rhs_nodes={'upper_link_f':{'label':'upper_link_f','shape':'capsule','length':0.3,'radius':0.07, 'body_pos':[0.1,0,0],'euler':[0,0,45]}},#'euler' need test
+                        rhs_nodes={'upper_link_f':{'require_label':'upper_link_f','label':'upper_link_f','shape':'capsule','length':0.3,'radius':0.07, 'body_pos':[0.1,0,0],'euler':[0,0,45]}},#'euler' need test
                         rhs_edges=[{'from_node':'limbmount','to_node':'upper_link_f','label':'mount-upper','axis':[0,0,1],'range':[-45,45],'gear':'45'}]
     )
     rules.append(rule)
@@ -506,7 +506,7 @@ def create_4leg_rules_v2():
     rule = create_rule(name='make_lower_link_b',
                         lhs_nodes={'upper_link_f':{'require_label':'upper_link_f'}},
                         lhs_edges=[],
-                        rhs_nodes={'lower_link_b':{'label':'lower_link_b','shape':'capsule','length':0.3,'radius':0.07, 'body_pos':[0.4,0,0],'euler':[0,0,-100]}},#'euler' need test
+                        rhs_nodes={'lower_link_b':{'require_label':'lower_link_b','label':'lower_link_b','shape':'capsule','length':0.3,'radius':0.07, 'body_pos':[0.4,0,0],'euler':[0,0,-100]}},#'euler' need test
                         rhs_edges=[{'from_node':'upper_link_f','to_node':'lower_link_b','label':'upper-lower','axis':[0,0,1],'range':[-45,45],'gear':'45'}]
     )
     rules.append(rule)
@@ -515,7 +515,7 @@ def create_4leg_rules_v2():
     rule = create_rule(name='make_lower_link_f',
                         lhs_nodes={'upper_link_b':{'require_label':'upper_link_b'}},
                         lhs_edges=[],
-                        rhs_nodes={'lower_link_f':{'label':'lower_link_f','shape':'capsule','length':0.3,'radius':0.07, 'body_pos':[0.4,0,0],'euler':[0,0,100]}},#'euler' need test
+                        rhs_nodes={'lower_link_f':{'require_label':'lower_link_f','label':'lower_link_f','shape':'capsule','length':0.3,'radius':0.07, 'body_pos':[0.4,0,0],'euler':[0,0,100]}},#'euler' need test
                         rhs_edges=[{'from_node':'upper_link_b','to_node':'lower_link_f','label':'upper-lower','axis':[0,0,1],'range':[-45,45],'gear':'45'}]
     )
     rules.append(rule)
