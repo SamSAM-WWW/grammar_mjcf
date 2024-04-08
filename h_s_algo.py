@@ -52,7 +52,7 @@ import torch.nn.functional as F
 from torch.utils.tensorboard import SummaryWriter
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-excluded_rules = [0, 1, 2, 3, 4, 10] #需要同步修改apply_rule.py 410行
+excluded_rules = [0, 1, 2, 3, 4] #需要同步修改apply_rule.py 410行
 load_V_path = None
 opt_iter = 25 
 batch_size = 32
