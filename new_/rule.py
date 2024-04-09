@@ -528,13 +528,46 @@ def create_4leg_rules_v2():
         lhs_nodes={'lower_link':{'require_label':'lower_link'}},
         lhs_edges=[],
         rhs_nodes={'wheel_link_end':{'require_label':'wheel_link_end','label':'wheel_link_end','shape':'cylinder','length':0.08,'radius':0.12, 'body_pos':[0.4,0,-0.04],'euler':[0,-90,0]}},
-        rhs_edges=[{'from_node':'lower_link','to_node':'wheel_link_end','label':'motor-end','ctrlrange':[-1,1],'gear':'45'}]
+        rhs_edges=[{'from_node':'lower_link','to_node':'wheel_link_end','label':'link-end','ctrlrange':[-1,1],'gear':'45'}]
 
 
     )
     rules.append(rule)
 
     #rule10 foot
+    rule = create_rule(
+        name='add_foot_link_end',
+        lhs_nodes={'lower_link':{'require_label':'lower_link'}},
+        lhs_edges=[],
+        rhs_nodes={'foot_link_end':{'require_label':'foot_link_end','label':'foot_link_end','shape':'sphere','radius':0.06, 'body_pos':[0.4,0,0],'euler':[0,0,0]}},
+        rhs_edges=[{'from_node':'lower_link','to_node':'foot_link_end','label':'link-end','ctrlrange':[-1,1],'gear':'45','range':[-5,5]}]
+
+
+    )
+    rules.append(rule)
+
+    #rule11 foot-type1
+    rule = create_rule(
+        name='add_foot_1',
+        lhs_nodes={'lower_link_b':{'require_label':'lower_link_b'}},
+        lhs_edges=[],
+        rhs_nodes={'foot_1':{'require_label':'foot_1','label':'foot_1','shape':'capsule','length':0.1,'radius':0.05,'body_pos':[0.4,0,0],'euler':[0,0,120]}},
+        rhs_edges=[{'from_node':'lower_link_b','to_node':'foot_1','label':'foot1','ctrlrange':[-1,1],'gear':'45','range':[-25,25],'axis':[0,0,1]}]
+
+
+    )
+    rules.append(rule)
+    #rule12 foot-type2
+    rule = create_rule(
+        name='add_foot_2',
+        lhs_nodes={'lower_link_f':{'require_label':'lower_link_f'}},
+        lhs_edges=[],
+        rhs_nodes={'foot_2':{'require_label':'foot_2','label':'foot_2','shape':'capsule','length':0.1,'radius':0.05,'body_pos':[0.4,0,0],'euler':[0,0,-120]}},
+        rhs_edges=[{'from_node':'lower_link_f','to_node':'foot_2','label':'foot2','ctrlrange':[-1,1],'gear':'45','range':[-25,25],'axis':[0,0,1]}]
+
+
+    )
+    rules.append(rule)
 
     return rules
 

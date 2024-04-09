@@ -52,7 +52,7 @@ import torch.nn.functional as F
 from torch.utils.tensorboard import SummaryWriter
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-excluded_rules = [0, 1, 2, 3, 4] #需要同步修改apply_rule.py 410行
+excluded_rules = [0, 1, 2, 3, 4] #需要同步修改apply_rule.py 410行 search.py 45
 load_V_path = None
 opt_iter = 25 
 batch_size = 32
@@ -273,14 +273,16 @@ def generate_xml_from_R(R,new_folder_path,filename):
     M.get_robot_dfs()
     M.generate_2_folder(new_folder_path,filename)
     xml_file_path = os.path.join(new_folder_path, filename + ".xml")
-    xml_out_path = os.path.join(new_folder_path, filename + "_symm.xml")
-    trans_op(xml_file_path=xml_file_path, xml_out_path=xml_out_path)
-    tree = ET.parse(xml_out_path)
+    # xml_out_path = os.path.join(new_folder_path, filename + "_symm.xml")
+    # trans_op(xml_file_path=xml_file_path, xml_out_path=xml_out_path)
+    # tree = ET.parse(xml_out_path)
+    tree = ET.parse(xml_file_path)
     root = tree.getroot()
     target_body = root.find(".//body[@name='root']")
-    target_body.set('quat', '0.707 0.0 0.0 0.707')
-    tree.write(xml_out_path)
-    os.remove(xml_file_path)
+    target_body.set('quat', '0.707 0.0 0.0 -0.707')
+    # tree.write(xml_out_path)
+    tree.write(xml_file_path)
+    # os.remove(xml_file_path)
     # print("Generate xml file successfully!")
 
 

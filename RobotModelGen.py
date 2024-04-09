@@ -762,7 +762,7 @@ def enum_10():
         tree = ET.parse(xml_file_path)
         root = tree.getroot()
         target_body = root.find(".//body[@name='root']")
-        target_body.set('quat', '0.707 0.0 0.0 0.707')
+        target_body.set('quat', '0.707 0.0 0.0 -0.707')
         tree.write(xml_file_path)
         # os.remove(xml_file_path)
         
