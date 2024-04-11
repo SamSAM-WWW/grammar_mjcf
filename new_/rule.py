@@ -576,7 +576,155 @@ def create_4leg_rules_v2():
 
 
 
+def create_4leg_rules_v3():
+    '''
+    功能:通过调用`create_rule`创建多个指定的语法规则
+    ---------------
+    输入:无
 
+    输出:规则列表 `rules` （类型为`list`）
+    注意：若添加新规则 需要判断是否允许重复搜索该规则 若不允许 需要同步修改search.py 45行 apply_rule.py 410行
+    缩小了机器人的比例
+    '''  
+    rules = [] 
+    # rule0 battery
+    rule = create_rule(name='make_robot',
+                        lhs_nodes={'root':{'require_label':'root','shape':'box','radius':'0.15 0.15 0.02','density':5.0, 'body_pos':[0,0,1.5625], 'geom_pos':[-0.0125,0,0.04375],'euler':[90,0,0],'label':'root'}},
+                        lhs_edges=[],
+                        rhs_nodes={'body':{'shape':'box','radius':'0.25 0.5 0.02','density':5.0,'geom_euler':[0,0,0], 'geom_pos':[-0.0125,0,0],'label':'body'},'root':{'label':'root'}},
+                        rhs_edges=[{'from_node':'root','to_node':'body','range':[-5,5],'axis':[0,0,1]}])
+    rules.append(rule)
+
+    # rule1-1 1 右前
+    rule = create_rule(name='make_body_with_limbmount_1',
+                        lhs_nodes={'body':{'require_label':'body','density':5.0}},
+                        lhs_edges=[],
+                        rhs_nodes={'limbmount':{'label':'limbmount','shape':'capsule','length':0.025,'radius':0.025, 'body_pos':[0.28,0.35,0],'euler':[0,90,0]}},
+                        rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge','axis':[0,1,0],'label':'body-mount','range':[-5,5],'gear':'45'}])
+    rules.append(rule)
+    
+    # rule1-2 2 左前
+    rule = create_rule(name='make_body_with_limbmount_2',
+                        lhs_nodes={'body':{'require_label':'body'}},
+                        lhs_edges=[],
+                        rhs_nodes={'limbmount':{'label':'limbmount','shape':'capsule','length':0.025,'radius':0.025, 'body_pos':[-0.3,0.35,0],'euler':[0,90,0]}},
+                        rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge','axis':[0,1,0],'label':'body-mount','range':[-5,5],'gear':'45'}])
+    rules.append(rule)
+    
+    # rule1-3 3 
+    rule = create_rule(name='make_body_with_limbmount_3',
+                        lhs_nodes={'body':{'require_label':'body'}},
+                        lhs_edges=[],
+                        rhs_nodes={'limbmount':{'label':'limbmount','shape':'capsule','length':0.025,'radius':0.025, 'body_pos':[-0.3,-0.35,0],'euler':[0,90,0]}},
+                        rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge','axis':[0,1,0],'label':'body-mount','range':[-5,5],'gear':'45'}])
+    rules.append(rule)
+
+    # rule1-4 4 右后
+    rule = create_rule(name='make_body_with_limbmount_4',
+                        lhs_nodes={'body':{'require_label':'body'}},
+                        lhs_edges=[],
+                        rhs_nodes={'limbmount':{'label':'limbmount','shape':'capsule','length':0.025,'radius':0.025, 'body_pos':[0.28,-0.35,0],'euler':[0,90,0]}},
+                        rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge','axis':[0,1,0],'label':'body-mount','range':[-5,5],'gear':'45'}])
+    rules.append(rule)
+    
+
+    # rule5 upper_link_b
+    rule = create_rule(name='make_upper_link_b',
+                        lhs_nodes={'limbmount':{'require_label':'limbmount'}},
+                        lhs_edges=[],
+                        rhs_nodes={'upper_link_b':{'require_label':'upper_link_b','label':'upper_link_b','shape':'capsule','length':0.1875,'radius':0.04375, 'body_pos':[0.0625,0,0],'euler':[0,0,-45]}},#'euler' need test
+                        rhs_edges=[{'from_node':'limbmount','to_node':'upper_link_b','label':'mount-upper','axis':[0,0,1],'range':[-45,45],'gear':'45'}])
+    rules.append(rule)
+
+    # rule6 upper_link_f
+    rule = create_rule(name='make_upper_link_f',
+                        lhs_nodes={'limbmount':{'require_label':'limbmount'}},
+                        lhs_edges=[],
+                        rhs_nodes={'upper_link_f':{'require_label':'upper_link_f','label':'upper_link_f','shape':'capsule','length':0.1875,'radius':0.04375, 'body_pos':[0.0625,0,0],'euler':[0,0,45]}},#'euler' need test
+                        rhs_edges=[{'from_node':'limbmount','to_node':'upper_link_f','label':'mount-upper','axis':[0,0,1],'range':[-45,45],'gear':'45'}]
+    )
+    rules.append(rule)
+
+    # rule7 lower_link_b
+    rule = create_rule(name='make_lower_link_b',
+                        lhs_nodes={'upper_link_f':{'require_label':'upper_link_f'}},
+                        lhs_edges=[],
+                        rhs_nodes={'lower_link_b':{'require_label':'lower_link_b','label':'lower_link_b','shape':'capsule','length':0.1875,'radius':0.04375, 'body_pos':[0.25,0,0],'euler':[0,0,-100]}},#'euler' need test
+                        rhs_edges=[{'from_node':'upper_link_f','to_node':'lower_link_b','label':'upper-lower','axis':[0,0,1],'range':[-45,45],'gear':'45'}]
+    )
+    rules.append(rule)
+
+    # rule8 lower_link_f
+    rule = create_rule(name='make_lower_link_f',
+                        lhs_nodes={'upper_link_b':{'require_label':'upper_link_b'}},
+                        lhs_edges=[],
+                        rhs_nodes={'lower_link_f':{'require_label':'lower_link_f','label':'lower_link_f','shape':'capsule','length':0.1875,'radius':0.04375, 'body_pos':[0.25,0,0],'euler':[0,0,100]}},#'euler' need test
+                        rhs_edges=[{'from_node':'upper_link_b','to_node':'lower_link_f','label':'upper-lower','axis':[0,0,1],'range':[-45,45],'gear':'45'}]
+    )
+    rules.append(rule)
+
+
+
+    #rule9轮子
+    rule = create_rule(
+        name='add_wheel_link_end',
+        lhs_nodes={'lower_link':{'require_label':'lower_link'}},
+        lhs_edges=[],
+        rhs_nodes={'wheel_link_end':{'require_label':'wheel_link_end','label':'wheel_link_end','shape':'cylinder','length':0.05,'radius':0.075, 'body_pos':[0.25,0,-0.025],'euler':[0,-90,0]}},
+        rhs_edges=[{'from_node':'lower_link','to_node':'wheel_link_end','label':'link-end','ctrlrange':[-1,1],'gear':'45'}]
+
+
+    )
+    rules.append(rule)
+
+    #rule10 foot sphere
+    rule = create_rule(
+        name='add_foot_link_end',
+        lhs_nodes={'lower_link':{'require_label':'lower_link'}},
+        lhs_edges=[],
+        rhs_nodes={'foot_link_end':{'require_label':'foot_link_end','label':'foot_link_end','shape':'sphere','radius':0.0375, 'body_pos':[0.25,0,0],'euler':[0,0,0]}},
+        rhs_edges=[{'from_node':'lower_link','to_node':'foot_link_end','label':'link-end','ctrlrange':[-1,1],'gear':'45','range':[-5,5]}]
+
+
+    )
+    rules.append(rule)
+
+    #rule11 foot-type1
+    rule = create_rule(
+        name='add_foot_1',
+        lhs_nodes={'lower_link_b':{'require_label':'lower_link_b'}},
+        lhs_edges=[],
+        rhs_nodes={'foot_1':{'require_label':'foot_1','label':'foot_1','shape':'capsule','length':0.0625,'radius':0.03125,'body_pos':[0.25,0,0],'euler':[0,0,120]}},
+        rhs_edges=[{'from_node':'lower_link_b','to_node':'foot_1','label':'foot1','ctrlrange':[-1,1],'gear':'45','range':[-25,25],'axis':[0,0,1]}]
+
+
+    )
+    rules.append(rule)
+    #rule12 foot-type2
+    rule = create_rule(
+        name='add_foot_2',
+        lhs_nodes={'lower_link_f':{'require_label':'lower_link_f'}},
+        lhs_edges=[],
+        rhs_nodes={'foot_2':{'require_label':'foot_2','label':'foot_2','shape':'capsule','length':0.0625,'radius':0.03125,'body_pos':[0.25,0,0],'euler':[0,0,-120]}},
+        rhs_edges=[{'from_node':'lower_link_f','to_node':'foot_2','label':'foot2','ctrlrange':[-1,1],'gear':'45','range':[-25,25],'axis':[0,0,1]}]
+
+
+    )
+    rules.append(rule)
+
+    #rule13 foot tiny
+    rule = create_rule(
+        name='add_tiny_foot_link_end',
+        lhs_nodes={'lower_link':{'require_label':'lower_link'}},
+        lhs_edges=[],
+        rhs_nodes={'tiny_foot_link_end':{'require_label':'tiny_foot_link_end','label':'tiny_foot_link_end','shape':'sphere','radius':0.003, 'body_pos':[0.25,0,0],'euler':[0,0,0]}},
+        rhs_edges=[{'from_node':'lower_link','to_node':'tiny_foot_link_end','label':'link-end','ctrlrange':[-1,1],'gear':'45','range':[-5,5]}]
+
+
+    )
+    rules.append(rule)
+
+    return rules
 
 
 

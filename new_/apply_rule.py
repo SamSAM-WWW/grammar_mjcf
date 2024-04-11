@@ -181,7 +181,7 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
 def example_of_apply_rule():
 
     R = make_initial_graph()
-    rules = create_4leg_rules_v2()
+    rules = create_4leg_rules_v3()
     #---------------------------------------------------------------------------
     # add the first body 
     R = apply_rule(rule=rules[0],input_graph=R,target_node_name='root')
@@ -419,7 +419,7 @@ def make_graph_by_step(filename='xmlrobot'):
     输出：最基本的机器人结构
     '''
     R = make_initial_graph(filename)
-    rules = create_4leg_rules_v2()
+    rules = create_4leg_rules_v3()
     #---------------------------------------------------------------------------
     # add the first body 
     #需要同步修改search.py 45行
