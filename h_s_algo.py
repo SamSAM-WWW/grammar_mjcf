@@ -51,7 +51,7 @@ import torch
 import torch.nn.functional as F
 from torch.utils.tensorboard import SummaryWriter
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 excluded_rules = [0, 1, 2, 3, 4] #需要同步修改apply_rule.py 410行 search.py 45
 load_V_path = None
 opt_iter = 25 
@@ -227,8 +227,10 @@ def get_reward(folder_path):
     reward_dict = simu.simulate()
     #mean_reward
     reward = reward_dict['mean_reward']
+    #reward = {'xmlrobot_0.xml': -0.03456674516201019}
+    first_val = list(reward.values())[0]
     simu.close()
-    return reward
+    return first_val
 
 def calculate_hash(xml_content):
     # 计算内容的哈希值
@@ -415,7 +417,7 @@ def search_algo():
         epoch_folder_path = os.path.join(new_folder_path, f"epoch_{epoch}")
 
         generate_xml_from_R(selected_design,epoch_folder_path,filename_4_epoch)
-        xml_out_path = os.path.join(epoch_folder_path, filename_4_epoch + "_symm.xml")
+        xml_out_path = os.path.join(epoch_folder_path, filename_4_epoch)
 
         # hash_val = calculate_hash_without_first_line(xml_file=xml_out_path)
         # if hash_val not in hash_pool:

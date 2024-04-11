@@ -1,0 +1,15 @@
+Metadata-Version: 2.1
+Name: uni
+Version: 0.0.1
+Summary: transformer-based controller
+Author: alfie
+Requires-Dist: gin-config
+Requires-Dist: wandb
+Requires-Dist: plotly
+Requires-Dist: opencv-python==4.5.5.64
+Requires-Dist: imageio
+Requires-Dist: imageio-ffmpeg
+Requires-Dist: pydot
+Requires-Dist: mup
+Requires-Dist: pytorch3d
+Requires-Dist: gym

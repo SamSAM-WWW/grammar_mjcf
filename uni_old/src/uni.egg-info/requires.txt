@@ -1,0 +1,10 @@
+gin-config
+wandb
+plotly
+opencv-python==4.5.5.64
+imageio
+imageio-ffmpeg
+pydot
+mup
+pytorch3d
+gym

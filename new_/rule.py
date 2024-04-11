@@ -446,7 +446,7 @@ def create_4leg_rules_v2():
     rules = [] 
     # rule0 battery
     rule = create_rule(name='make_robot',
-                        lhs_nodes={'root':{'require_label':'root','shape':'box','radius':'0.15 0.15 0.02','density':5.0, 'body_pos':[0,0,0.82], 'geom_pos':[-0.02,0,0.07],'euler':[90,0,0],'label':'root'}},
+                        lhs_nodes={'root':{'require_label':'root','shape':'box','radius':'0.15 0.15 0.02','density':5.0, 'body_pos':[0,0,2.5], 'geom_pos':[-0.02,0,0.07],'euler':[90,0,0],'label':'root'}},
                         lhs_edges=[],
                         rhs_nodes={'body':{'shape':'box','radius':'0.4 0.8 0.1','density':5.0,'geom_euler':[0,0,0], 'geom_pos':[-0.02,0,0],'label':'body'},'root':{'label':'root'}},
                         rhs_edges=[{'from_node':'root','to_node':'body','range':[-5,5],'axis':[0,0,1]}])
@@ -454,7 +454,7 @@ def create_4leg_rules_v2():
 
     # rule1-1 1 右前
     rule = create_rule(name='make_body_with_limbmount_1',
-                        lhs_nodes={'body':{'require_label':'body'}},
+                        lhs_nodes={'body':{'require_label':'body','density':5.0}},
                         lhs_edges=[],
                         rhs_nodes={'limbmount':{'label':'limbmount','shape':'capsule','length':0.05,'radius':0.05, 'body_pos':[0.5,0.4,0],'euler':[0,90,0]}},
                         rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge','axis':[0,1,0],'label':'body-mount','range':[-5,5],'gear':'45'}])
