@@ -151,7 +151,7 @@ def has_child_nodes(graph, node):
 def result_R(filename='xmlrobot'):
 
     R = make_graph_by_step(filename)
-    rules = create_4leg_rules_v3()
+    rules = create_4leg_rules_v2()
     available_actions = get_available_actions(R, rules)
     # print("可执行的规则序号：", available_actions)
 

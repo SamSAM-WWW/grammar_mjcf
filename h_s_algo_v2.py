@@ -50,10 +50,12 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from torch.utils.tensorboard import SummaryWriter
+from sklearn.metrics import mean_squared_error
+
 
 device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 excluded_rules = [0, 1, 2, 3, 4] #需要同步修改apply_rule.py 410行 search.py 45
-load_V_path = None
+load_V_path = '/home/ps/pan1/files/Sam/grammar_mjcf-master/mjcf_model/2024-04-12_23-30-25/V_gnn_inpro.pt'
 opt_iter = 25 
 batch_size = 32
 states_pool_capacity = 10000000
@@ -74,7 +76,17 @@ reward,best_reward = 0,0
 #     #retun predict Value
 #     os.remove(xml_out_path)
 #     return predict_val
-    
+
+def pre_train(uni):
+    uni.simulate(40000000)
+
+def use_controller(uni):
+    return uni.simulate(0)
+
+def update_controller(uni):
+    return uni.simulate(8000000)
+
+
 def update_states_pool(states_pool, state_seq, states_set):
     for state in state_seq:
         state_hash_key = hash(state)
@@ -215,22 +227,33 @@ def is_rule_applicable_to_target_node(rule, target_node):
     matching_keys = [key for key in rule.lhs_nodes if target_node.startswith(key)]
     return len(matching_keys) > 0
 
-def get_reward(folder_path):
+def get_reward(uni,eps,xml_name):
     '''
+    输入 uni eps xml_name 输出 1个 reward值
+    xml_name:"xmlrobot_0.xml"
     输入文件夹绝对路径，读取文件夹下的所有xml文件，返回reward值 返回一个字典
-
-    def simulate(self, folder:str, train t:int=20000000,record:bool=False):
+    字典格式：
+        xxxx
+        "median_reward":{"xmlrobot_0.xml": 76, "xmlrobot_1.xml": 73}
+        xxxx
+    从字典里提取出对应xml_name的reward值
     
-    {"episode_lengths": {"xmlrobot_10.xml": [1000.0]}, "episode_rewards": {"xmlrobot_10.xml": [78.58042907714844]}, "mean_length": {"xmlrobot_10.xml": 1000.0}, "mean_reward": {"xmlrobot_10.xml": 78.58042907714844}, "median_length": {"xmlrobot_10.xml": 1000.0}, "median_reward": {"xmlrobot_10.xml": 78.58042907714844}}
     '''
-    simu = UniSimulator(folder_path)
-    reward_dict = simu.simulate()
-    #mean_reward
-    reward = reward_dict['mean_reward']
-    #reward = {'xmlrobot_0.xml': -0.03456674516201019}
-    first_val = list(reward.values())[0]
-    simu.close()
-    return first_val
+
+    use_or_train = random.random()
+    if use_or_train < eps:
+        print("use controller")
+        reward_dict = use_controller(uni)
+
+    else:
+        print("train controller")
+        reward_dict = update_controller(uni)
+
+    #median_reward
+    reward = reward_dict['median_reward']
+    #reward = {"xmlrobot_0.xml": 76, "xmlrobot_1.xml": 73}
+    val = reward[xml_name]
+    return val
 
 def calculate_hash(xml_content):
     # 计算内容的哈希值
@@ -261,7 +284,7 @@ def save_to_csv(data, filename):
         writer = csv.writer(file)
         # 如果文件是新建的，则写入列标题
         if not file_exists:
-            writer.writerow(['xml_out_path', 'hash', 'reward'])
+            writer.writerow(['xml_out_path', 'hash', 'reward','predict_reward'])
         # 写入数据
         for row in data:
             writer.writerow(row)
@@ -311,6 +334,7 @@ def search_algo():
     best_reward = -np.inf
 
 
+
     all_labels = set()
     for rule in rules:
         for node_name, node_attrs in rule.lhs_nodes.items():
@@ -353,6 +377,34 @@ def search_algo():
     depth = 20
     repeated_cnt = 0
 
+    reward_list = []
+    selected_reward_list = []
+
+
+    #生成100个初始模型 并且预训练控制器
+    for i in range(100):
+        filename = 'xmlrobot_pre_' + str(i)
+        R = result_R(filename)
+        M = RobotModelGen.ModelGenerator(R)
+        M.set_compiler(angle='degree',inertiafromgeom='true')
+        M.set_size()
+        M.set_option(gravity=-9.8)
+        M.get_robot_dfs()
+        M.generate_2_folder(new_folder_path, filename)
+        print(M.compiler.angle)
+        xml_file_path = os.path.join(new_folder_path, filename + ".xml")
+        tree = ET.parse(xml_file_path)
+        root = tree.getroot()
+        target_body = root.find(".//body[@name='root']")
+        target_body.set('quat', '0.707 0.0 0.0 -0.707')
+        tree.write(xml_file_path)
+    
+    uni = UniSimulator(new_folder_path)
+    pre_train(uni)
+    print("pre-train finished!")     
+
+
+
     for epoch in range(num_iterations):
         V.eval()
         t_start = time.time()
@@ -387,6 +439,7 @@ def search_algo():
             #找到当前状态下，最优的下一步设计
             for i in range(depth):
                 available_actions = get_available_actions(state, rules) 
+                #todo true hs
                 next_state = random_search(state,rules,available_actions)
                 state_seq.append(next_state)
                 pre_val = predict_gnn(V,next_state)
@@ -414,32 +467,32 @@ def search_algo():
         filename_4_epoch = 'xmlrobot_' + str(epoch)
 
         # create a folder for each design to train
-        epoch_folder_path = os.path.join(new_folder_path, f"epoch_{epoch}")
+        # epoch_folder_path = os.path.join(new_folder_path, f"epoch_{epoch}")
 
-        generate_xml_from_R(selected_design,epoch_folder_path,filename_4_epoch)
-        xml_out_path = os.path.join(epoch_folder_path, filename_4_epoch)
+        generate_xml_from_R(selected_design,new_folder_path,filename_4_epoch)
 
-        # hash_val = calculate_hash_without_first_line(xml_file=xml_out_path)
-        # if hash_val not in hash_pool:
-        # hash_pool.append(hash_val)
 
-        #通过相对路径获取xml文件的绝对路径进行训练
-        absolute_path = os.path.abspath(epoch_folder_path)
-        reward = get_reward(folder_path=absolute_path)
+        xml_name = filename_4_epoch + '.xml'
+        reward = get_reward(uni,eps,xml_name)
         print(f"predict-reward:{selected_reward},current-design:{epoch},reward-for-current-design:{reward}")
         if reward > best_reward:
             best_reward = reward
-            best_design = xml_out_path
+
         data_to_save = []
         writer.add_scalar("Predicted Reward", selected_reward, epoch)
         writer.add_scalar("Actual Reward", reward, epoch)
         writer.add_scalar("Reward Difference", reward - selected_reward, epoch)
+        reward_list.append(reward)
+        selected_reward_list.append(selected_reward)
+        reward_array = np.array(reward_list)
+        selected_reward_array = np.array(selected_reward_list)
+        rmse = np.sqrt(mean_squared_error(selected_reward_array, reward_array))
+        writer.add_scalar("RMSE", rmse, epoch)
 
-    
         update_Vhat(V_hat, selected_state_seq, reward)
         update_states_pool(states_pool, selected_state_seq, states_set)
         hash_val = hash(selected_design)
-        data_to_save.append([xml_out_path, hash_val, reward])
+        data_to_save.append([xml_name, hash_val, reward, selected_reward])
         csv_file_path = os.path.join(new_folder_path, 'design_rewards.csv')
         save_to_csv(data_to_save, csv_file_path)
         # optimize train estimator
@@ -503,3 +556,5 @@ def search_algo():
 
 if __name__ == '__main__':
     search_algo()
+    # reward = get_reward(folder_path='/home/ps/pan1/files/Sam/grammar_mjcf-master/mjcf_model/2024-04-12_18-17-37/epoch_0')
+    # print('test_reward',reward)

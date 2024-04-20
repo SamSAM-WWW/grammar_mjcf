@@ -456,7 +456,7 @@ def create_4leg_rules_v2():
     rule = create_rule(name='make_body_with_limbmount_1',
                         lhs_nodes={'body':{'require_label':'body','density':5.0}},
                         lhs_edges=[],
-                        rhs_nodes={'limbmount':{'label':'limbmount','shape':'capsule','length':0.05,'radius':0.05, 'body_pos':[0.5,0.4,0],'euler':[0,90,0]}},
+                        rhs_nodes={'limbmount':{'label':'limbmount','shape':'capsule','length':0.05,'radius':0.05, 'body_pos':[0.5,0.5,0],'euler':[0,90,0]}},
                         rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge','axis':[0,1,0],'label':'body-mount','range':[-5,5],'gear':'45'}])
     rules.append(rule)
     
@@ -464,7 +464,7 @@ def create_4leg_rules_v2():
     rule = create_rule(name='make_body_with_limbmount_2',
                         lhs_nodes={'body':{'require_label':'body'}},
                         lhs_edges=[],
-                        rhs_nodes={'limbmount':{'label':'limbmount','shape':'capsule','length':0.05,'radius':0.05, 'body_pos':[-0.5,0.4,0],'euler':[0,90,0]}},
+                        rhs_nodes={'limbmount':{'label':'limbmount','shape':'capsule','length':0.05,'radius':0.05, 'body_pos':[-0.5,0.5,0],'euler':[0,90,0]}},
                         rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge','axis':[0,1,0],'label':'body-mount','range':[-5,5],'gear':'45'}])
     rules.append(rule)
     
@@ -472,7 +472,7 @@ def create_4leg_rules_v2():
     rule = create_rule(name='make_body_with_limbmount_3',
                         lhs_nodes={'body':{'require_label':'body'}},
                         lhs_edges=[],
-                        rhs_nodes={'limbmount':{'label':'limbmount','shape':'capsule','length':0.05,'radius':0.05, 'body_pos':[-0.5,-0.4,0],'euler':[0,90,0]}},
+                        rhs_nodes={'limbmount':{'label':'limbmount','shape':'capsule','length':0.05,'radius':0.05, 'body_pos':[-0.5,-0.5,0],'euler':[0,90,0]}},
                         rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge','axis':[0,1,0],'label':'body-mount','range':[-5,5],'gear':'45'}])
     rules.append(rule)
 
@@ -480,7 +480,7 @@ def create_4leg_rules_v2():
     rule = create_rule(name='make_body_with_limbmount_4',
                         lhs_nodes={'body':{'require_label':'body'}},
                         lhs_edges=[],
-                        rhs_nodes={'limbmount':{'label':'limbmount','shape':'capsule','length':0.05,'radius':0.05, 'body_pos':[0.5,-0.4,0],'euler':[0,90,0]}},
+                        rhs_nodes={'limbmount':{'label':'limbmount','shape':'capsule','length':0.05,'radius':0.05, 'body_pos':[0.5,-0.5,0],'euler':[0,90,0]}},
                         rhs_edges=[{'from_node':'body','to_node':'limbmount','type':'hinge','axis':[0,1,0],'label':'body-mount','range':[-5,5],'gear':'45'}])
     rules.append(rule)
     
