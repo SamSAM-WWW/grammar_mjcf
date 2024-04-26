@@ -55,7 +55,7 @@ from sklearn.metrics import mean_squared_error
 
 device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 excluded_rules = [0, 1, 2, 3, 4] #需要同步修改apply_rule.py 410行 search.py 45
-load_V_path = '/home/ps/pan1/files/Sam/grammar_mjcf-master/mjcf_model/2024-04-12_23-30-25/V_gnn_inpro.pt'
+load_V_path = None
 opt_iter = 25 
 batch_size = 32
 states_pool_capacity = 10000000
@@ -188,6 +188,41 @@ def select_action( state, rules, target_node, eps, V):
 #             last_child = current_node
 
 #     return last_child
+def heuristic_search(R, rules, available_actions,V):
+    '''
+    针对所有可选节点，进行一步规则执行，使用GNN评估，选出最优的一步设计
+    '''
+
+    excluded_rules = [0, 1, 2, 3, 4] #需要同步修改apply_rule.py 410行
+    available_nodes = [node for node in R.nodes if 'joint' not in node]
+    # print("available_nodes",available_nodes)
+    # 如果存在可选节点，则通过遍历，遍历出所有的可选节点
+    if available_nodes:
+        best_score = float('-inf')
+        best_node = None
+        best_action = None
+
+        # 遍历所有可选节点
+        for selected_node in available_nodes:
+            # 找到适用于该选定节点的规则
+            applicable_rules = [action for action in available_actions if is_rule_applicable_target(rules[action], selected_node)]
+            applicable_rules = [action for action in applicable_rules if action not in excluded_rules]
+            # 如果存在可应用的规则
+            if applicable_rules:
+                # 遍历所有可应用的规则
+                for action in applicable_rules:
+                    # 执行规则，并计算得分
+                    next_state = apply_rule(rule=rules[action], input_graph=R, target_node_name=selected_node)
+                    score = predict_gnn(V,next_state)
+                    # 更新最优得分和节点
+                    if score > best_score:
+                        best_score = score
+                        best_node = selected_node
+                        best_action = action
+        # 如果找到最优设计，则应用规则
+        if best_node is not None and best_action is not None:
+            next_state = apply_rule(rule=rules[best_action], input_graph=R, target_node_name=best_node)
+    return next_state
 
 def get_non_joint_child(state, node):
     """
@@ -329,7 +364,7 @@ def search_algo():
 
     filename = 'xmlrobot'
     # rules = create_4leg_rules()
-    rules = create_4leg_rules_v2()
+    rules = create_4leg_rules_v4()
 
     best_reward = -np.inf
 
@@ -367,7 +402,7 @@ def search_algo():
     
     eps_end = 0.1
     eps_start = 1.0
-    num_iterations = 100
+    num_iterations = 400
     eps_decay= 0.3
 
     eps_sample_end = 0.1
@@ -426,6 +461,7 @@ def search_algo():
         best_pre_val = float('-inf')  # 初始化最佳预测值为负无穷大
         # use e-greedy to sample a design within maximum #steps.
         for num in range(num_samples):
+            samples = []
             # for num_try in range(100):
             t0 = time.time()
             
@@ -435,31 +471,56 @@ def search_algo():
                 state = make_graph_by_step(filename)
             else: state = best_state
             state_seq = [state]
+            
+            po = random.random()
+            if po < eps:
+                # 随机搜索
+                for i in range(depth):
+                    available_actions = get_available_actions(state, rules) 
+                    next_state = random_search(state,rules,available_actions)
+                    # next_state = heuristic_search(state,rules,available_actions,V)
+                    state_seq.append(next_state)
+                    pre_val = predict_gnn(V,next_state)
+                    # 更新最佳预测值和对应的状态
+                    if pre_val > best_pre_val:
+                        best_pre_val = pre_val
+                        best_state = next_state
+                samples.append(best_state)
+            else:
+                # 最优搜索
+                #找到当前状态下，最优的下一步设计
+                for i in range(depth):
+                    available_actions = get_available_actions(state, rules) 
+                    # next_state = random_search(state,rules,available_actions)
+                    next_state = heuristic_search(state,rules,available_actions,V)
+                    state_seq.append(next_state)
+                    pre_val = predict_gnn(V,next_state)
+                    # 更新最佳预测值和对应的状态
+                    if pre_val > best_pre_val:
+                        best_pre_val = pre_val
+                        best_state = next_state
+                samples.append(best_state)
 
-            #找到当前状态下，最优的下一步设计
-            for i in range(depth):
-                available_actions = get_available_actions(state, rules) 
-                next_state = random_search(state,rules,available_actions)
-                state_seq.append(next_state)
-                pre_val = predict_gnn(V,next_state)
-                # 更新最佳预测值和对应的状态
-                if pre_val > best_pre_val:
-                    best_pre_val = pre_val
-                    best_state = next_state
 
 
 
 
 
 
-
-
-            # predicted_value = predict(best_state,new_folder_path)
-            predicted_value = predict_gnn(V,best_state)
-            # print("predicted_value:",predicted_value)
-            if predicted_value > selected_reward:
+            po = random.random()
+            if po < eps:
+                best_state = random.sample(samples, 1)
+                predicted_value = predict_gnn(V,best_state)
                 selected_design, selected_reward = state, predicted_value
                 selected_state_seq = state_seq
+
+            else:
+                # predicted_value = predict(best_state,new_folder_path)
+                predicted_value = predict_gnn(V,best_state)
+                # print("predicted_value:",predicted_value)
+                if predicted_value > selected_reward:
+                    selected_design, selected_reward = state, predicted_value
+                    selected_state_seq = state_seq
         
 
         

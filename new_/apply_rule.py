@@ -102,6 +102,20 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
                 # Copy target nodes in common rule
                 prefix = re.match(r'([a-zA-Z]+)', target_node_name).group(1)
                 if prefix in rule.common_nodes:
+                    if 'body_pos' in rule.common_nodes[prefix] and rule.common_nodes[prefix]['body_pos'] == 'parent':
+                        parent_node = input_graph.nodes[target_node_name]['info']
+                        parent_length = parent_node.length
+                        body_pos = [parent_length + 0.1 , 0, 0]
+                    elif 'body_pos' in rule.common_nodes[prefix] and rule.common_nodes[prefix]['body_pos'] == 'wheel-parent':
+                        parent_node = input_graph.nodes[target_node_name]['info']
+                        parent_length = parent_node.length
+                        body_pos = [parent_length + 0.1 , 0, -0.04]
+                    elif 'body_pos' in rule.common_nodes[prefix] and rule.common_nodes[prefix]['body_pos'] == 'flat-parent':
+                        parent_node = input_graph.nodes[target_node_name]['info']
+                        parent_length = parent_node.length
+                        body_pos = [parent_length  , 0.08, 0]
+                    else:
+                        body_pos = rule.common_nodes[prefix]['body_pos'] if 'body_pos' in rule.common_nodes[prefix] else [0, 0, 0]
                     # print("------",rule.common_nodes[prefix]['length'])
                     # print("Updated info in rule.common_nodes",target_node_name)
                     new_target_node_name = target_node_name
@@ -110,7 +124,7 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
                                         length=rule.common_nodes[prefix]['length'] if 'length' in rule.common_nodes[prefix] else 0,
                                         size=rule.common_nodes[prefix]['radius'] if 'radius' in rule.common_nodes[prefix] else 0,
                                         geom_pos=rule.common_nodes[prefix]['geom_pos'] if 'geom_pos' in rule.common_nodes[prefix] else [0,0,0],
-                                        body_pos=rule.common_nodes[prefix]['body_pos'] if 'body_pos' in rule.common_nodes[prefix] else [0,0,0],
+                                        body_pos=body_pos,
                                         density=rule.common_nodes[prefix]['density'] if 'density' in rule.common_nodes[prefix] else 1000)
                     result.add_node(node_type='link', node_info=new_node)
 
@@ -123,12 +137,26 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
                     n = len(existing_joint_nodes)
                     new_add_node_name = node_name + str(n + 1)
 
+                    if 'body_pos' in rule.rhs_nodes[node_name] and rule.rhs_nodes[node_name]['body_pos'] == 'parent':
+                        parent_node = input_graph.nodes[target_node_name]['info']
+                        parent_length = parent_node.length
+                        body_pos = [parent_length + 0.1 , 0, 0]
+                    elif 'body_pos' in rule.rhs_nodes[node_name] and rule.rhs_nodes[node_name]['body_pos'] == 'wheel-parent':
+                        parent_node = input_graph.nodes[target_node_name]['info']
+                        parent_length = parent_node.length
+                        body_pos = [parent_length + 0.1 , 0, -0.04]
+                    elif 'body_pos' in rule.rhs_nodes[node_name] and rule.rhs_nodes[node_name]['body_pos'] == 'flat-parent':
+                        parent_node = input_graph.nodes[target_node_name]['info']
+                        parent_length = parent_node.length
+                        body_pos = [parent_length , 0.08 , 0]
+                    else:
+                        body_pos = rule.rhs_nodes[node_name]['body_pos'] if 'body_pos' in rule.rhs_nodes[node_name] else [0, 0, 0]
                     new_node = RobotLink(name = new_add_node_name,
                                         link_type= rule.rhs_nodes[node_name]['shape'] if 'shape' in rule.rhs_nodes[node_name] else 'capsule',
                                         length=rule.rhs_nodes[node_name]['length'] if 'length' in rule.rhs_nodes[node_name] else 0,
                                         size=rule.rhs_nodes[node_name]['radius'] if 'radius' in rule.rhs_nodes[node_name] else 0,
                                         geom_pos=rule.rhs_nodes[node_name]['geom_pos'] if 'geom_pos' in rule.rhs_nodes[node_name] else [0,0,0],
-                                        body_pos=rule.rhs_nodes[node_name]['body_pos'] if 'body_pos' in rule.rhs_nodes[node_name] else [0,0,0],
+                                        body_pos=body_pos,
                                         euler=rule.rhs_nodes[node_name]['euler'] if 'euler' in rule.rhs_nodes[node_name] else [0,0,0],
                                         geom_euler=rule.rhs_nodes[node_name]['geom_euler'] if 'geom_euler' in rule.rhs_nodes[node_name] else [0,0,0],
                                         label=rule.rhs_nodes[node_name]['label'] if 'label' in rule.rhs_nodes[node_name] else None,
@@ -181,7 +209,7 @@ def apply_rule(rule,input_graph:RobotGraph ,target_node_name:str):
 def example_of_apply_rule():
 
     R = make_initial_graph()
-    rules = create_4leg_rules_v2()
+    rules = create_4leg_rules_v4()
     #---------------------------------------------------------------------------
     # add the first body 
     R = apply_rule(rule=rules[0],input_graph=R,target_node_name='root')
@@ -419,7 +447,7 @@ def make_graph_by_step(filename='xmlrobot'):
     输出：最基本的机器人结构
     '''
     R = make_initial_graph(filename)
-    rules = create_4leg_rules_v2()
+    rules = create_4leg_rules_v4()
     #---------------------------------------------------------------------------
     # add the first body 
     #需要同步修改search.py 45行
