@@ -509,7 +509,7 @@ def search_algo():
 
             po = random.random()
             if po < eps:
-                best_state = random.sample(samples, 1)
+                best_state = random.choice(samples, 1)
                 predicted_value = predict_gnn(V,best_state)
                 selected_design, selected_reward = state, predicted_value
                 selected_state_seq = state_seq
