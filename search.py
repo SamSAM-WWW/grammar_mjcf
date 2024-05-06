@@ -151,7 +151,7 @@ def has_child_nodes(graph, node):
 def result_R(filename='xmlrobot'):
 
     R = make_graph_by_step(filename)
-    rules = create_4leg_rules_v4()
+    rules = create_4leg_rules_v5()
     available_actions = get_available_actions(R, rules)
     # print("可执行的规则序号：", available_actions)
 
@@ -160,7 +160,7 @@ def result_R(filename='xmlrobot'):
 
     for i in range(100):
         available_actions = get_available_actions(R, rules)
-        random_search(R,rules,available_actions)
+        R = random_search(R,rules,available_actions)
 
     R = replace_limbmounts(R)
     return R

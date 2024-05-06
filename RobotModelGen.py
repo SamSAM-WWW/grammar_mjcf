@@ -713,7 +713,7 @@ def enum_1():
 
 def enum_10():
     invalid_design = 0
-    for i in range(10):
+    for i in range(100):
         # R = example_of_apply_rule()
         filename = 'xmlrobot_' + str(i)
         #
