@@ -1,46 +1,44 @@
 from uni import UniSimulator
-
+import os
+import shutil
+import wandb
+import gin
+from uni.utils import gin_util
+from uni.utils import rng
+from uni.rl.util import rl_evaluate
+from uni.rl.wrappers.timeout_wrapper import TimeoutWrapper
 import matplotlib.pyplot as plt
-def update_controller(uni):
-    return uni.simulate(100000)
+import time
+
+class MyUNI(UniSimulator):
+    def simulate(self, train_t:int=20000000):
+        rng.seed(self.seed)
+
+        save_period = 100000
+        t = self.alg.load()
+        last_save = (t // save_period) * save_period
+        # Train 
+        if train_t > 0:
+            self.alg.env.init_scene()
+            with open('log.txt', 'a+') as f:
+                f.write(f'start: {time.asctime(time.localtime(time.time()))}\n')
+                while True:
+                    t = self.alg.step()
+                    if (t - last_save) >= save_period:
+                        data = self.alg.evaluate()
+                        med_re = data['median_reward']
+                        f.write(f'{med_re}\n')
+                        last_save = t
+                    if t - self.t > train_t:
+                        print(t)
+                        self.t = t
+                        break
+            self.alg.save()
+
 
 if __name__ == '__main__':
-    reward_list = []
-    xml_name = 'xxxxx.xml'
     uni = UniSimulator('mjcf_model/tests/test8','/home/ps/pan1/files/Sam/grammar_mjcf-master/my_config/grammar.gin')
-    
-    for i in range(400):
-        reward_dict = update_controller(uni)
-        reward = reward_dict['median_reward'] #reward = {"xmlrobot_0.xml": 76, "xmlrobot_1.xml": 73}
-        val = reward[xml_name]
-        reward_list.append(val)
-
+    uni.simulate(40000000)
     uni.close()
-    print('reward list is ',reward_list)
-    plt.plot(reward_list)
-    plt.title('Reward')
-    # 生成 x 轴刻度的位置和标签
-step_size = 100000
-x_ticks = [i * step_size for i in range(len(reward_list))]
-x_labels = [f'{i * step_size // 100000}' for i in range(len(reward_list))]
-
-# 绘制图表
-plt.plot(reward_list)
-plt.title('Reward')
-plt.xlabel('Steps (x100000)')
-plt.ylabel('Value')
-plt.xticks(x_ticks, x_labels)  # 设置 x 轴刻度
-plt.grid(True)
-plt.tight_layout()
-plt.show()
-plt.ylabel('Value')
-plt.legend()
-plt.grid(True)
-plt.tight_layout()
-plt.show()
-
-    # uni = UniSimulator('mjcf_model/tests/test8','/home/ps/pan1/files/Sam/grammar_mjcf-master/my_config/grammar.gin')
-    # uni.simulate(40000000)
-    # uni.close()
     # UniSimulator.visual('mjcf_model/tests/test8','/home/ps/pan1/files/Sam/grammar_mjcf-master/my_config/grammar.gin')
     # UniSimulator.terrain_visual('/home/ps/pan1/files/Sam/grammar_mjcf-master/mjcf_model/2024-04-25_10-23-29', mode='test')
