@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mujoco model="xmlrobot">
+	<compiler inertiafromgeom="true"/>
+	<option gravity="0 0 -9.8"/>
+	<size nconmax="500" njmax="1000"/>
+	<custom/>
+	<default/>
+	<asset/>
+	<worldbody>
+		<body name="root" pos="0 0 2" quat="1.0 0.0 0.0 0.0">
+			<geom name="geomroot" pos="-0.02 0 0.07" size="0.15 0.15 0.02" type="box" quat="1.0 0.0 0.0 0.0"/>
+			<body name="body1" pos="0 0 0" quat="1.0 0.0 0.0 0.0">
+				<geom name="geombody1" pos="-0.02 0 0" size="0.2 0.4 0.05" type="box" quat="1.0 0.0 0.0 0.0"/>
+				<joint axis="0 0 1" damping="1.0" limited="true" name="joint_joint1" pos="0 0 0" range="-5 5" stiffness="2.0" type="hinge"/>
+				<body name="hand_mount1" pos="-0.05875 0.3 0.1" quat="0.70711 0.0 0.70711 0.0">
+					<geom fromto="0 0 0 0.025 0 0" name="geomhand_mount1" size="0.025" type="capsule" quat="1.0 0.0 0.0 0.0"/>
+					<joint axis="1 0 0" damping="1.0" limited="true" name="joint_joint6" pos="0 0 0" range="-180 180" stiffness="2.0" type="hinge"/>
+					<body name="hand_link1" pos="0.0 0 0.055" quat="0.70711 0.0 0.70711 0.0">
+						<geom fromto="0 0 0 0.055 0 0" name="geomhand_link1" size="0.025" type="capsule" quat="1.0 0.0 0.0 0.0"/>
+						<joint axis="1 0 0" damping="1.0" limited="true" name="joint_joint7" pos="0 0 0" range="-89 89" stiffness="2.0" type="hinge"/>
+						<body name="hand_link_21" pos="0 0 0" quat="0.70711 0.0 0.70711 0.0">
+							<geom fromto="0 0 0 0.3 0 0" name="geomhand_link_21" size="0.025" type="capsule" quat="1.0 0.0 0.0 0.0"/>
+							<joint axis="1 0 0" damping="1.0" limited="true" name="joint_joint8" pos="0 0 0" range="-60 60" stiffness="2.0" type="hinge"/>
+							<body name="hand_21" pos="0.32 0 0" quat="1.0 0.0 0.0 0.0">
+								<geom fromto="0 0 0 0.05 0 0" name="geomhand_21" size="0.01" type="capsule" quat="1.0 0.0 0.0 0.0"/>
+								<joint axis="0 0 1" damping="1.0" limited="true" name="joint_joint10" pos="0 0 0" range="0.01 0.05" stiffness="2.0" type="slide"/>
+							</body>
+							<body name="hand_11" pos="0.32 0 0" quat="1.0 0.0 0.0 0.0">
+								<geom fromto="0 0 0 0.05 0 0" name="geomhand_11" size="0.01" type="capsule" quat="1.0 0.0 0.0 0.0"/>
+								<joint axis="0 0 1" damping="1.0" limited="true" name="joint_joint9" pos="0 0 0" range="-0.05 -0.01" stiffness="2.0" type="slide"/>
+							</body>
+						</body>
+					</body>
+				</body>
+				<body name="limbmount4" pos="0.1875 -0.2 0" quat="0.70711 0.0 0.70711 0.0">
+					<geom fromto="0 0 0 0.025 0 0" name="geomlimbmount4" size="0.025" type="capsule" quat="1.0 0.0 0.0 0.0"/>
+					<joint axis="0 1 0" damping="1.0" limited="true" name="joint_joint5" pos="0 0 0" range="-45 45" stiffness="2.0" type="hinge"/>
+					<body name="limbmount4_new_new" pos="0 0 0" quat="0.70711 0.0 -0.70711 0.0">
+						<geom fromto="0 0 0 0.042 0 0" name="geomlimbmount4_new_new" pos="0 0 0" size="0.066" type="cylinder" euler="0 0 0"/>
+						<joint axis="1 0 0" damping="1.0" limited="true" name="joint_limbmount4_new" pos="0 0 0" range="-45 45" stiffness="2.0" type="hinge"/>
+					</body>
+				</body>
+				<body name="limbmount3" pos="-0.225 -0.2 0" quat="0.70711 0.0 0.70711 0.0">
+					<geom fromto="0 0 0 0.025 0 0" name="geomlimbmount3" size="0.025" type="capsule" quat="1.0 0.0 0.0 0.0"/>
+					<joint axis="0 1 0" damping="1.0" limited="true" name="joint_joint4" pos="0 0 0" range="-45 45" stiffness="2.0" type="hinge"/>
+					<body name="motor3" pos="0 0 0" quat="0.70711 0.0 -0.70711 0.0">
+						<geom fromto="0 0 0 0.042 0 0" name="geommotor3" pos="0 0 0" size="0.066" type="cylinder" euler="0 0 0"/>
+						<joint axis="1 0 0" damping="1.0" limited="true" name="joint_joint13" pos="0 0 0" range="-45 45" stiffness="2.0" type="hinge"/>
+					</body>
+				</body>
+				<body name="limbmount2" pos="-0.225 0.2 0" quat="0.70711 0.0 0.70711 0.0">
+					<geom fromto="0 0 0 0.025 0 0" name="geomlimbmount2" size="0.025" type="capsule" quat="1.0 0.0 0.0 0.0"/>
+					<joint axis="0 1 0" damping="1.0" limited="true" name="joint_joint3" pos="0 0 0" range="-45 45" stiffness="2.0" type="hinge"/>
+					<body name="limbmount2_new_new" pos="0 0 0" quat="0.70711 0.0 -0.70711 0.0">
+						<geom fromto="0 0 0 0.042 0 0" name="geomlimbmount2_new_new" pos="0 0 0" size="0.066" type="cylinder" euler="0 0 0"/>
+						<joint axis="1 0 0" damping="1.0" limited="true" name="joint_limbmount2_new" pos="0 0 0" range="-45 45" stiffness="2.0" type="hinge"/>
+					</body>
+				</body>
+				<body name="limbmount1" pos="0.1875 0.2 0" quat="0.70711 0.0 0.70711 0.0">
+					<geom fromto="0 0 0 0.025 0 0" name="geomlimbmount1" size="0.025" type="capsule" quat="1.0 0.0 0.0 0.0"/>
+					<joint axis="0 1 0" damping="1.0" limited="true" name="joint_joint2" pos="0 0 0" range="-45 45" stiffness="2.0" type="hinge"/>
+					<body name="motor1" pos="0 0 0" quat="0.70711 0.0 -0.70711 0.0">
+						<geom fromto="0 0 0 0.042 0 0" name="geommotor1" pos="0 0 0" size="0.066" type="cylinder" euler="0 0 0"/>
+						<joint axis="1 0 0" damping="1.0" limited="true" name="joint_joint11" pos="0 0 0" range="-45 45" stiffness="2.0" type="hinge"/>
+					</body>
+				</body>
+			</body>
+		</body>
+	</worldbody>
+	<actuator>
+		<motor ctrllimited="true" ctrlrange="-1 1" gear="22.5" joint="joint_joint1"/>
+		<motor ctrllimited="true" ctrlrange="-1 1" gear="22.5" joint="joint_joint6"/>
+		<motor ctrllimited="true" ctrlrange="-1 1" gear="22.5" joint="joint_joint7"/>
+		<motor ctrllimited="true" ctrlrange="-1 1" gear="22.5" joint="joint_joint8"/>
+		<motor ctrllimited="true" ctrlrange="-1 1" gear="22.5" joint="joint_joint10"/>
+		<motor ctrllimited="true" ctrlrange="-1 1" gear="22.5" joint="joint_joint9"/>
+		<motor ctrllimited="true" ctrlrange="-1 1" gear="22.5" joint="joint_joint5"/>
+		<motor ctrllimited="true" ctrlrange="-1 1" gear="22.5" joint="joint_limbmount4_new"/>
+		<motor ctrllimited="true" ctrlrange="-1 1" gear="22.5" joint="joint_joint4"/>
+		<motor ctrllimited="true" ctrlrange="-1 1" gear="22.5" joint="joint_joint13"/>
+		<motor ctrllimited="true" ctrlrange="-1 1" gear="22.5" joint="joint_joint3"/>
+		<motor ctrllimited="true" ctrlrange="-1 1" gear="22.5" joint="joint_limbmount2_new"/>
+		<motor ctrllimited="true" ctrlrange="-1 1" gear="22.5" joint="joint_joint2"/>
+		<motor ctrllimited="true" ctrlrange="-1 1" gear="22.5" joint="joint_joint11"/>
+	</actuator>
+</mujoco>

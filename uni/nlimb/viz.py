@@ -1,0 +1,45 @@
+import os
+import argparse
+import wandb
+import gin
+from uni.utils import gin_util
+from uni.rl.util import rl_evaluate
+from uni.rl.wrappers.timeout_wrapper import TimeoutWrapper
+from uni.utils.rng import seed
+
+
+def viz():
+    seed(0)
+    parser = argparse.ArgumentParser('viz')
+    parser.add_argument('logdir')
+    parser.add_argument('--folder', type=str, required=True)
+    args = parser.parse_args()
+    wandb.init(mode='disabled')
+    gin_util.add_pytorch_external_configurables()
+    gin_util.load_config_dict(os.path.join(args.logdir, 'config.json'))
+
+    num_envs = len(os.listdir(args.folder))
+    assert num_envs > 0, f'No environments found in {args.folder}'
+    print(f'Found {num_envs} environments in {args.folder}')
+    
+    config = gin_util.get_config_dict()
+    config['envs.IsaacMixedXMLEnv.num_envs'] = num_envs
+    config['envs.IsaacMixedXMLEnv.spacing'] = (0., 0.025, 1.)
+    config['nlimb.NLIMB.xml_root'] = args.folder
+    config['envs.IsaacMixedXMLEnv.test'] = True
+    gin_util.apply_bindings_from_dict(config)
+
+    alg = gin.query_parameter('rl.train.algorithm').configurable.wrapped(args.logdir)
+    alg.load()
+    pi = alg.alg.pi
+    env = alg.alg.env
+    env.finalize_obs_norm()
+    env = TimeoutWrapper(env, alg.alg.eval_max_episode_length)
+    env.init_scene()
+    env.create_viewer()
+    data = rl_evaluate(env, pi, nepisodes=alg.env.num_envs, t=alg.t, record_viewer=False)
+    return data
+
+
+if __name__ == '__main__':
+    viz()

@@ -1,0 +1,17 @@
+<extension>
+   <plugin plugin="mujoco.elasticity.cable"/>
+</extension>
+
+<worldbody>
+   <composite prefix="actuated" type="cable" curve="cos(s) sin(s) s" count="41 1 1"
+              size="0.25 .1 4" offset="0.25 0 .05" initial="none">
+      <plugin plugin="mujoco.elasticity.cable">
+         <!--Units are in Pa (SI)-->
+         <config key="twist" value="5e8"/>
+         <config key="bend" value="15e8"/>
+         <config key="vmax" value="0"/>
+      </plugin>
+      <joint kind="main" damping="0.15" armature="0.01"/>
+      <geom type="capsule" size=".005" rgba=".8 .2 .1 1"/>
+   </composite>
+</worldbody>

@@ -1,0 +1,2 @@
+best,meanvel 1.62
+worst,0.011
