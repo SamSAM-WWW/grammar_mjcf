@@ -11,7 +11,7 @@ from scipy.interpolate import griddata
 
 
 #80160
-def process_stl_80160(file_name,bili):
+def process_stl_80800(file_name,bili):
     # 创建文件夹 stl2hight 如果它不存在
     os.makedirs('stl2hight', exist_ok=True)
 
@@ -36,7 +36,7 @@ def process_stl_80160(file_name,bili):
 
     # 创建一个网格
     x = np.linspace(np.min(vertices[:, 0]), np.max(vertices[:, 0]), 80)
-    y = np.linspace(np.min(vertices[:, 1]), np.max(vertices[:, 1]), 160)
+    y = np.linspace(np.min(vertices[:, 1]), np.max(vertices[:, 1]), 800)
     X, Y = np.meshgrid(x, y)
 
     # 使用scipy进行插值
@@ -64,4 +64,4 @@ def process_stl_80160(file_name,bili):
 file_name = input("请输入文件名（不带后缀）：")
 bili = input("请输入倍率：")
 print("export to D:\pythoncode\grammar_mjcf\stl2hight",f'{file_name}.txt')
-process_stl_80160(file_name,bili)
+process_stl_80800(file_name,bili)

@@ -116,3 +116,17 @@ python train.py task=Ant checkpoint=runs/Ant/nn/Ant.pth test=True num_envs=64
 
 
 
+### 针对顶部高度修改部分
+rl/wrappers/coopt_obs_norm_wrapper.py
+
+nlimb/networks/transformers.py
+
+tasks/target_task.py
+
+ob_space = self.state_collection.get_obs_space()
+        ob_space['task'] = {'obs': gym.spaces.Box(-np.inf, np.inf, shape=(6,))}
+        ob_space['terrain'] = {'obs': scene.terrain_indexer.obs_space}
+后面那个upper_terrain注释了
+
+
+obs['upper_terrain'] = {'obs': upper_terrain,}
