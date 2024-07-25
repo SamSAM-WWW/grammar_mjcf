@@ -129,4 +129,4 @@ ob_space = self.state_collection.get_obs_space()
 后面那个upper_terrain注释了
 
 
-obs['upper_terrain'] = {'obs': upper_terrain,}
+obs['upper_terrain'] = {'obs': upper_terrain,} 也注释
